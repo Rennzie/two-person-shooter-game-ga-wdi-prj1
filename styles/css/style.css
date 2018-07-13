@@ -1,0 +1,21 @@
+.battle-field {
+  width: 900px;
+  height: 500px;
+  border: 1px solid red;
+  margin: 0 auto; }
+  .battle-field .tank {
+    float: right;
+    width: 100px;
+    height: 50px;
+    margin-top: 200px;
+    border: 1px solid brown;
+    background-color: green; }
+  .battle-field .bullet {
+    margin-top: 225px;
+    width: 25px;
+    height: 10px;
+    border: 1px solid black;
+    left: 0%;
+    position: relative; }
+
+/*# sourceMappingURL=style.css.map */
