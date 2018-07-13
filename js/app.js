@@ -49,17 +49,13 @@ $(() => {
     maxY: $bullet.offset().top + $bullet.height()
   };
 
-  window.requestAnimationFrame(updatedPosition);
-
-
-
   //prints position of boxes saved in object
-  function printXy () {
-    console.log('tank minX: ' + tankPosition.minX);
-    console.log('tank minY: ' + tankPosition.minY);
-    console.log('bullet minX: ' + bulletPosition.minX);
-    console.log('bullet minY: ' + bulletPosition.minY);
-  }
+  // function printXy () {
+  //   console.log('tank minX: ' + tankPosition.minX);
+  //   console.log('tank minY: ' + tankPosition.minY);
+  //   console.log('bullet minX: ' + bulletPosition.minX);
+  //   console.log('bullet minY: ' + bulletPosition.minY);
+  // }
 
   //to dynamically update the position of an animated element (currently not working)
   function updatedPosition(){
@@ -67,44 +63,35 @@ $(() => {
     bulletPosition.minY = $bullet.offset().top;
     bulletPosition.maxX = $bullet.offset().left + $bullet.width();
     bulletPosition.maxY = $bullet.offset().top + $bullet.height();
-    console.log(bulletPosition.minX);
+    targetCollision();
   }
 
+  function targetCollision () {
+    if(bulletPosition.maxX > tankPosition.minX){
+      console.log('HIT HIT HIT');
+    }
+  }
 
+  //to move bullet around screen and update its position object
   function animateBullet() {
     $bullet.animate({
       left: '100%'
     }, {
       duration: 1000,
-      step: updatedPosition,
-      complete: printXy
+      step: updatedPosition
     });
-
-    printXy();
   }
 
-  // $(function() {
-  //   $(".mydiv").animate({
-  //     left :"0px"
-  //   }, {
-  //     duration : 1234,
-  //     start : function (promise) {
-  //       console.log($(".mydiv").position().left);
-  //     },
-  //     step : function (now, tween) {
-  //       console.log($(".mydiv").position().left);
-  //     },
-  //     progress : function (promise) {
-  //       console.log($(".mydiv").position().left);
-  //     },
-  //     complete : function () {
-  //       $(this).animate({left:"0px"}, 1234)
-  //     }
-  //   });
-  // });
+  function keyIdentifier(){
+    if(event.originalEvent.code === 'Space'){
+      animateBullet();
+      console.log(event);
+    }
+  }
 
-
-  $bullet.on('click', animateBullet);
+  $(window).keydown(function(event) {
+    console.log(event);
+  });
 });
 
 
