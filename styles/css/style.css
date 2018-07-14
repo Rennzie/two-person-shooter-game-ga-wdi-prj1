@@ -9,11 +9,5 @@
     height: 50px;
     border: 1px solid brown;
     background-color: green; }
-  .battle-field .bullet {
-    margin: 2px;
-    width: 25px;
-    min-height: 10px;
-    border: 1px solid black;
-    position: relative; }
 
 /*# sourceMappingURL=style.css.map */

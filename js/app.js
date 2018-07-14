@@ -89,12 +89,9 @@ $(() => {
 
 
   function Bullet() {
-    this.element = document.createElement('div');
-    this.element.classList.add('bullet');
-
     this.placementPosition = {
-      left: tankOne.currentPosition.left,
-      top: tankOne.currentPosition.top
+      left: tankOne.currentPosition.left + 50,
+      top: tankOne.currentPosition.top + 25
     };
 
     this.style = {
@@ -102,12 +99,28 @@ $(() => {
       height: 10
     };
 
+    this.element = document.createElement('div');
+    this.element.classList.add('bullet');
+
+    this.element.style.cssText = `
+      margin: 2px;
+      box-sizing: border-box;
+      border: 1px solid black;
+      position: absolute;
+      top: ${this.placementPosition.top}px;
+      left: ${this.placementPosition.left}px;
+      width: ${this.style.width}px;
+      height: ${this.style.height}px;`;
+
+
     this.currentPosition = {
       left: this.placementPosition.left,
       top: this.placementPosition.top,
       right: this.placementPosition.left + this.style.width,
       bottom: this.placementPosition.top + this.style.height
     };
+
+    this.bulletSpeed = 5;
 
     this.collisionDetected = false;
   }
@@ -129,18 +142,17 @@ $(() => {
   };
 
   Bullet.prototype.fireBullet = function() {
+    updatedPosition(tankOne, $tank);
     this.updatePosition();
     $(this.element).offset({left: $(this.element).offset().left + 10});
     this.updatePosition();
-
-
     if(this.currentPosition.left > battleField.left &&
       this.currentPosition.right < battleField.right &&
       this.currentPosition.top > battleField.top &&
       this.currentPosition.bottom < battleField.bottom ){
       setTimeout( () => {
         this.fireBullet();
-      },10);
+      }, this.bulletSpeed);
     } else {
       this.removeBullet();
       return;
@@ -150,6 +162,7 @@ $(() => {
   //to move bullet around screen and update its position object
   function createBullet() {
     const bullet = new Bullet;
+    console.log(bullet.currentPosition);
     bullet.addBullet();
     bullet.fireBullet();
 
