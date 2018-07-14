@@ -3,16 +3,10 @@
   height: 400px;
   border: 1px solid red;
   margin: 100px auto; }
-  .battle-field .tank {
-    position: relative;
-    width: 100px;
-    height: 50px;
-    border: 1px solid brown;
-    background-color: green; }
   .battle-field .tank2 {
     position: relative;
     float: right;
-    width: 100px;
+    width: 50px;
     height: 50px;
     border: 1px solid brown;
     background-color: blue; }
