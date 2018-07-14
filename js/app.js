@@ -27,6 +27,8 @@ $(() => {
   };
 
   const tankTwo = {
+    life: 100,
+
     currentPosition: {
       left: $tank2.offset().left,
       top: $tank2.offset().top,
@@ -107,7 +109,6 @@ $(() => {
       width: ${this.style.width}px;
       height: ${this.style.height}px;`;
 
-
     this.currentPosition = {
       left: this.placementPosition.left,
       top: this.placementPosition.top,
@@ -119,6 +120,7 @@ $(() => {
 
     this.collisionDetected = false;
   }
+
   //refreshes the current xy coords of a bullet
   Bullet.prototype.updatePosition = function (){
     this.currentPosition.left = $(this.element).offset().left;
@@ -136,7 +138,7 @@ $(() => {
     $(this.element).remove();
   };
 
-  //repeadedly moves a bullet accross the screen
+  //repeatedly moves a bullet accross the screen
   Bullet.prototype.fireBullet = function() {
     updatedPosition(tankOne, $tank);
     this.updatePosition();
@@ -155,14 +157,17 @@ $(() => {
       return;
     }
   };
+
   ///////- COLLISION DETECTION -/////////
   Bullet.prototype.detectCollision = function() {
     if(this.currentPosition.left > tankTwo.currentPosition.left &&
       this.currentPosition.right < tankTwo.currentPosition.right &&
       this.currentPosition.top > tankTwo.currentPosition.top &&
       this.currentPosition.bottom < tankTwo.currentPosition.bottom ){
+
       this.collisionDetected = true;
-      console.log('HIT HIT HIT ' + this.collisionDetected);
+      tankTwo.life -= 5;
+      console.log('Tank health: ' + tankTwo.life);
     }
   };
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -172,7 +177,6 @@ $(() => {
   //to instantiate a new bullet and fire it across the screen
   function createBullet() {
     const bullet = new Bullet;
-    console.log(bullet.currentPosition);
     bullet.addBullet();
     bullet.fireBullet();
 
