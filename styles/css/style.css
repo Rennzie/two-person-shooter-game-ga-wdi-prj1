@@ -9,5 +9,12 @@
     height: 50px;
     border: 1px solid brown;
     background-color: green; }
+  .battle-field .tank2 {
+    position: relative;
+    float: right;
+    width: 100px;
+    height: 50px;
+    border: 1px solid brown;
+    background-color: blue; }
 
 /*# sourceMappingURL=style.css.map */

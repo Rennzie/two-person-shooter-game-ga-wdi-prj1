@@ -37,3 +37,12 @@
 //  --> update to position of the tank after every keypress [X]
 //  --> this should stop the tank form moving in that direction [X]
 // --> update position of tank at start of the on move function [X]
+
+////////////////////////////////////
+///////- APPEND BULLET AND REMOVE BULLET FROM BOARD -//////////
+////////////////////////////////////
+//  --> append bullet by calling constructor [X]
+//  --> move the bullet across the screen by adding 10px to x value [X]
+//  --> continously do this with an interval of 100ms [X]
+//  --> test the position of the bullet every 100ms and see if still in the battleField [X]
+//  --> remove the element from the board when it hits the edge of the battle field [X]

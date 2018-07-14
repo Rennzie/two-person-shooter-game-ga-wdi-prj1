@@ -5,9 +5,9 @@
 ////////////////////////////////////
 
 $(() => {
-  const $tank = $('.tank');
   const $battleField = $('.battle-field');
-
+  const $tank = $('.tank');
+  const $tank2 = $('.tank2');
   const battleField = {
     left: $battleField.offset().left,
     top: $battleField.offset().top,
@@ -25,6 +25,16 @@ $(() => {
 
     movementPoints: 50
   };
+
+  const tankTwo = {
+    currentPosition: {
+      left: $tank2.offset().left,
+      top: $tank2.offset().top,
+      right: $tank2.offset().left + $tank.width(),
+      bottom: $tank2.offset().top + $tank.height()
+    }
+  };
+
 
   ///////- MOVE TANK -//////////
   function tankMove(direction) {
@@ -70,24 +80,9 @@ $(() => {
     itemObj.currentPosition.bottom = itemDom.offset().top + itemDom.height();
     //targetCollision();
   }
-  ///////- COLLISION DETECTION -/////////
-  // function targetCollision () {
-  //   if(bullet.right > tankOne.left){
-  //     bullet.collisionDetected = true;
-  //     console.log('HIT HIT HIT ' + bullet.collisionDetected);
-  //   }
-  // }
 
-  ////////////////////////////////////
-  ///////- APPEND BULLET AND REMOVE BULLET FROM BOARD -//////////
-  ////////////////////////////////////
-  //  --> append bullet by calling constructor [X]
-  //  --> move the bullet across the screen by adding 10px to x value [X]
-  //  --> continously do this with an interval of 100ms [X]
-  //  --> test the position of the bullet every 100ms and see if still in the battleField [X]
-  //  --> remove the element from the board when it hits the edge of the battle field [X]
-
-
+  ///////////////- BULLET CONSTRUCTOR -////////////////////////
+  /////////////////////////////////////////////////////////////
   function Bullet() {
     this.placementPosition = {
       left: tankOne.currentPosition.left + 50,
@@ -124,13 +119,13 @@ $(() => {
 
     this.collisionDetected = false;
   }
-
+  //refreshes the current xy coords of a bullet
   Bullet.prototype.updatePosition = function (){
     this.currentPosition.left = $(this.element).offset().left;
     this.currentPosition.top = $(this.element).offset().top;
     this.currentPosition.right = $(this.element).offset().left + this.style.width;
     this.currentPosition.bottom = $(this.element).offset().top + this.style.height;
-    //targetCollision();
+    this.detectCollision();
   };
 
   Bullet.prototype.addBullet = function (){
@@ -141,6 +136,7 @@ $(() => {
     $(this.element).remove();
   };
 
+  //repeadedly moves a bullet accross the screen
   Bullet.prototype.fireBullet = function() {
     updatedPosition(tankOne, $tank);
     this.updatePosition();
@@ -149,7 +145,8 @@ $(() => {
     if(this.currentPosition.left > battleField.left &&
       this.currentPosition.right < battleField.right &&
       this.currentPosition.top > battleField.top &&
-      this.currentPosition.bottom < battleField.bottom ){
+      this.currentPosition.bottom < battleField.bottom &&
+      !this.collisionDetected){
       setTimeout( () => {
         this.fireBullet();
       }, this.bulletSpeed);
@@ -158,8 +155,21 @@ $(() => {
       return;
     }
   };
+  ///////- COLLISION DETECTION -/////////
+  Bullet.prototype.detectCollision = function() {
+    if(this.currentPosition.left > tankTwo.currentPosition.left &&
+      this.currentPosition.right < tankTwo.currentPosition.right &&
+      this.currentPosition.top > tankTwo.currentPosition.top &&
+      this.currentPosition.bottom < tankTwo.currentPosition.bottom ){
+      this.collisionDetected = true;
+      console.log('HIT HIT HIT ' + this.collisionDetected);
+    }
+  };
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ///////////////- BULLET CONSTRUCTOR -////////////////////////
 
-  //to move bullet around screen and update its position object
+
+  //to instantiate a new bullet and fire it across the screen
   function createBullet() {
     const bullet = new Bullet;
     console.log(bullet.currentPosition);
