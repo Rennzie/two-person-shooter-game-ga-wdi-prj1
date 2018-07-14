@@ -1,6 +1,6 @@
 .battle-field{
   width: 900px;
-  height: 500px;
+  height: 400px;
   border: 1px solid red;
   margin: 100px auto;
 
@@ -14,9 +14,10 @@
     background-color: green;
   }
   .bullet{
-    margin-top: 225px;
+    margin: 2px;
+    //display: inline;
     width: 25px;
-    height: 10px;
+    min-height: 10px;
     border: 1px solid black;
     position: relative;
   }
