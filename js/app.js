@@ -81,11 +81,11 @@ $(() => {
   ////////////////////////////////////
   ///////- APPEND BULLET AND REMOVE BULLET FROM BOARD -//////////
   ////////////////////////////////////
-  // --> on append of bullet, start an interval which runs update position function every millisecond
-  // --> interval runs function which check bullets position against position of opponent tank
-  // --> Interval will run while bullet is with battle field parameters of until it hits a tank
-  // --> once it breaks the while loop, bullet is removed if at edge of battle field or explode if hits target
-  //Append bullet to screen
+  //  --> append bullet by calling constructor [X]
+  //  --> move the bullet across the screen by adding 10px to x value [X]
+  //  --> continously do this with an interval of 100ms [X]
+  //  --> test the position of the bullet every 100ms and see if still in the battleField [X]
+  //  --> remove the element from the board when it hits the edge of the battle field [X]
 
 
   function Bullet() {
@@ -122,43 +122,30 @@ $(() => {
 
   Bullet.prototype.addBullet = function (){
     $battleField.append(this.element);
-    //fireBullet();
   };
 
-  //grab bullet from DOM.
-  //update its object POSITION
-  //move it along x axis at 10px per 10ms
-  //do this while its still within the board
+  Bullet.prototype.removeBullet = function () {
+    $(this.element).remove();
+  };
 
   Bullet.prototype.fireBullet = function() {
-    console.log(this);
     this.updatePosition();
-    console.log(this);
-    //const $bullet = $('.bullet');
-    //updatedPosition(Bullet, this);
-
-    // if(Bullet.currentPosition.left > battleField.left &&
-    // Bullet.currentPosition.right < battleField.right &&
-    // Bullet.currentPosition.top > battleField.top &&
-    // Bullet.currentPosition.bottom < battleField.bottom ){
-
-      // $bullet.offset({left: $bullet.offset().left + 10});
-      // updatedPosition(Bullet, $bullet);
-      // setTimeout( () => {
-      //   fireBullet();
-      // },10);
-    // }else {
-    //   return;
-    // }
+    $(this.element).offset({left: $(this.element).offset().left + 10});
+    this.updatePosition();
 
 
-    // $bullet.animate({
-    //   left: '100%'
-    // }, {
-    //   duration: 1000
-    //   //step: updatedPosition
-    // });
-  }
+    if(this.currentPosition.left > battleField.left &&
+      this.currentPosition.right < battleField.right &&
+      this.currentPosition.top > battleField.top &&
+      this.currentPosition.bottom < battleField.bottom ){
+      setTimeout( () => {
+        this.fireBullet();
+      },10);
+    } else {
+      this.removeBullet();
+      return;
+    }
+  };
 
   //to move bullet around screen and update its position object
   function createBullet() {
