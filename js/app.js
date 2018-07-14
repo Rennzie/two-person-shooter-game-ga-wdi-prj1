@@ -43,6 +43,7 @@ $(() => {
 
   ///////- MOVE TANK -//////////
   function tankMove(direction) {
+    updatedPosition(tankOne, $tank)
     switch(direction){
       case 'ArrowUp':
         return moveTankUp();
@@ -59,24 +60,18 @@ $(() => {
     console.log(tankOne.top - 50 < battleField.top);
     console.log(battleField);
     console.log($tank.offset().top);
-
-    if(tankOne.top - 50 < battleField.top){
+    if(tankOne.top - 50 > battleField.top){
       $tank.offset({top: $tank.offset().top - 50});
-    }else{
-      return;
     }
   }
   function moveTankDown () {
-    $tank.offset({top: $tank.offset().top + 50});
-    tankOne.bottom = $tank.offset().top + $tank.height();
+    if(tankOne.bottom < battleField.bottom) $tank.offset({top: $tank.offset().top + 50});
   }
   function moveTankLeft () {
     $tank.offset({left: $tank.offset().left - 50});
-    tankOne.left = $tank.offset().left;
   }
   function moveTankRight () {
     $tank.offset({left: $tank.offset().left + 50});
-    tankOne.right = $tank.offset().left + $tank.width();
   }
 
 
@@ -93,11 +88,11 @@ $(() => {
 
   //to dynamically update the position of an animated element
   //(works when called as step in animateBullet())
-  function updatedPosition(){
-    bullet.left = $bullet.offset().left;
-    bullet.top = $bullet.offset().top;
-    bullet.right = $bullet.offset().left + $bullet.width();
-    bullet.bottom = $bullet.offset().top + $bullet.height();
+  function updatedPosition(itemObj, itemDom){
+    itemObj.left = itemDom.offset().left;
+    itemObj.top = itemDom.offset().top;
+    itemObj.right = itemDom.offset().left + itemDom.width();
+    itemObj.bottom = itemDom.offset().top + itemDom.height();
     targetCollision();
   }
 
