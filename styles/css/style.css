@@ -2,7 +2,7 @@
   width: 900px;
   height: 500px;
   border: 1px solid red;
-  margin: 0 auto; }
+  margin: 100px auto; }
   .battle-field .tank {
     position: relative;
     width: 100px;

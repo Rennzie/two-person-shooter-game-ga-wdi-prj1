@@ -6,7 +6,8 @@
 //  grab tank element from the dom [X]
 //  update the x position few pixels on up key press [X]
 //  limit the movement of the tank to its container [o]
-//  --> xy should not exceede that of the container
+//  --> before moving tank, check its not withi the board
+//  --> update to position of the tank after every keypress
 //  --> this should stop the tank form moving in that direction
 
 
@@ -17,7 +18,23 @@
 $(() => {
   const $bullet = $('.bullet');
   const $tank = $('.tank');
+  const $battleField = $('.battle-field');
 
+  const battleField = {
+    left: $battleField.offset().left,
+    top: $battleField.offset().top,
+    right: $battleField.offset().left + $battleField.width(),
+    bottom: $battleField.offset().top + $battleField.height()
+  };
+
+  const tankOne = {
+    left: $tank.offset().left,
+    top: $tank.offset().top,
+    right: $tank.offset().left + $tank.width(),
+    bottom: $tank.offset().top + $tank.height()
+  };
+
+  ///////- MOVE TANK -//////////
   function tankMove(direction) {
     switch(direction){
       case 'ArrowUp':
@@ -32,30 +49,35 @@ $(() => {
   }
 
   function moveTankUp () {
-    return $tank.offset({top: $tank.offset().top - 50});
+    console.log(tankOne.top >= battleField.top);
+    console.log(battleField);
+    console.log($tank.offset().top);
+
+    if($tank.offset().top - 50 >= (battleField.top)){
+      $tank.offset({top: $tank.offset().top - 50});
+    }else{
+      return;
+    }
   }
   function moveTankDown () {
-    return $tank.offset({top: $tank.offset().top + 50});
+    $tank.offset({top: $tank.offset().top + 50});
+    tankOne.bottom = $tank.offset().top + $tank.height();
   }
   function moveTankLeft () {
-    return $tank.offset({left: $tank.offset().left - 50});
+    $tank.offset({left: $tank.offset().left - 50});
+    tankOne.left = $tank.offset().left;
   }
   function moveTankRight () {
-    return $tank.offset({left: $tank.offset().left + 50});
+    $tank.offset({left: $tank.offset().left + 50});
+    tankOne.right = $tank.offset().left + $tank.width();
   }
 
-  const tankOne = {
-    minX: $tank.offset().left,
-    minY: $tank.offset().top,
-    maxX: $tank.offset().left + $tank.width(),
-    maxY: $tank.offset().top + $tank.height()
-  };
 
   const bullet = {
-    minX: $bullet.offset().left,
-    minY: $bullet.offset().top,
-    maxX: $bullet.offset().left + $bullet.width(),
-    maxY: $bullet.offset().top + $bullet.height(),
+    left: $bullet.offset().left,
+    top: $bullet.offset().top,
+    right: $bullet.offset().left + $bullet.width(),
+    bottom: $bullet.offset().top + $bullet.height(),
     collisionDetected: false
   };
 
@@ -65,15 +87,15 @@ $(() => {
   //to dynamically update the position of an animated element
   //(works when called as step in animateBullet())
   function updatedPosition(){
-    bullet.minX = $bullet.offset().left;
-    bullet.minY = $bullet.offset().top;
-    bullet.maxX = $bullet.offset().left + $bullet.width();
-    bullet.maxY = $bullet.offset().top + $bullet.height();
+    bullet.left = $bullet.offset().left;
+    bullet.top = $bullet.offset().top;
+    bullet.right = $bullet.offset().left + $bullet.width();
+    bullet.bottom = $bullet.offset().top + $bullet.height();
     targetCollision();
   }
 
   function targetCollision () {
-    if(bullet.maxX > tankOne.minX){
+    if(bullet.right > tankOne.left){
       bullet.collisionDetected = true;
       console.log('HIT HIT HIT ' + bullet.collisionDetected);
     }
@@ -93,7 +115,7 @@ $(() => {
   //////-KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
   function keyIdentifier(e){
-    console.log(e);
+    //console.log(e);
     if(e.originalEvent.key === ' ') animateBullet();
     if(e.originalEvent.key === 'ArrowDown' ||
       e.originalEvent.key === 'ArrowUp' ||
