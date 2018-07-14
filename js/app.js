@@ -11,12 +11,15 @@
 //  --> this should stop the tank form moving in that direction
 
 
---> update position of tank at start of the on move function
+// --> update position of tank at start of the on move function
+//
+// --> on append of bullet, start an interval which runs update position function every millisecond
+// --> interval runs function which check bullets position against position of opponent tank
+// --> Interval will run while bullet is with battle field parameters of until it hits a tank
+// --> once it breaks the while loop, bullet is removed if at edge of battle field or explode if hits target
 
---> on append of bullet, start an interval which runs update position function every millisecond
---> interval runs function which check bullets position against position of opponent tank
---> Interval will run while bullet is with battle field parameters of until it hits a tank
---> once it breaks the while loop, bullet is removed if at edge of battle field or explode if hits target
+
+
 
 ////////////////////////////////////
 ///////- DOM INTERACTION -//////////
@@ -35,15 +38,20 @@ $(() => {
   };
 
   const tankOne = {
-    left: $tank.offset().left,
-    top: $tank.offset().top,
-    right: $tank.offset().left + $tank.width(),
-    bottom: $tank.offset().top + $tank.height()
+    position: {
+      left: $tank.offset().left,
+      top: $tank.offset().top,
+      right: $tank.offset().left + $tank.width(),
+      bottom: $tank.offset().top + $tank.height()
+    },
+
+    movementPoints: 50
+
   };
 
   ///////- MOVE TANK -//////////
   function tankMove(direction) {
-    updatedPosition(tankOne, $tank)
+    updatedPosition(tankOne, $tank);
     switch(direction){
       case 'ArrowUp':
         return moveTankUp();
@@ -57,21 +65,20 @@ $(() => {
   }
 
   function moveTankUp () {
-    console.log(tankOne.top - 50 < battleField.top);
-    console.log(battleField);
-    console.log($tank.offset().top);
-    if(tankOne.top - 50 > battleField.top){
-      $tank.offset({top: $tank.offset().top - 50});
-    }
+    if(tankOne.position.top - 10 > battleField.top)
+      $tank.offset({top: $tank.offset().top - tankOne.movementPoints});
   }
   function moveTankDown () {
-    if(tankOne.bottom < battleField.bottom) $tank.offset({top: $tank.offset().top + 50});
+    if(tankOne.position.bottom < battleField.bottom)
+      $tank.offset({top: $tank.offset().top + tankOne.movementPoints});
   }
   function moveTankLeft () {
-    $tank.offset({left: $tank.offset().left - 50});
+    if(tankOne.position.left > battleField.left)
+      $tank.offset({left: $tank.offset().left - tankOne.movementPoints});
   }
   function moveTankRight () {
-    $tank.offset({left: $tank.offset().left + 50});
+    if(tankOne.position.right < battleField.right)
+      $tank.offset({left: $tank.offset().left + tankOne.movementPoints});
   }
 
 
@@ -89,10 +96,10 @@ $(() => {
   //to dynamically update the position of an animated element
   //(works when called as step in animateBullet())
   function updatedPosition(itemObj, itemDom){
-    itemObj.left = itemDom.offset().left;
-    itemObj.top = itemDom.offset().top;
-    itemObj.right = itemDom.offset().left + itemDom.width();
-    itemObj.bottom = itemDom.offset().top + itemDom.height();
+    itemObj.position.left = itemDom.offset().left;
+    itemObj.position.top = itemDom.offset().top;
+    itemObj.position.right = itemDom.offset().left + itemDom.width();
+    itemObj.position.bottom = itemDom.offset().top + itemDom.height();
     targetCollision();
   }
 
