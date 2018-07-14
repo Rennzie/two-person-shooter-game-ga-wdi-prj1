@@ -4,6 +4,7 @@
   border: 1px solid red;
   margin: 100px auto; }
   .battle-field .tank {
+    margin: 5px;
     position: relative;
     width: 100px;
     height: 50px;

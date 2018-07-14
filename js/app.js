@@ -11,6 +11,13 @@
 //  --> this should stop the tank form moving in that direction
 
 
+--> update position of tank at start of the on move function
+
+--> on append of bullet, start an interval which runs update position function every millisecond
+--> interval runs function which check bullets position against position of opponent tank
+--> Interval will run while bullet is with battle field parameters of until it hits a tank
+--> once it breaks the while loop, bullet is removed if at edge of battle field or explode if hits target
+
 ////////////////////////////////////
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
@@ -49,11 +56,11 @@ $(() => {
   }
 
   function moveTankUp () {
-    console.log(tankOne.top >= battleField.top);
+    console.log(tankOne.top - 50 < battleField.top);
     console.log(battleField);
     console.log($tank.offset().top);
 
-    if($tank.offset().top - 50 >= (battleField.top)){
+    if(tankOne.top - 50 < battleField.top){
       $tank.offset({top: $tank.offset().top - 50});
     }else{
       return;
