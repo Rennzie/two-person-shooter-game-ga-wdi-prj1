@@ -79,9 +79,9 @@ $(() => {
 
   //repeatedly moves a bullet accross the screen
   Bullet.prototype.fireBullet = function() {
-    //this.bullet.updatePosition();
     $(this.element).offset({left: $(this.element).offset().left + 10});
     this.updatePosition();
+    //this.detectCollision(target);
     if(this.bulletPosition.left > battleField.left &&
       this.bulletPosition.right < battleField.right &&
       this.bulletPosition.top > battleField.top &&
@@ -98,18 +98,31 @@ $(() => {
     $(this.element).remove();
   };
 
-  ///////- COLLISION DETECTION -/////////
-  // Bullet.prototype.detectCollision = function() {
-  //   if(this.bulletPosition.left > tankTwo.bulletPosition.left &&
-  //     this.bulletPosition.right < tankTwo.bulletPosition.right &&
-  //     this.bulletPosition.top > tankTwo.bulletPosition.top &&
-  //     this.bulletPosition.bottom < tankTwo.bulletPosition.bottom ){
-  //
-  //     this.collisionDetected = true;
-  //     tankTwo.health -= 5;
-  //     console.log('Tank health: ' + tankTwo.health);
-  //   }
-  // };
+  /////- COLLISION DETECTION -/////////
+  //  get opponents position
+  //  detect the collision on impact
+  //  reduce the health of opponents tank.
+  //  log the reduction to the consol.
+  //  continously retrieve the opposite tanks position
+
+  Bullet.prototype.detectCollision = function(left, right, top, bottom) {
+    //console.log(`logged at collisionDetected ${typeof(left)}, ${right}, ${top}, ${bottom},`);
+    if(this.bulletPosition.left > left &&
+      this.bulletPosition.right < right &&
+      this.bulletPosition.top > top &&
+      this.bulletPosition.bottom < bottom ){
+
+      this.collisionDetected = true;
+      //target.health -= 5;
+      console.log('Hit Detected: ' + this.collisionDetected);
+      this.removeBullet();
+    }else{
+      setTimeout(() => {
+        this.detectCollision(left, right, top, bottom);
+      }, this.bulletSpeed);
+
+    }
+  };
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- BULLET CONSTRUCTOR end -////////////////////////
 
@@ -142,7 +155,7 @@ $(() => {
         left: startLeft,
         top: startTop,
         right: startLeft + this.dimensions.width,
-        bottom: startTop + this.dimensions.health
+        bottom: startTop + this.dimensions.height
       };
 
       this.movementPoints = 25;
@@ -201,9 +214,11 @@ $(() => {
 
   ////////- firing bullets -////////////
   Tank.prototype.addBullet = function (){
+    this.updatePosition();
     this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
     $battleField.append(this.bullet.element);
     this.bullet.fireBullet();
+    //this.bullet.detectCollision();
   };
 
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -224,10 +239,14 @@ $(() => {
 
   //to instantiate a new bullet and fire it across the screen
   function createBullet(key) {
+    playerOne.updatePosition();
+    playerTwo.updatePosition();
     if(key === ' '){
       playerOne.addBullet();
+      playerOne.bullet.detectCollision(playerTwo.tankPosition.left, playerTwo.tankPosition.right, playerTwo.tankPosition.top, playerTwo.tankPosition.bottom );
     }else if (key === 'Shift'){
       playerTwo.addBullet();
+      playerTwo.bullet.detectCollision(playerOne.tankPosition.left, playerOne.tankPosition.right, playerOne.tankPosition.top, playerOne.tankPosition.bottom );
     }
   }
 
@@ -237,7 +256,7 @@ $(() => {
   //////-KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
   function keyIdentifier(e){
-    console.log(e.originalEvent.key);
+    //console.log(e.originalEvent.key);
     if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
       createBullet(e.originalEvent.key);
     if(e.originalEvent.key === 'ArrowDown' ||
