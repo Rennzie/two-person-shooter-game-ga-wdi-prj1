@@ -33,7 +33,7 @@ $(() => {
   class Bullet {
     constructor (tankPositionTop, tankPositionLeft) {
       this.placementPosition = {
-        left: tankPositionLeft + 50,
+        left: tankPositionLeft + 25,
         top: tankPositionTop + 25
       };
 
@@ -82,7 +82,7 @@ $(() => {
 
   //repeatedly moves a bullet accross the screen
   Bullet.prototype.fireBullet = function(direction) {
-    console.log(direction);
+    //console.log(direction);
     switch(direction){
       case 'right':
         $(this.element).offset({left: $(this.element).offset().left + 10});
@@ -147,13 +147,13 @@ $(() => {
   ///////////////////////////////////////////////////////////
 
   class Tank{
-    constructor (startTop, startLeft, color) {
+    constructor (startTop, startLeft) {
       this.health = 100;
 
       this.direction = 'right';
 
       this.dimensions = {
-        width: 50,
+        width: 75,
         height: 50
       };
 
@@ -161,9 +161,10 @@ $(() => {
       this.element.classList.add('tank');
 
       this.element.style.cssText = `
+      background-image: url(./styles/images/TopDown_soldier_tank_turrent.png);
+      background-size: contain;
+      background-repeat: no-repeat;
       box-sizing: border-box;
-      background-color: ${color};
-      border: 1px solid brown;
       position: absolute;
       top: ${startTop}px;
       left: ${startLeft}px;
@@ -252,8 +253,8 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
-  const playerOne = new Tank(battleField.top, battleField.left, 'blue');
-  const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50, 'green');
+  const playerOne = new Tank(battleField.top, battleField.left);
+  const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50);
 
   function addPlayerOne() {
     playerOne.addTank();
