@@ -28,7 +28,121 @@ $(() => {
     bottom: $battleField.offset().top + $battleField.height()
   };
 
-  ///////////////- TANK CONSTRUCTOR -////////////////////////
+
+  ///////////////- BULLET CONSTRUCTOR -////////////////////////
+  /////////////////////////////////////////////////////////////
+  class Bullet {
+    constructor (tankPositionTop, tankPositionLeft) {
+      this.placementPosition = {
+        left: tankPositionLeft + 50,
+        top: tankPositionTop + 25
+      };
+
+      this.style = {
+        width: 25,
+        height: 10
+      };
+
+      this.element = document.createElement('div');
+      this.element.classList.add('bullet');
+
+      this.element.style.cssText = `
+      margin: 2px;
+      box-sizing: border-box;
+      border: 1px solid black;
+      position: absolute;
+      top: ${this.placementPosition.top}px;
+      left: ${this.placementPosition.left}px;
+      width: ${this.style.width}px;
+      height: ${this.style.height}px;`;
+
+      this.bulletPosition = {
+        left: this.placementPosition.left,
+        top: this.placementPosition.top,
+        right: this.placementPosition.left + this.style.width,
+        bottom: this.placementPosition.top + this.style.height
+      };
+
+      this.bulletSpeed = 5;
+
+      this.collisionDetected = false;
+    }
+  }
+
+  //refreshes the current xy coords of a bullet
+  Bullet.prototype.updatePosition = function (){
+    this.bulletPosition.left = $(this.element).offset().left;
+    this.bulletPosition.top = $(this.element).offset().top;
+    this.bulletPosition.right = $(this.element).offset().left + this.style.width;
+    this.bulletPosition.bottom = $(this.element).offset().top + this.style.height;
+    //this.detectCollision();
+  };
+
+  //repeatedly moves a bullet accross the screen
+  Bullet.prototype.fireBullet = function() {
+    //this.bullet.updatePosition();
+    $(this.element).offset({left: $(this.element).offset().left + 10});
+    this.updatePosition();
+    if(this.bulletPosition.left > battleField.left &&
+      this.bulletPosition.right < battleField.right &&
+      this.bulletPosition.top > battleField.top &&
+      this.bulletPosition.bottom < battleField.bottom ){
+      setTimeout( () => {
+        this.fireBullet();
+      }, this.bulletSpeed);
+    } else {
+      this.removeBullet();
+      return;
+    }
+  };
+  Bullet.prototype.removeBullet = function () {
+    $(this.element).remove();
+  };
+
+  // Bullet.prototype.addBullet = function (){
+  //   $battleField.append(this.element);
+  // };
+  //
+  // Bullet.prototype.removeBullet = function () {
+  //   $(this.element).remove();
+  // };
+  //
+  // //repeatedly moves a bullet accross the screen
+  // Bullet.prototype.fireBullet = function() {
+  //   //this.Tank.updatePosition();
+  //   this.updatePosition();
+  //   $(this.element).offset({left: $(this.element).offset().left + 10});
+  //   this.updatePosition();
+  //   if(this.bulletPosition.left > battleField.left &&
+  //     this.bulletPosition.right < battleField.right &&
+  //     this.bulletPosition.top > battleField.top &&
+  //     this.bulletPosition.bottom < battleField.bottom &&
+  //     !this.collisionDetected){
+  //     setTimeout( () => {
+  //       this.fireBullet();
+  //     }, this.bulletSpeed);
+  //   } else {
+  //     this.removeBullet();
+  //     return;
+  //   }
+  // };
+
+  ///////- COLLISION DETECTION -/////////
+  // Bullet.prototype.detectCollision = function() {
+  //   if(this.bulletPosition.left > tankTwo.bulletPosition.left &&
+  //     this.bulletPosition.right < tankTwo.bulletPosition.right &&
+  //     this.bulletPosition.top > tankTwo.bulletPosition.top &&
+  //     this.bulletPosition.bottom < tankTwo.bulletPosition.bottom ){
+  //
+  //     this.collisionDetected = true;
+  //     tankTwo.health -= 5;
+  //     console.log('Tank health: ' + tankTwo.health);
+  //   }
+  // };
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ///////////////- BULLET CONSTRUCTOR -////////////////////////
+
+  //////////- TANK CONSTRUCTOR with bullets -////////////////
   ///////////////////////////////////////////////////////////
 
   class Tank{
@@ -53,7 +167,7 @@ $(() => {
       width: ${this.dimensions.width}px;
       height: ${this.dimensions.height}px;`;
 
-      this.currentPosition = {
+      this.tankPosition = {
         left: startLeft,
         top: startTop,
         right: startLeft + this.dimensions.width,
@@ -69,10 +183,10 @@ $(() => {
   };
 
   Tank.prototype.updatePosition = function (){
-    this.currentPosition.left = $(this.element).offset().left;
-    this.currentPosition.top = $(this.element).offset().top;
-    this.currentPosition.right = $(this.element).offset().left + this.dimensions.width;
-    this.currentPosition.bottom = $(this.element).offset().top + this.dimensions.height;
+    this.tankPosition.left = $(this.element).offset().left;
+    this.tankPosition.top = $(this.element).offset().top;
+    this.tankPosition.right = $(this.element).offset().left + this.dimensions.width;
+    this.tankPosition.bottom = $(this.element).offset().top + this.dimensions.height;
   };
 
   Tank.prototype.moveTank = function (direction){
@@ -90,119 +204,32 @@ $(() => {
   };
 
   Tank.prototype.moveTankUp = function () {
-    if(this.currentPosition.top - 10 > battleField.top)
+    if(this.tankPosition.top - 10 > battleField.top)
       $(this.element).offset({top: $(this.element).offset().top - this.movementPoints});
   };
   Tank.prototype.moveTankDown = function () {
-    if(this.currentPosition.bottom < battleField.bottom)
+    if(this.tankPosition.bottom < battleField.bottom)
       $(this.element).offset({top: $(this.element).offset().top + this.movementPoints});
   };
   Tank.prototype.moveTankLeft = function () {
-    if(this.currentPosition.left > battleField.left)
+    if(this.tankPosition.left > battleField.left)
       $(this.element).offset({left: $(this.element).offset().left - this.movementPoints});
   };
   Tank.prototype.moveTankRight = function () {
-    if(this.currentPosition.right < battleField.right)
+    if(this.tankPosition.right < battleField.right)
       $(this.element).offset({left: $(this.element).offset().left + this.movementPoints});
   };
 
-  //Tank.prototype.bullet = new Bullet();
+  ////////- firing bullets -////////////
 
-
-
-
-  ///////////////- BULLET CONSTRUCTOR -////////////////////////
-  /////////////////////////////////////////////////////////////
-  class Bullet extends Tank{
-    constructor () {
-      super();
-      this.placementPosition = {
-        left: this.currentPosition.left + 50,
-        top: this.currentPosition.top + 25
-      };
-
-      this.style = {
-        width: 25,
-        height: 10
-      };
-
-      this.element = document.createElement('div');
-      this.element.classList.add('bullet');
-
-      this.element.style.cssText = `
-        margin: 2px;
-        box-sizing: border-box;
-        border: 1px solid black;
-        position: absolute;
-        top: ${this.placementPosition.top}px;
-        left: ${this.placementPosition.left}px;
-        width: ${this.style.width}px;
-        height: ${this.style.height}px;`;
-
-      this.currentPosition = {
-        left: this.placementPosition.left,
-        top: this.placementPosition.top,
-        right: this.placementPosition.left + this.style.width,
-        bottom: this.placementPosition.top + this.style.height
-      };
-
-      this.bulletSpeed = 5;
-
-      this.collisionDetected = false;
-    }
-  }
-
-  //refreshes the current xy coords of a bullet
-  Bullet.prototype.updatePosition = function (){
-    this.currentPosition.left = $(this.element).offset().left;
-    this.currentPosition.top = $(this.element).offset().top;
-    this.currentPosition.right = $(this.element).offset().left + this.style.width;
-    this.currentPosition.bottom = $(this.element).offset().top + this.style.height;
-    this.detectCollision();
+  Tank.prototype.addBullet = function (){
+    this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
+    $battleField.append(this.bullet.element);
+    this.bullet.fireBullet();
   };
 
-  Bullet.prototype.addBullet = function (){
-    $battleField.append(this.element);
-  };
 
-  Bullet.prototype.removeBullet = function () {
-    $(this.element).remove();
-  };
 
-  //repeatedly moves a bullet accross the screen
-  Bullet.prototype.fireBullet = function() {
-    //this.Tank.updatePosition();
-    this.updatePosition();
-    $(this.element).offset({left: $(this.element).offset().left + 10});
-    this.updatePosition();
-    if(this.currentPosition.left > battleField.left &&
-      this.currentPosition.right < battleField.right &&
-      this.currentPosition.top > battleField.top &&
-      this.currentPosition.bottom < battleField.bottom &&
-      !this.collisionDetected){
-      setTimeout( () => {
-        this.fireBullet();
-      }, this.bulletSpeed);
-    } else {
-      this.removeBullet();
-      return;
-    }
-  };
-
-  ///////- COLLISION DETECTION -/////////
-  Bullet.prototype.detectCollision = function() {
-    if(this.currentPosition.left > tankTwo.currentPosition.left &&
-      this.currentPosition.right < tankTwo.currentPosition.right &&
-      this.currentPosition.top > tankTwo.currentPosition.top &&
-      this.currentPosition.bottom < tankTwo.currentPosition.bottom ){
-
-      this.collisionDetected = true;
-      tankTwo.health -= 5;
-      console.log('Tank health: ' + tankTwo.health);
-    }
-  };
-  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  ///////////////- BULLET CONSTRUCTOR -////////////////////////
 
   const playerOne = new Tank(battleField.top, battleField.left);
 
@@ -215,7 +242,6 @@ $(() => {
   //to instantiate a new bullet and fire it across the screen
   function createBullet() {
     playerOne.addBullet();
-    playerOne.fireBullet();
   }
 
   addPlayerOne();
