@@ -38,8 +38,8 @@ $(() => {
       };
 
       this.style = {
-        width: 25,
-        height: 10
+        width: 5,
+        height: 5
       };
 
       this.element = document.createElement('div');
@@ -53,7 +53,8 @@ $(() => {
       top: ${this.placementPosition.top}px;
       left: ${this.placementPosition.left}px;
       width: ${this.style.width}px;
-      height: ${this.style.height}px;`;
+      height: ${this.style.height}px;
+      border-radius: 100%;`;
 
       this.bulletPosition = {
         left: this.placementPosition.left,
@@ -63,6 +64,8 @@ $(() => {
       };
 
       this.bulletSpeed = 5;
+
+      this.damage = 5;
 
       this.collisionDetected = false;
     }
@@ -78,8 +81,22 @@ $(() => {
   };
 
   //repeatedly moves a bullet accross the screen
-  Bullet.prototype.fireBullet = function() {
-    $(this.element).offset({left: $(this.element).offset().left + 10});
+  Bullet.prototype.fireBullet = function(direction) {
+    console.log(direction);
+    switch(direction){
+      case 'right':
+        $(this.element).offset({left: $(this.element).offset().left + 10});
+        break;
+      case 'left':
+        $(this.element).offset({left: $(this.element).offset().left - 10});
+        break;
+      case 'up':
+        $(this.element).offset({top: $(this.element).offset().top - 10});
+        break;
+      case 'down':
+        $(this.element).offset({top: $(this.element).offset().top + 10});
+        break;
+    }
     this.updatePosition();
     //this.detectCollision(target);
     if(this.bulletPosition.left > battleField.left &&
@@ -87,7 +104,7 @@ $(() => {
       this.bulletPosition.top > battleField.top &&
       this.bulletPosition.bottom < battleField.bottom ){
       setTimeout( () => {
-        this.fireBullet();
+        this.fireBullet(direction);
       }, this.bulletSpeed);
     } else {
       this.removeBullet();
@@ -99,11 +116,11 @@ $(() => {
   };
 
   /////- COLLISION DETECTION -/////////
-  //  get opponents position
-  //  detect the collision on impact
-  //  reduce the health of opponents tank.
-  //  log the reduction to the consol.
-  //  continously retrieve the opposite tanks position
+  //  get opponents position [X]
+  //  detect the collision on impact [X]
+  //  reduce the health of opponents tank. [o]
+  //  log the reduction to the consol. [o]
+  //  continously retrieve the opposite tanks position [X]
 
   Bullet.prototype.detectCollision = function(left, right, top, bottom) {
     //console.log(`logged at collisionDetected ${typeof(left)}, ${right}, ${top}, ${bottom},`);
@@ -113,9 +130,9 @@ $(() => {
       this.bulletPosition.bottom < bottom ){
 
       this.collisionDetected = true;
-      //target.health -= 5;
       console.log('Hit Detected: ' + this.collisionDetected);
       this.removeBullet();
+      return true;
     }else{
       setTimeout(() => {
         this.detectCollision(left, right, top, bottom);
@@ -132,6 +149,8 @@ $(() => {
   class Tank{
     constructor (startTop, startLeft, color) {
       this.health = 100;
+
+      this.direction = 'right';
 
       this.dimensions = {
         width: 50,
@@ -198,18 +217,22 @@ $(() => {
   Tank.prototype.moveTankUp = function () {
     if(this.tankPosition.top - 10 > battleField.top)
       $(this.element).offset({top: $(this.element).offset().top - this.movementPoints});
+    this.direction = 'up';
   };
   Tank.prototype.moveTankDown = function () {
     if(this.tankPosition.bottom < battleField.bottom)
       $(this.element).offset({top: $(this.element).offset().top + this.movementPoints});
+    this.direction = 'down';
   };
   Tank.prototype.moveTankLeft = function () {
     if(this.tankPosition.left > battleField.left)
       $(this.element).offset({left: $(this.element).offset().left - this.movementPoints});
+    this.direction = 'left';
   };
   Tank.prototype.moveTankRight = function () {
     if(this.tankPosition.right < battleField.right)
       $(this.element).offset({left: $(this.element).offset().left + this.movementPoints});
+    this.direction = 'right';
   };
 
   ////////- firing bullets -////////////
@@ -217,14 +240,17 @@ $(() => {
     this.updatePosition();
     this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
     $battleField.append(this.bullet.element);
-    this.bullet.fireBullet();
-    //this.bullet.detectCollision();
+    //const direction = this.direction;
+    this.bullet.fireBullet(this.direction);
+    //console.log(direction);
+  };
+
+  Tank.prototype.updateHealth = function (){
+    this.health -= this.bullet.damage;
   };
 
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
-
-
 
   const playerOne = new Tank(battleField.top, battleField.left, 'blue');
   const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50, 'green');
@@ -235,7 +261,6 @@ $(() => {
   function addPlayerTwo() {
     playerTwo.addTank();
   }
-
 
   //to instantiate a new bullet and fire it across the screen
   function createBullet(key) {
