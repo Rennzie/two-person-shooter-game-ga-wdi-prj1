@@ -19,7 +19,6 @@
 
 $(() => {
   const $battleField = $('.battle-field');
-  const $tank = $('.battle-field');
 
   const battleField = {
     left: $battleField.offset().left,
@@ -99,34 +98,6 @@ $(() => {
     $(this.element).remove();
   };
 
-  // Bullet.prototype.addBullet = function (){
-  //   $battleField.append(this.element);
-  // };
-  //
-  // Bullet.prototype.removeBullet = function () {
-  //   $(this.element).remove();
-  // };
-  //
-  // //repeatedly moves a bullet accross the screen
-  // Bullet.prototype.fireBullet = function() {
-  //   //this.Tank.updatePosition();
-  //   this.updatePosition();
-  //   $(this.element).offset({left: $(this.element).offset().left + 10});
-  //   this.updatePosition();
-  //   if(this.bulletPosition.left > battleField.left &&
-  //     this.bulletPosition.right < battleField.right &&
-  //     this.bulletPosition.top > battleField.top &&
-  //     this.bulletPosition.bottom < battleField.bottom &&
-  //     !this.collisionDetected){
-  //     setTimeout( () => {
-  //       this.fireBullet();
-  //     }, this.bulletSpeed);
-  //   } else {
-  //     this.removeBullet();
-  //     return;
-  //   }
-  // };
-
   ///////- COLLISION DETECTION -/////////
   // Bullet.prototype.detectCollision = function() {
   //   if(this.bulletPosition.left > tankTwo.bulletPosition.left &&
@@ -140,13 +111,13 @@ $(() => {
   //   }
   // };
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  ///////////////- BULLET CONSTRUCTOR -////////////////////////
+  ///////////////- BULLET CONSTRUCTOR end -////////////////////////
 
   //////////- TANK CONSTRUCTOR with bullets -////////////////
   ///////////////////////////////////////////////////////////
 
   class Tank{
-    constructor (startTop, startLeft) {
+    constructor (startTop, startLeft, color) {
       this.health = 100;
 
       this.dimensions = {
@@ -159,7 +130,7 @@ $(() => {
 
       this.element.style.cssText = `
       box-sizing: border-box;
-      background-color: green;
+      background-color: ${color};
       border: 1px solid brown;
       position: absolute;
       top: ${startTop}px;
@@ -194,11 +165,19 @@ $(() => {
     switch(direction){
       case 'ArrowUp':
         return this.moveTankUp();
+      case 'w':
+        return this.moveTankUp();
       case 'ArrowDown':
+        return this.moveTankDown();
+      case 's':
         return this.moveTankDown();
       case 'ArrowLeft':
         return this.moveTankLeft();
+      case 'a':
+        return this.moveTankLeft();
       case 'ArrowRight':
+        return this.moveTankRight();
+      case 'd':
         return this.moveTankRight();
     }
   };
@@ -221,44 +200,54 @@ $(() => {
   };
 
   ////////- firing bullets -////////////
-
   Tank.prototype.addBullet = function (){
     this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
     $battleField.append(this.bullet.element);
     this.bullet.fireBullet();
   };
 
+  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
 
 
-  const playerOne = new Tank(battleField.top, battleField.left);
+  const playerOne = new Tank(battleField.top, battleField.left, 'blue');
+  const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50, 'green');
 
   function addPlayerOne() {
-    console.log(battleField.top, battleField.left);
     playerOne.addTank();
+  }
+  function addPlayerTwo() {
+    playerTwo.addTank();
   }
 
 
   //to instantiate a new bullet and fire it across the screen
-  function createBullet() {
-    playerOne.addBullet();
+  function createBullet(key) {
+    if(key === ' '){
+      playerOne.addBullet();
+    }else if (key === 'Shift'){
+      playerTwo.addBullet();
+    }
   }
 
   addPlayerOne();
+  addPlayerTwo();
 
   //////-KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
   function keyIdentifier(e){
-    //console.log(e.originalEvent.key);
-    if(e.originalEvent.key === ' ') createBullet();
+    console.log(e.originalEvent.key);
+    if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
+      createBullet(e.originalEvent.key);
     if(e.originalEvent.key === 'ArrowDown' ||
       e.originalEvent.key === 'ArrowUp' ||
       e.originalEvent.key === 'ArrowLeft' ||
-      e.originalEvent.key === 'ArrowRight' ||
-      e.originalEvent.key === 'a' ||
+      e.originalEvent.key === 'ArrowRight') playerOne.moveTank(e.originalEvent.key);
+    if(e.originalEvent.key === 'a' ||
       e.originalEvent.key === 'd' ||
       e.originalEvent.key === 's' ||
-      e.originalEvent.key === 'w') playerOne.moveTank(e.originalEvent.key);
+      e.originalEvent.key === 'w') playerTwo.moveTank(e.originalEvent.key);
   }
 
   $(window).keydown(keyIdentifier);
