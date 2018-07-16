@@ -1,13 +1,22 @@
 .battle-field{
-  width: 900px;
-  height: 400px;
+  width: 800px;
+  height: 700px;
   border: 1px solid red;
-  margin: 100px auto 0 auto;
+  margin: 25px auto 0 auto;
 }
 
 .health{
-  width: 300px;
-  height: 50px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 50px auto 0 auto;
+
+  width: 900px;
+  progress{
+    height: 50px;
+    // color: red;
+    // background: red;
+  }
 }
 
 .tank-90{
@@ -22,22 +31,3 @@
 .tank-360{
   transform: rotate(360deg);
 }
-
-// .tank{
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   background-image: url('../images/TopDown_soldier_tank_body.png');
-//   background-position: center;
-//   background-repeat: no-repeat;
-//   background-size: contain;
-//   width: 61.18px;
-//   height: 40px;
-//   //transform: rotate(180deg);
-//   img{
-//     //padding-right: 50px;
-//     width: 81.875px;
-//     height: 25px;
-//     z-index: 1;
-//   }
-// }

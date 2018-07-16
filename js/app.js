@@ -1,8 +1,5 @@
 //console.log('this is linked');
 
-
-
-
 ////////////////////////////////////
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
@@ -26,8 +23,8 @@ $(() => {
   class Bullet {
     constructor (tankPositionTop, tankPositionLeft) {
       this.placementPosition = {
-        left: tankPositionLeft + 30.9,
-        top: tankPositionTop + 18
+        left: tankPositionLeft + 30,
+        top: tankPositionTop + 30
       };
 
       this.style = {
@@ -152,8 +149,8 @@ $(() => {
       this.direction = 'right';
 
       this.dimensions = {
-        width: 61.18,
-        height: 40
+        width: 60,
+        height: 60
       };
 
       this.element = document.createElement('div');
@@ -224,10 +221,22 @@ $(() => {
     }
   };
 
+  Tank.prototype.otherPlayer = function() {
+    let otherPlayer = playerTwo;
+    if(this === playerTwo)  otherPlayer = playerOne;
+    return otherPlayer;
+  }
+
   Tank.prototype.moveTankUp = function () {
-    if(this.tankPosition.top - 10 > battleField.top)
-      $(this.element).offset({top: $(this.element).offset().top - this.movementPoints});
-    $(this.element).attr('class', 'tank-90');
+    const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
+    newPos.top -= this.movementPoints;
+    newPos.bottom -= this.movementPoints;
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+      if(this.tankPosition.top > battleField.top) {
+        $(this.element).offset({top: newPos.top});
+      }
+      $(this.element).attr('class', 'tank-90');
+    }
     this.direction = 'up';
   };
   Tank.prototype.moveTankDown = function () {
@@ -266,24 +275,28 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
+  //Prevent tank collisions
+  //  --> feed the name of the tank into its movement function[o]
+  //  --> determine if the tank is within the bound of the opposing tank [o]
+  //    --> an additional global game control function which returns true or false [o]
+  //      --> takes in the obsticals object and name of tank [o]
+  //      --> test to see if tank is outside the obsticals [o]
+  //      --> returns true and calls the move function for the tank if it is [o]
+  //      --> switch statement of elseif to determine the collision, can also control other options when obsticals are added [o]
+  // cases: within battleField, outside of opposing tank
+  //    --> a should have
 
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
   const playerOne = new Tank(battleField.top, battleField.left, 'playerOne', 'blue' );
-  const playerTwo = new Tank(battleField.bottom - 40, battleField.right - 61.8, 'playerTwo', 'red');
+  const playerTwo = new Tank(battleField.bottom - 60, battleField.right - 60, 'playerTwo', 'red');
 
   let playerOneHealth = playerOne.health;
   let playerTwoHealth = playerTwo.health;
 
-  function addPlayerOne() {
-    playerOne.addTank();
-  }
-  function addPlayerTwo() {
-    playerTwo.addTank();
-  }
 
-  //to instantiate a new bullet and fire it across the screen
+  //to fire bullets depending on which key stroke whose pressed
   function createBullet(key) {
     playerOne.updatePosition();
     playerTwo.updatePosition();
@@ -296,9 +309,6 @@ $(() => {
     }
   }
 
-  addPlayerOne();
-  addPlayerTwo();
-
   function checkForWin () {
     if (playerOneHealth === 0){
       window.alert('Player Two Won');
@@ -308,12 +318,63 @@ $(() => {
     }
   }
 
-  const obsticals = [playerOne, playerTwo];
-  console.log(obsticals);
+  function addPlayerOne() {
+    playerOne.addTank();
+  }
+  function addPlayerTwo() {
+    playerTwo.addTank();
+  }
 
+  addPlayerOne();
+  addPlayerTwo();
 
+  function positionsOverlap(obj1, obj2) {
+    return ((obj1.right > obj2.left) && (obj1.left < obj2.right)) &&
+    ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top))
+  }
 
-  //////-KEY DOWN IDENTIFIER -///////
+  // function checkForObsticals (name, keyPress) {
+  //   playerOne.updatePosition();
+  //   playerTwo.updatePosition();
+  //
+  //   if(!positionsOverlap(playerOne.tankPosition, playerTwo.tankPosition)) {
+  //     playerOne.moveTank(keyPress);
+  //  }
+    // if(name === 'playerOne'){
+    //   if((playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
+    //   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
+    //   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
+    //   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom) ||
+    //
+    //   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
+    //   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
+    //   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
+    //   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom) ||
+    //
+    //   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
+    //   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
+    //   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
+    //   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom)||
+    //
+    //   (playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
+    //   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
+    //   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
+    //   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom)){
+    //     return;
+    //   }
+    //   playerOne.moveTank(keyPress);
+    //console.log(name);
+    // }
+//  }
+
+  const obsticals = {
+    battleField: battleField,
+    playerOne: playerOne,
+    playerTwo: playerTwo
+  };
+  //console.log(obsticals);
+
+  //////- KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
   function keyIdentifier(e){
     //console.log(e.originalEvent.key);
