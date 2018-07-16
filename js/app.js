@@ -42,8 +42,8 @@ $(() => {
   class Bullet {
     constructor (tankPositionTop, tankPositionLeft) {
       this.placementPosition = {
-        left: tankPositionLeft + 25,
-        top: tankPositionTop + 25
+        left: tankPositionLeft + 30.9,
+        top: tankPositionTop + 18
       };
 
       this.style = {
@@ -72,7 +72,7 @@ $(() => {
         bottom: this.placementPosition.top + this.style.height
       };
 
-      this.bulletSpeed = 10;
+      this.bulletSpeed = 5;
 
       this.damage = 5;
 
@@ -160,29 +160,37 @@ $(() => {
   //////////- TANK CONSTRUCTOR with bullets -////////////////
   ///////////////////////////////////////////////////////////
   class Tank{
-    constructor (startTop, startLeft, name) {
+    constructor (startTop, startLeft, name, colour) {
       this.health = 100;
 
       this.direction = 'right';
 
       this.dimensions = {
-        width: 75,
-        height: 50
+        width: 61.18,
+        height: 40
       };
 
       this.element = document.createElement('div');
       this.element.classList.add('tank');
 
       this.element.style.cssText = `
-      background-image: url(./styles/images/TopDown_soldier_tank_turrent.png);
-      background-size: contain;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('styles/images/TopDown_soldier_tank_body.png');
+      background-position: center;
       background-repeat: no-repeat;
-      box-sizing: border-box;
+      background-size: contain;
+      border: 1px solid ${colour};
       position: absolute;
       top: ${startTop}px;
       left: ${startLeft}px;
       width: ${this.dimensions.width}px;
       height: ${this.dimensions.height}px;`;
+
+      this.imageStyle = 'style="position: relative; width: 101px; height: 25px; z-index: 1; padding-right: 20px;"';
+
+      this.element.innerHTML = `<img ${this.imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
 
       this.tankPosition = {
         name: name,
@@ -192,7 +200,7 @@ $(() => {
         bottom: startTop + this.dimensions.height
       };
 
-      this.movementPoints = 10;
+      this.movementPoints = 20;
     }
   }
 
@@ -234,21 +242,25 @@ $(() => {
   Tank.prototype.moveTankUp = function () {
     if(this.tankPosition.top - 10 > battleField.top)
       $(this.element).offset({top: $(this.element).offset().top - this.movementPoints});
+    $(this.element).attr('class', 'tank-90');
     this.direction = 'up';
   };
   Tank.prototype.moveTankDown = function () {
     if(this.tankPosition.bottom < battleField.bottom)
       $(this.element).offset({top: $(this.element).offset().top + this.movementPoints});
+    $(this.element).attr('class', 'tank-270');
     this.direction = 'down';
   };
   Tank.prototype.moveTankLeft = function () {
     if(this.tankPosition.left > battleField.left)
       $(this.element).offset({left: $(this.element).offset().left - this.movementPoints});
+    $(this.element).attr('class', 'tank-360');
     this.direction = 'left';
   };
   Tank.prototype.moveTankRight = function () {
     if(this.tankPosition.right < battleField.right)
       $(this.element).offset({left: $(this.element).offset().left + this.movementPoints});
+    $(this.element).attr('class', 'tank-180');
     this.direction = 'right';
   };
 
@@ -269,8 +281,8 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
-  const playerOne = new Tank(battleField.top, battleField.left, 'playerOne' );
-  const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50, 'playerTwo');
+  const playerOne = new Tank(battleField.top, battleField.left, 'playerOne', 'blue' );
+  const playerTwo = new Tank(battleField.bottom - 40, battleField.right - 61.8, 'playerTwo', 'red');
 
   let playerOneHealth = playerOne.health;
   let playerTwoHealth = playerTwo.health;
@@ -297,8 +309,8 @@ $(() => {
     }
   }
 
-  //addPlayerOne();
-  //addPlayerTwo();
+  addPlayerOne();
+  addPlayerTwo();
 
   //////-KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function

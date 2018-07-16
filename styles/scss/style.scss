@@ -13,22 +13,31 @@
 .tank-90{
   transform: rotate(90deg);
 }
-
-.tank{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url('../images/TopDown_soldier_tank_body.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  width: 65px;
-  height: 45px;
-  //transform: rotate(180deg);
-  img{
-    padding-right: 50px;
-    width: auto;
-    height: 25px;
-    z-index: 1;
-  }
+.tank-180{
+  transform: rotate(180deg);
 }
+.tank-270{
+  transform: rotate(270deg);
+}
+.tank-360{
+  transform: rotate(360deg);
+}
+
+// .tank{
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   background-image: url('../images/TopDown_soldier_tank_body.png');
+//   background-position: center;
+//   background-repeat: no-repeat;
+//   background-size: contain;
+//   width: 61.18px;
+//   height: 40px;
+//   //transform: rotate(180deg);
+//   img{
+//     //padding-right: 50px;
+//     width: 81.875px;
+//     height: 25px;
+//     z-index: 1;
+//   }
+// }
