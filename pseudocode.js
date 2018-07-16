@@ -38,6 +38,27 @@
 //  --> this should stop the tank form moving in that direction [X]
 // --> update position of tank at start of the on move function [X]
 
+//Two tank objects
+//  -> Need to contain:
+//  --> Direction of current movement [boolean] [X]
+//  --> health [X]
+//  --> move independantly with different keys [X]
+//  --> update code to build tanks from a constructor [o]
+//    --> add one tank to screen feeding it starting coordinates [X]
+//    --> Move the tank using arrow keys [X]
+//    --> Fire bullets from the tank [X]
+//    --> add a second tank onto the screen [X]
+//    --> move the second tank idependantly [X]
+//  --> must instantiate and fire bullets in the stated direction [X]
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////
 ///////- APPEND BULLET AND REMOVE BULLET FROM BOARD -//////////
 ////////////////////////////////////

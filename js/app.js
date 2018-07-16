@@ -4,23 +4,13 @@
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
 
-//Two tank objects
-//  -> Need to contain:
-//  --> Direction of current movement [boolean] [X]
-//  --> health [X]
-//  --> move independantly with different keys [X]
-//  --> update code to build tanks from a constructor [o]
-//    --> add one tank to screen feeding it starting coordinates [X]
-//    --> Move the tank using arrow keys [X]
-//    --> Fire bullets from the tank [o]
-//    --> add a second tank onto the screen [o]
-//    --> move the second tank idependantly [o]
-//  --> must instantiate and fire bullets in the stated direction [o]
+
 
 $(() => {
   const $battleField = $('.battle-field');
 
   const battleField = {
+    name: 'BattleField',
     left: $battleField.offset().left,
     top: $battleField.offset().top,
     right: $battleField.offset().left + $battleField.width(),
@@ -63,7 +53,7 @@ $(() => {
         bottom: this.placementPosition.top + this.style.height
       };
 
-      this.bulletSpeed = 5;
+      this.bulletSpeed = 50;
 
       this.damage = 5;
 
@@ -115,12 +105,22 @@ $(() => {
     $(this.element).remove();
   };
 
+  Bullet.prototype.reduceLife = function () {
+    //YOU ARE HERE, USE THIS TO REDUCE THE LIFE OF A TANK
+  };
+
   /////- COLLISION DETECTION -/////////
   //  get opponents position [X]
   //  detect the collision on impact [X]
   //  reduce the health of opponents tank. [o]
+  //  --> create an array and push position of tanks as object to that array.[o]
+  //  --> array updating needs to be dynamic [o]
+  //  --> use array to check if bullet has hit any specific target [o]
+  //  --> log the targets name to the console [o]
+  //  --> use this to decrease the life of the hit tank [o]
   //  log the reduction to the consol. [o]
   //  continously retrieve the opposite tanks position [X]
+
 
   Bullet.prototype.detectCollision = function(left, right, top, bottom) {
     //console.log(`logged at collisionDetected ${typeof(left)}, ${right}, ${top}, ${bottom},`);
@@ -146,8 +146,10 @@ $(() => {
   //////////- TANK CONSTRUCTOR with bullets -////////////////
   ///////////////////////////////////////////////////////////
 
+
+  //how can I get the name of a created constructor to use as an ID?
   class Tank{
-    constructor (startTop, startLeft) {
+    constructor (startTop, startLeft, name) {
       this.health = 100;
 
       this.direction = 'right';
@@ -172,13 +174,14 @@ $(() => {
       height: ${this.dimensions.height}px;`;
 
       this.tankPosition = {
+        name: name,
         left: startLeft,
         top: startTop,
         right: startLeft + this.dimensions.width,
         bottom: startTop + this.dimensions.height
       };
 
-      this.movementPoints = 25;
+      this.movementPoints = 10;
     }
   }
 
@@ -195,6 +198,8 @@ $(() => {
 
   Tank.prototype.moveTank = function (direction){
     this.updatePosition();
+    console.log(targets);
+    console.log(this.tankPosition);
     switch(direction){
       case 'ArrowUp':
         return this.moveTankUp();
@@ -253,8 +258,11 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
-  const playerOne = new Tank(battleField.top, battleField.left);
+  const playerOne = new Tank(battleField.top, battleField.left, "myname");
   const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50);
+
+  // const playerOneHealth = playerOne.health;
+  // const playerTwoHealth = playerTwo.health;
 
   function addPlayerOne() {
     playerOne.addTank();
@@ -263,16 +271,20 @@ $(() => {
     playerTwo.addTank();
   }
 
+  const targets = [playerOne.tankPosition, playerTwo.tankPosition];
+
+  console.log(targets);
+
   //to instantiate a new bullet and fire it across the screen
   function createBullet(key) {
     playerOne.updatePosition();
     playerTwo.updatePosition();
     if(key === ' '){
       playerOne.addBullet();
-      playerOne.bullet.detectCollision(playerTwo.tankPosition.left, playerTwo.tankPosition.right, playerTwo.tankPosition.top, playerTwo.tankPosition.bottom );
+      playerOne.bullet.detectCollision(playerTwo);
     }else if (key === 'Shift'){
       playerTwo.addBullet();
-      playerTwo.bullet.detectCollision(playerOne.tankPosition.left, playerOne.tankPosition.right, playerOne.tankPosition.top, playerOne.tankPosition.bottom );
+      playerTwo.bullet.detectCollision(playerOne);
     }
   }
 
