@@ -3,6 +3,20 @@
   height: 700px;
   border: 1px solid red;
   margin: 25px auto 0 auto; }
+  .battle-field .water {
+    position: absolute;
+    top: 450px;
+    left: 300px;
+    width: 100px;
+    height: 200px;
+    background-color: blue; }
+  .battle-field .mountain {
+    position: absolute;
+    top: 250px;
+    left: 600px;
+    width: 100px;
+    height: 100px;
+    background-color: brown; }
 
 .health {
   display: flex;

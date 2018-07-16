@@ -9,9 +9,32 @@ $(() => {
   const $battleField = $('.battle-field');
   const $playerOneHealth = $('#playerOneHealth');
   const $playerTwoHealth = $('#playerTwoHealth');
+  const $water = $('.water');
+  const $mountain = $('.mountain');
+
+  const water = {
+    name: 'Water',
+    position: {
+      left: $water.offset().left,
+      top: $water.offset().top,
+      right: $water.offset().left + $water.width(),
+      bottom: $water.offset().top + $water.height()
+    }
+  };
+
+  const mountain = {
+    name: 'mountain',
+    position: {
+      left: $mountain.offset().left,
+      top: $mountain.offset().top,
+      right: $mountain.offset().left + $mountain.width(),
+      bottom: $mountain.offset().top + $mountain.height()
+    }
+  };
 
   const battleField = {
     name: 'BattleField',
+
     left: $battleField.offset().left,
     top: $battleField.offset().top,
     right: $battleField.offset().left + $battleField.width(),
@@ -345,6 +368,13 @@ $(() => {
     ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top));
   }
 
+  function checkForObsticals (tankObj) {
+    if(positionsOverlap(tankObj.tankPosition, water.position)){
+      console.log('tank drove into water');
+      window.alert(`Tank ${tankObj.name} drove into the water! GAME OVER!!!`);
+    }
+  }
+
 
   // const obsticals = {
   //   battleField: battleField,
@@ -362,11 +392,18 @@ $(() => {
     if(e.originalEvent.key === 'ArrowDown' ||
       e.originalEvent.key === 'ArrowUp' ||
       e.originalEvent.key === 'ArrowLeft' ||
-      e.originalEvent.key === 'ArrowRight') playerOne.moveTank(e.originalEvent.key);
+      e.originalEvent.key === 'ArrowRight'){
+      checkForObsticals(playerOne);
+      playerOne.moveTank(e.originalEvent.key);
+
+    }
     if(e.originalEvent.key === 'a' ||
       e.originalEvent.key === 'd' ||
       e.originalEvent.key === 's' ||
-      e.originalEvent.key === 'w') playerTwo.moveTank(e.originalEvent.key);
+      e.originalEvent.key === 'w'){
+      checkForObsticals(playerTwo);
+      playerTwo.moveTank(e.originalEvent.key);
+    }
   }
 
 
