@@ -13,6 +13,16 @@
 //____________________________________
 // const ;
 
+//  get opponents position [X]
+//  detect the collision on impact [X]
+//  reduce the health of opponents tank. [X]
+//  --> create an array and push position of tanks as object to that array.[o]
+//  --> array updating needs to be dynamic [o]
+//  --> use array to check if bullet has hit any specific target [o]
+//  --> log the targets name to the console [o]
+//  --> use this to decrease the life of the hit tank [o]
+//  log the reduction to the consol. [o]
+//  continously retrieve the opposite tanks position [X]
 
 
 

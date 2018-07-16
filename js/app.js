@@ -1,5 +1,8 @@
 //console.log('this is linked');
 
+
+
+
 ////////////////////////////////////
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
@@ -7,7 +10,23 @@
 
 
 $(() => {
+  ////////////////////////////////////////
+  ///////- GLOBAL GAME CONTROL -//////////
+  ////////////////////////////////////////
+
+  function checkForWin () {
+    if (playerOneHealth === 0){
+      window.alert('Player Two Won');
+    }
+    if (playerTwoHealth === 0){
+      window.alert('Player One Won');
+    }
+  }
+
+
   const $battleField = $('.battle-field');
+  const $playerOneHealth = $('#playerOneHealth');
+  const $playerTwoHealth = $('#playerTwoHealth');
 
   const battleField = {
     name: 'BattleField',
@@ -53,7 +72,7 @@ $(() => {
         bottom: this.placementPosition.top + this.style.height
       };
 
-      this.bulletSpeed = 50;
+      this.bulletSpeed = 10;
 
       this.damage = 5;
 
@@ -108,27 +127,14 @@ $(() => {
   Bullet.prototype.reduceLife = function (target) {
     if(target === 'playerOne'){
       playerOneHealth -= this.damage;
+      $playerOneHealth.attr('value', playerOneHealth);
     }else if (target === 'playerTwo'){
       playerTwoHealth -= this.damage;
+      $playerTwoHealth.attr('value', playerTwoHealth);
     }
-
-    console.log('PlayerOne Health: ' + playerOneHealth);
-    console.log('PlayerTwo Health: ' + playerTwoHealth);
   };
 
   /////- COLLISION DETECTION -/////////
-  //  get opponents position [X]
-  //  detect the collision on impact [X]
-  //  reduce the health of opponents tank. [o]
-  //  --> create an array and push position of tanks as object to that array.[o]
-  //  --> array updating needs to be dynamic [o]
-  //  --> use array to check if bullet has hit any specific target [o]
-  //  --> log the targets name to the console [o]
-  //  --> use this to decrease the life of the hit tank [o]
-  //  log the reduction to the consol. [o]
-  //  continously retrieve the opposite tanks position [X]
-
-
   Bullet.prototype.detectCollision = function(targetObj) {
     //console.log('Logged at detectCollision():', targetObj.tankPosition);
     if(this.bulletPosition.left > targetObj.tankPosition.left &&
@@ -140,7 +146,7 @@ $(() => {
       console.log('Hit' + targetObj.tankPosition.name + 'Detected: ' + this.collisionDetected);
       this.removeBullet();
       this.reduceLife(targetObj.tankPosition.name);
-      return true;
+      checkForWin();
     }else{
       setTimeout(() => {
         this.detectCollision(targetObj);
@@ -153,9 +159,6 @@ $(() => {
 
   //////////- TANK CONSTRUCTOR with bullets -////////////////
   ///////////////////////////////////////////////////////////
-
-
-  //how can I get the name of a created constructor to use as an ID?
   class Tank{
     constructor (startTop, startLeft, name) {
       this.health = 100;
@@ -294,8 +297,8 @@ $(() => {
     }
   }
 
-  addPlayerOne();
-  addPlayerTwo();
+  //addPlayerOne();
+  //addPlayerTwo();
 
   //////-KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
