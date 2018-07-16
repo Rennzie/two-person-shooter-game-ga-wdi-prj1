@@ -105,8 +105,15 @@ $(() => {
     $(this.element).remove();
   };
 
-  Bullet.prototype.reduceLife = function () {
-    //YOU ARE HERE, USE THIS TO REDUCE THE LIFE OF A TANK
+  Bullet.prototype.reduceLife = function (target) {
+    if(target === 'playerOne'){
+      playerOneHealth -= this.damage;
+    }else if (target === 'playerTwo'){
+      playerTwoHealth -= this.damage;
+    }
+
+    console.log('PlayerOne Health: ' + playerOneHealth);
+    console.log('PlayerTwo Health: ' + playerTwoHealth);
   };
 
   /////- COLLISION DETECTION -/////////
@@ -122,20 +129,21 @@ $(() => {
   //  continously retrieve the opposite tanks position [X]
 
 
-  Bullet.prototype.detectCollision = function(left, right, top, bottom) {
-    //console.log(`logged at collisionDetected ${typeof(left)}, ${right}, ${top}, ${bottom},`);
-    if(this.bulletPosition.left > left &&
-      this.bulletPosition.right < right &&
-      this.bulletPosition.top > top &&
-      this.bulletPosition.bottom < bottom ){
+  Bullet.prototype.detectCollision = function(targetObj) {
+    //console.log('Logged at detectCollision():', targetObj.tankPosition);
+    if(this.bulletPosition.left > targetObj.tankPosition.left &&
+      this.bulletPosition.right < targetObj.tankPosition.right &&
+      this.bulletPosition.top > targetObj.tankPosition.top &&
+      this.bulletPosition.bottom < targetObj.tankPosition.bottom ){
 
       this.collisionDetected = true;
-      console.log('Hit Detected: ' + this.collisionDetected);
+      console.log('Hit' + targetObj.tankPosition.name + 'Detected: ' + this.collisionDetected);
       this.removeBullet();
+      this.reduceLife(targetObj.tankPosition.name);
       return true;
     }else{
       setTimeout(() => {
-        this.detectCollision(left, right, top, bottom);
+        this.detectCollision(targetObj);
       }, this.bulletSpeed);
 
     }
@@ -198,8 +206,8 @@ $(() => {
 
   Tank.prototype.moveTank = function (direction){
     this.updatePosition();
-    console.log(targets);
-    console.log(this.tankPosition);
+    //console.log(targets);
+    //console.log(this.tankPosition);
     switch(direction){
       case 'ArrowUp':
         return this.moveTankUp();
@@ -258,11 +266,11 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
-  const playerOne = new Tank(battleField.top, battleField.left, "myname");
-  const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50);
+  const playerOne = new Tank(battleField.top, battleField.left, 'playerOne' );
+  const playerTwo = new Tank(battleField.bottom - 50, battleField.right - 50, 'playerTwo');
 
-  // const playerOneHealth = playerOne.health;
-  // const playerTwoHealth = playerTwo.health;
+  let playerOneHealth = playerOne.health;
+  let playerTwoHealth = playerTwo.health;
 
   function addPlayerOne() {
     playerOne.addTank();
@@ -271,9 +279,7 @@ $(() => {
     playerTwo.addTank();
   }
 
-  const targets = [playerOne.tankPosition, playerTwo.tankPosition];
-
-  console.log(targets);
+  //const targets = [playerOne.tankPosition, playerTwo.tankPosition];
 
   //to instantiate a new bullet and fire it across the screen
   function createBullet(key) {
