@@ -225,35 +225,58 @@ $(() => {
     let otherPlayer = playerTwo;
     if(this === playerTwo)  otherPlayer = playerOne;
     return otherPlayer;
-  }
+  };
 
   Tank.prototype.moveTankUp = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
+
     newPos.top -= this.movementPoints;
     newPos.bottom -= this.movementPoints;
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
       if(this.tankPosition.top > battleField.top) {
         $(this.element).offset({top: newPos.top});
       }
-      $(this.element).attr('class', 'tank-90');
     }
+    $(this.element).attr('class', 'tank-90');
     this.direction = 'up';
   };
+
   Tank.prototype.moveTankDown = function () {
-    if(this.tankPosition.bottom < battleField.bottom)
-      $(this.element).offset({top: $(this.element).offset().top + this.movementPoints});
+    const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
+    newPos.top += this.movementPoints;
+    newPos.bottom += this.movementPoints;
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+      if(this.tankPosition.bottom < battleField.bottom){
+        $(this.element).offset({top: newPos.top});
+      }
+    }
     $(this.element).attr('class', 'tank-270');
     this.direction = 'down';
   };
+
   Tank.prototype.moveTankLeft = function () {
-    if(this.tankPosition.left > battleField.left)
-      $(this.element).offset({left: $(this.element).offset().left - this.movementPoints});
+    const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
+    newPos.left -= this.movementPoints;
+    newPos.right -= this.movementPoints;
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+      if(this.tankPosition.left > battleField.left){
+        $(this.element).offset({left: newPos.left});
+      }
+    }
+
     $(this.element).attr('class', 'tank-360');
     this.direction = 'left';
   };
+
   Tank.prototype.moveTankRight = function () {
-    if(this.tankPosition.right < battleField.right)
-      $(this.element).offset({left: $(this.element).offset().left + this.movementPoints});
+    const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
+    newPos.left += this.movementPoints;
+    newPos.right += this.movementPoints;
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+      if(this.tankPosition.right < battleField.right){
+        $(this.element).offset({left: newPos.left});
+      }
+    }
     $(this.element).attr('class', 'tank-180');
     this.direction = 'right';
   };
@@ -275,17 +298,6 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
-  //Prevent tank collisions
-  //  --> feed the name of the tank into its movement function[o]
-  //  --> determine if the tank is within the bound of the opposing tank [o]
-  //    --> an additional global game control function which returns true or false [o]
-  //      --> takes in the obsticals object and name of tank [o]
-  //      --> test to see if tank is outside the obsticals [o]
-  //      --> returns true and calls the move function for the tank if it is [o]
-  //      --> switch statement of elseif to determine the collision, can also control other options when obsticals are added [o]
-  // cases: within battleField, outside of opposing tank
-  //    --> a should have
-
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
@@ -296,7 +308,7 @@ $(() => {
   let playerTwoHealth = playerTwo.health;
 
 
-  //to fire bullets depending on which key stroke whose pressed
+  //to fire bullets depending on which key stroke was pressed
   function createBullet(key) {
     playerOne.updatePosition();
     playerTwo.updatePosition();
@@ -330,48 +342,15 @@ $(() => {
 
   function positionsOverlap(obj1, obj2) {
     return ((obj1.right > obj2.left) && (obj1.left < obj2.right)) &&
-    ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top))
+    ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top));
   }
 
-  // function checkForObsticals (name, keyPress) {
-  //   playerOne.updatePosition();
-  //   playerTwo.updatePosition();
-  //
-  //   if(!positionsOverlap(playerOne.tankPosition, playerTwo.tankPosition)) {
-  //     playerOne.moveTank(keyPress);
-  //  }
-    // if(name === 'playerOne'){
-    //   if((playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
-    //   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
-    //   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
-    //   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom) ||
-    //
-    //   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
-    //   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
-    //   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
-    //   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom) ||
-    //
-    //   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
-    //   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
-    //   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
-    //   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom)||
-    //
-    //   (playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
-    //   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
-    //   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
-    //   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom)){
-    //     return;
-    //   }
-    //   playerOne.moveTank(keyPress);
-    //console.log(name);
-    // }
-//  }
 
-  const obsticals = {
-    battleField: battleField,
-    playerOne: playerOne,
-    playerTwo: playerTwo
-  };
+  // const obsticals = {
+  //   battleField: battleField,
+  //   playerOne: playerOne,
+  //   playerTwo: playerTwo
+  // };
   //console.log(obsticals);
 
   //////- KEY DOWN IDENTIFIER -///////
@@ -547,3 +526,40 @@ $(() => {
 //   itemObj.currentPosition.bottom = itemDom.offset().top + itemDom.height();
 //   //targetCollision();
 // }
+
+
+
+/////////- FAILED METHOD TO TEST FOR COLLISION -//////////////
+// function checkForObsticals (name, keyPress) {
+//   playerOne.updatePosition();
+//   playerTwo.updatePosition();
+//
+//   if(!positionsOverlap(playerOne.tankPosition, playerTwo.tankPosition)) {
+//     playerOne.moveTank(keyPress);
+//  }
+// if(name === 'playerOne'){
+//   if((playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
+//   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
+//   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
+//   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom) ||
+//
+//   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
+//   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
+//   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
+//   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom) ||
+//
+//   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
+//   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
+//   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
+//   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom)||
+//
+//   (playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
+//   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
+//   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
+//   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom)){
+//     return;
+//   }
+//   playerOne.moveTank(keyPress);
+//console.log(name);
+// }
+//  }
