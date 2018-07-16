@@ -7,22 +7,7 @@
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
 
-
-
 $(() => {
-  ////////////////////////////////////////
-  ///////- GLOBAL GAME CONTROL -//////////
-  ////////////////////////////////////////
-
-  function checkForWin () {
-    if (playerOneHealth === 0){
-      window.alert('Player Two Won');
-    }
-    if (playerTwoHealth === 0){
-      window.alert('Player One Won');
-    }
-  }
-
 
   const $battleField = $('.battle-field');
   const $playerOneHealth = $('#playerOneHealth');
@@ -35,7 +20,6 @@ $(() => {
     right: $battleField.offset().left + $battleField.width(),
     bottom: $battleField.offset().top + $battleField.height()
   };
-
 
   ///////////////- BULLET CONSTRUCTOR -////////////////////////
   /////////////////////////////////////////////////////////////
@@ -143,9 +127,9 @@ $(() => {
       this.bulletPosition.bottom < targetObj.tankPosition.bottom ){
 
       this.collisionDetected = true;
-      console.log('Hit' + targetObj.tankPosition.name + 'Detected: ' + this.collisionDetected);
+      console.log('Hit on ' + targetObj.name + ' detected: ' + this.collisionDetected);
       this.removeBullet();
-      this.reduceLife(targetObj.tankPosition.name);
+      this.reduceLife(targetObj.name);
       checkForWin();
     }else{
       setTimeout(() => {
@@ -161,6 +145,8 @@ $(() => {
   ///////////////////////////////////////////////////////////
   class Tank{
     constructor (startTop, startLeft, name, colour) {
+      this.name = name;
+
       this.health = 100;
 
       this.direction = 'right';
@@ -193,7 +179,6 @@ $(() => {
       this.element.innerHTML = `<img ${this.imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
 
       this.tankPosition = {
-        name: name,
         left: startLeft,
         top: startTop,
         right: startLeft + this.dimensions.width,
@@ -281,6 +266,10 @@ $(() => {
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
 
+
+  ////////////////////////////////////////
+  ///////- GLOBAL GAME CONTROL -//////////
+  ////////////////////////////////////////
   const playerOne = new Tank(battleField.top, battleField.left, 'playerOne', 'blue' );
   const playerTwo = new Tank(battleField.bottom - 40, battleField.right - 61.8, 'playerTwo', 'red');
 
@@ -293,8 +282,6 @@ $(() => {
   function addPlayerTwo() {
     playerTwo.addTank();
   }
-
-  //const targets = [playerOne.tankPosition, playerTwo.tankPosition];
 
   //to instantiate a new bullet and fire it across the screen
   function createBullet(key) {
@@ -312,6 +299,20 @@ $(() => {
   addPlayerOne();
   addPlayerTwo();
 
+  function checkForWin () {
+    if (playerOneHealth === 0){
+      window.alert('Player Two Won');
+    }
+    if (playerTwoHealth === 0){
+      window.alert('Player One Won');
+    }
+  }
+
+  const obsticals = [playerOne, playerTwo];
+  console.log(obsticals);
+
+
+
   //////-KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
   function keyIdentifier(e){
@@ -327,6 +328,7 @@ $(() => {
       e.originalEvent.key === 's' ||
       e.originalEvent.key === 'w') playerTwo.moveTank(e.originalEvent.key);
   }
+
 
   $(window).keydown(keyIdentifier);
 });
