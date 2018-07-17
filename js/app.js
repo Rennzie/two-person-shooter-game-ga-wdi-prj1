@@ -10,6 +10,7 @@ $(() => {
   const $playerOneHealth = $('#playerOneHealth');
   const $playerTwoHealth = $('#playerTwoHealth');
   const $water = $('.water');
+  const $marsh = $('.marsh');
   const $mountain = $('.mountain');
 
   const water = {
@@ -19,6 +20,16 @@ $(() => {
       top: $water.offset().top,
       right: $water.offset().left + $water.width(),
       bottom: $water.offset().top + $water.height()
+    }
+  };
+
+  const marsh = {
+    name: 'marsh',
+    position: {
+      left: $marsh.offset().left,
+      top: $marsh.offset().top,
+      right: $marsh.offset().left + $marsh.width(),
+      bottom: $marsh.offset().top + $marsh.height()
     }
   };
 
@@ -141,11 +152,7 @@ $(() => {
   /////- COLLISION DETECTION -/////////
   Bullet.prototype.detectCollision = function(targetObj) {
     //console.log('Logged at detectCollision():', targetObj.tankPosition);
-    if(this.bulletPosition.left > targetObj.tankPosition.left &&
-      this.bulletPosition.right < targetObj.tankPosition.right &&
-      this.bulletPosition.top > targetObj.tankPosition.top &&
-      this.bulletPosition.bottom < targetObj.tankPosition.bottom ){
-
+    if(positionsOverlap(this.bulletPosition, targetObj.tankPosition) ){
       this.collisionDetected = true;
       console.log('Hit on ' + targetObj.name + ' detected: ' + this.collisionDetected);
       this.removeBullet();
@@ -252,10 +259,9 @@ $(() => {
 
   Tank.prototype.moveTankUp = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
-
     newPos.top -= this.movementPoints;
     newPos.bottom -= this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position) ) {
       if(this.tankPosition.top > battleField.top) {
         $(this.element).offset({top: newPos.top});
       }
@@ -268,7 +274,7 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.top += this.movementPoints;
     newPos.bottom += this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position)) {
       if(this.tankPosition.bottom < battleField.bottom){
         $(this.element).offset({top: newPos.top});
       }
@@ -281,12 +287,11 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.left -= this.movementPoints;
     newPos.right -= this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position)) {
       if(this.tankPosition.left > battleField.left){
         $(this.element).offset({left: newPos.left});
       }
     }
-
     $(this.element).attr('class', 'tank-360');
     this.direction = 'left';
   };
@@ -295,7 +300,7 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.left += this.movementPoints;
     newPos.right += this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition)) {
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position)) {
       if(this.tankPosition.right < battleField.right){
         $(this.element).offset({left: newPos.left});
       }
@@ -363,15 +368,30 @@ $(() => {
   addPlayerOne();
   addPlayerTwo();
 
+
+  //////- CHECKS FOR COLLISION -////////
   function positionsOverlap(obj1, obj2) {
     return ((obj1.right > obj2.left) && (obj1.left < obj2.right)) &&
     ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top));
   }
 
-  function checkForObsticals (tankObj) {
+
+  //checks water and marsh first then passes to the Tank move methods
+  function checkForObsticals (tankObj, keyPress) {
     if(positionsOverlap(tankObj.tankPosition, water.position)){
       console.log('tank drove into water');
       window.alert(`Tank ${tankObj.name} drove into the water! GAME OVER!!!`);
+      tankObj.moveTank(keyPress);
+    }else if(positionsOverlap(tankObj.tankPosition, marsh.position)){
+      console.log(`Tank ${tankObj.name} drove into a marshland`);
+      setTimeout(function () {
+        tankObj.moveTank(keyPress);
+      }, 1000);
+    }else if(positionsOverlap(tankObj.tankPosition, mountain.position)){
+      console.log(`Tank ${tankObj.name} drove into a mountain`);
+      tankObj.moveTank(keyPress);
+    }else{
+      tankObj.moveTank(keyPress);
     }
   }
 
@@ -393,16 +413,13 @@ $(() => {
       e.originalEvent.key === 'ArrowUp' ||
       e.originalEvent.key === 'ArrowLeft' ||
       e.originalEvent.key === 'ArrowRight'){
-      checkForObsticals(playerOne);
-      playerOne.moveTank(e.originalEvent.key);
-
+      checkForObsticals(playerOne, e.originalEvent.key);
     }
     if(e.originalEvent.key === 'a' ||
       e.originalEvent.key === 'd' ||
       e.originalEvent.key === 's' ||
       e.originalEvent.key === 'w'){
-      checkForObsticals(playerTwo);
-      playerTwo.moveTank(e.originalEvent.key);
+      checkForObsticals(playerTwo, e.originalEvent.key);
     }
   }
 
