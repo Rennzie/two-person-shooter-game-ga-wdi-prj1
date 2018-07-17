@@ -10,6 +10,18 @@ $(() => {
   //const $battleField = $('.battle-field');
   const $playerOneHealth = $('#playerOneHealth');
   const $playerTwoHealth = $('#playerTwoHealth');
+
+  let bullets = [];
+  let gameItems = [];
+
+  function getGameItems(itemType) {
+    return gameItems.filter(item => item.type === itemType);
+  }
+
+  function getPlayer(number) {
+    return gameItems.filter(item => item.name === `Player ${number}`)[0].object;
+  }
+
   // const $water = $('.water');
   // const $marsh = $('.marsh');
   // const $mountain = $('.mountain');
@@ -78,11 +90,11 @@ $(() => {
       },
 
       water: {
-        name: 'Mountain',
+        name: 'Water',
 
         style: `
           position: absolute;
-          top: 200px;
+          top: 150px;
           left: 600px;
           width: 100px;
           height: 100px;
@@ -105,13 +117,13 @@ $(() => {
   battleField.style.cssText = battleFieldObj.style;
   $body.append(battleField);
 
-  console.log(battleField);
+  //console.log(battleField);
 
   const battleFieldPos = {
-    left: battleField.offsetLeft,
-    top: battleField.offsetTop,
-    right: battleField.offsetLeft + battleFieldObj.dimensions.width,
-    bottom: battleField.offsetTop + battleFieldObj.dimensions.height
+    left: 0,
+    top: 0,
+    right: battleFieldObj.dimensions.width,
+    bottom: battleFieldObj.dimensions.height
   };
 
   const mountain = document.createElement('div');
@@ -138,23 +150,124 @@ $(() => {
     bottom: water.offsetTop + battleFieldObj.obsticals.water.dimensions.height
   };
 
+  class gameItem {
+    constructor(top, left, width, height, type, domElement, movementSpeed, direction) {
+      this.top = top;
+      this.left = left;
+      this.type = type;
+      this.width = width;
+      this.height = height;
+      this.domElement = domElement;
+      this.movementSpeed = movementSpeed;
+      this.direction = direction;
+
+      // Draw the DOM element
+      battleField.appendChild(domElement);
+      //orientate the dom element by direction
+      if(direction){
+        domElement.classList.add(direction);
+      }
+
+    }
+
+    drawDomElement() {
+      $(this.domElement).css('top', this.top);
+      $(this.domElement).css('left', this.left);
+    }
+
+
+
+    // collidesWith(position){
+    //   const collides = [];
+    //   // 1. Checks everything in the global gameItems array
+    //   // 2. Pushes anything that collides into the collides array
+    //   return collides;
+    // }
+
+    // doesNotCollide(position) {
+    //   return collidesWith(position).length === 0;
+    // }
+
+    move(direction) {
+      // 1. Calculate the new position, depending on the direction[X]
+      // 2. Is the new position on the board! (given this.width etc.)
+      // 3. Does the position overlap with anything else on the board?
+      //    (you can use the global gameItems array and my function called
+      //    objectOverlapsObjects)
+      // 4. If it DOESN'T, update this.top and this.left.
+      const newPosition = {
+        left: this.left,
+        top: this.top
+      };
+
+      const speed = this.movementSpeed;
+
+      switch(direction){
+        case 'left':
+          newPosition.left -= speed;
+          break;
+        case 'right':
+          newPosition.left += speed;
+          break;
+        case 'up':
+          newPosition.top -= speed;
+          break;
+        case 'down':
+          newPosition.top += speed;
+          break;
+      }
+
+      if(!positionIsOnBoard(newPosition.top, newPosition.left, this.width, this.height)){
+        console.log('new position not on board', newPosition);
+        return false;
+      }
+
+      if(objectOverlapsObjects(this, gameItems)){
+        console.log('new position overlaps another object', newPosition);
+        return false;
+      }
+
+      console.log('Moving to', newPosition);
+
+      this.left = newPosition.left;
+      this.top = newPosition.top;
+      this.domElement.classList.add(direction);
+    }
+  }
 
   ///////////////- BULLET CONSTRUCTOR -////////////////////////
   /////////////////////////////////////////////////////////////
-  class Bullet {
+  class Bullet extends gameItem {
     constructor (tankPositionTop, tankPositionLeft) {
-      this.placementPosition = {
-        left: tankPositionLeft + 30,
-        top: tankPositionTop + 30
-      };
+      // this.placementPosition = {
+      //   left: tankPositionLeft + 30,
+      //   top: tankPositionTop + 30
+      // };
 
       this.style = {
         width: 5,
         height: 5
       };
-
       this.element = document.createElement('div');
       this.element.classList.add('bullet');
+
+      // TODO: This speed is actually set elsewhere!
+      const speed = 10;
+
+      super(tankPositionTop,
+        tankPositionLeft,
+        this.style.width,
+        this.style.height,
+        'bullet',
+        speed,
+      )
+
+      this.bulletPosition = {
+        left: tankPositionLeft + 30,
+        top: tankPositionTop + 30,
+        right: 30,//$(this.element).offset().left + this.style.width,
+        bottom: 30//this.top //+ this.style.height
+      };
 
       this.element.style.cssText = `
       margin: 2px;
@@ -162,60 +275,58 @@ $(() => {
       border: 1px solid black;
       position: absolute;
       background-color: red;
-      top: ${this.placementPosition.top}px;
-      left: ${this.placementPosition.left}px;
+      top: ${this.bulletPosition.top}px;
+      left: ${this.bulletPosition.left}px;
       width: ${this.style.width}px;
       height: ${this.style.height}px;
       border-radius: 100%;`;
 
-      this.bulletPosition = {
-        left: this.placementPosition.left,
-        top: this.placementPosition.top,
-        right: this.placementPosition.left + this.style.width,
-        bottom: this.placementPosition.top + this.style.height
-      };
 
-      this.bulletSpeed = 5;
+      this.bulletSpeed = 100;
 
       this.damage = 5;
 
       this.collisionDetected = false;
+
     }
   }
 
   //refreshes the current xy coords of a bullet
-  Bullet.prototype.updatePosition = function (){
-    this.bulletPosition.left = $(this.element).offset().left;
-    this.bulletPosition.top = $(this.element).offset().top;
-    this.bulletPosition.right = $(this.element).offset().left + this.style.width;
-    this.bulletPosition.bottom = $(this.element).offset().top + this.style.height;
-    //this.detectCollision();
-  };
+  // Bullet.prototype.updatePosition = function (){
+  //   this.bulletPosition.left = $(this.element).offset().left;
+  //   this.bulletPosition.top = $(this.element).offset().top;
+  //   this.bulletPosition.right = $(this.element).offset().left + this.style.width;
+  //   this.bulletPosition.bottom = $(this.element).offset().top + this.style.height;
+  //   //this.detectCollision();
+  // };
 
   //repeatedly moves a bullet accross the screen
   Bullet.prototype.fireBullet = function(direction) {
     //console.log(direction);
     switch(direction){
       case 'right':
-        $(this.element).offset({left: $(this.element).offset().left + 10});
+        this.bulletPosition.left += 10;
+        this.bulletPosition.right += 10;
+        //$(this.element).offset({left: $(this.element).offset().left + 10});
         break;
       case 'left':
-        $(this.element).offset({left: $(this.element).offset().left - 10});
+        this.bulletPosition.left -= 10;
+        this.bulletPosition.right -= 10;
+        //$(this.element).offset({left: $(this.element).offset().left - 10});
         break;
       case 'up':
-        $(this.element).offset({top: $(this.element).offset().top - 10});
+        this.bulletPosition.top -= 10;
+        this.bulletPosition.bottom -= 10;
+        //$(this.element).offset({top: $(this.element).offset().top - 10});
         break;
       case 'down':
-        $(this.element).offset({top: $(this.element).offset().top + 10});
+        this.bulletPosition.top += 10;
+        this.bulletPosition.bottom += 10;
+        //$(this.element).offset({top: $(this.element).offset().top + 10});
         break;
     }
-
-    this.updatePosition();
-    //this.detectCollision(target);
-    if(this.bulletPosition.left > battleFieldPos.left &&
-      this.bulletPosition.right < battleFieldPos.right &&
-      this.bulletPosition.top > battleFieldPos.top &&
-      this.bulletPosition.bottom < battleFieldPos.bottom ){
+    if(positionsOverlap(this.bulletPosition, battleFieldPos)){
+      //console.log('going to recursive fireBullet call');
       setTimeout( () => {
         this.fireBullet(direction);
       }, this.bulletSpeed);
@@ -225,13 +336,17 @@ $(() => {
     }
   };
 
-  Bullet.prototype.updateDomPosition  = function() {
-    $(this.element).offset({top: this.tankPosition.top});
-    $(this.element).offset({left: this.tankPosition.left});
-  };
+  // this.bulletPosition.left > battleFieldPos.left &&
+  //   this.bulletPosition.right < battleFieldPos.right &&
+  //   this.bulletPosition.top > battleFieldPos.top &&
+  //   this.bulletPosition.bottom < battleFieldPos.bottom
+
   ///UPDATING THE BULLETS METHOD FOR UPDATING THE DOM!!!
   Bullet.prototype.removeBullet = function () {
+    // Remove bullet from DOM
     $(this.element).remove();
+    // Remove bullet from the bullets array
+    bullets = bullets.filter(bullet => bullet !== this);
   };
 
   Bullet.prototype.reduceLife = function (target) {
@@ -249,12 +364,12 @@ $(() => {
     //console.log('Logged at detectCollision():', targetObj.tankPosition);
     if(positionsOverlap(this.bulletPosition, targetObj.tankPosition) ){
       this.collisionDetected = true;
-      console.log('Hit on ' + targetObj.name + ' detected: ' + this.collisionDetected);
+      //console.log('Hit on ' + targetObj.name + ' detected: ' + this.collisionDetected);
       this.removeBullet();
       this.reduceLife(targetObj.name);
       checkForWin();
-    }else if (positionsOverlap(this.bulletPosition, mountain.position)) {
-      console.log('Hit on ' + mountain.name + ' detected: ' + this.collisionDetected);
+    }else if (positionsOverlap(this.bulletPosition, mountainPos)) {
+      //console.log('Hit on ' + mountain.name + ' detected: ' + this.collisionDetected);
       this.removeBullet();
     }else{
       setTimeout(() => {
@@ -268,23 +383,16 @@ $(() => {
 
   //////////- TANK CONSTRUCTOR with bullets -////////////////
   ///////////////////////////////////////////////////////////
-  class Tank{
-    constructor (startTop, startLeft, name, colour) {
-      this.name = name;
+  class Tank extends gameItem{
+    constructor (startTop, startLeft, name, colour, direction) {
+      const width = 60;
+      const height = 60;
 
-      this.health = 100;
 
-      this.direction = 'right';
+      const element = document.createElement('div');
+      element.classList.add('tank');
 
-      this.dimensions = {
-        width: 60,
-        height: 60
-      };
-
-      this.element = document.createElement('div');
-      this.element.classList.add('tank');
-
-      this.element.style.cssText = `
+      element.style.cssText = `
       display: flex;
       justify-content: center;
       align-items: center;
@@ -296,21 +404,25 @@ $(() => {
       position: absolute;
       top: ${startTop}px;
       left: ${startLeft}px;
-      width: ${this.dimensions.width}px;
-      height: ${this.dimensions.height}px;`;
+      width: ${width}px;
+      height: ${height}px;`;
 
-      this.imageStyle = 'style="position: relative; width: 101px; height: 25px; z-index: 1; padding-right: 20px;"';
+      const imageStyle = 'style="position: relative; width: 101px; height: 25px; z-index: 1; padding-right: 20px;"';
 
-      this.element.innerHTML = `<img ${this.imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
+      element.innerHTML = `<img ${imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
 
-      this.tankPosition = {
-        left: startLeft,
-        top: startTop,
-        right: this.left + this.dimensions.width,
-        bottom: this.top + this.dimensions.height
-      };
+      const movementPoints = 20;
 
-      this.movementPoints = 20;
+      // this.tankPosition = {
+      //   left: startLeft,
+      //   top: startTop,
+      //   right: startLeft + this.dimensions.width,
+      //   bottom: startTop + this.dimensions.height
+      // };
+
+      super(startTop, startLeft, width, height, 'tank', element, movementPoints);
+
+      this.health = 100;
     }
   }
 
@@ -319,10 +431,10 @@ $(() => {
   };
 
   Tank.prototype.updatePosition = function (){
-    this.tankPosition.left = $(this.element).offset().left;
-    this.tankPosition.top = $(this.element).offset().top;
-    this.tankPosition.right = $(this.element).offset().left + this.dimensions.width;
-    this.tankPosition.bottom = $(this.element).offset().top + this.dimensions.height;
+    // this.tankPosition.left = $(this.element).offset().left;
+    // this.tankPosition.top = $(this.element).offset().top;
+    // this.tankPosition.right = $(this.element).offset().left + this.dimensions.width;
+    // this.tankPosition.bottom = $(this.element).offset().top + this.dimensions.height;
   };
 
   //update position by adding to x/y then updating the position in the DOM
@@ -331,7 +443,7 @@ $(() => {
 
 
   Tank.prototype.moveTank = function (direction){
-    this.updatePosition();
+    //this.updatePosition();
     //console.log(targets);
     //console.log(this.tankPosition);
     switch(direction){
@@ -352,6 +464,7 @@ $(() => {
       case 'd':
         return this.moveTankRight();
     }
+    this.updateDomPosition();
   };
 
   Tank.prototype.otherPlayer = function() {
@@ -360,25 +473,32 @@ $(() => {
     return otherPlayer;
   };
 
+  Tank.prototype.obstacles = function() {
+    return [this.otherPlayer(), mountain, water];
+  };
+
   Tank.prototype.updateDomPosition  = function() {
-    $(this.element).offset({top: this.tankPosition.top});
-    $(this.element).offset({left: this.tankPosition.left});
+    updateDOM(this.element, this.tankPosition);
   };
 
   Tank.prototype.moveTankUp = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.top -= this.movementPoints;
     newPos.bottom -= this.movementPoints;
+    if (!objectOverlapsObjects(newPos, this.obstacles())) {
+      // NOTE: now we're sure the newPos doesn't overlap anything!
+      // we can perform the move.
+    }
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos) ) {
       if(this.tankPosition.top > battleFieldPos.top) {
         this.tankPosition.top -= this.movementPoints;
-        this.updateDomPosition();
+        this.tankPosition.bottom -= this.movementPoints;
+        // this.updateDomPosition();
       }
     }
     $(this.element).attr('class', 'tank-90');
     this.direction = 'up';
   };
-
 
   Tank.prototype.moveTankDown = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
@@ -387,7 +507,7 @@ $(() => {
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
       if(this.tankPosition.bottom < battleFieldPos.bottom){
         this.tankPosition.top += this.movementPoints;
-        this.updateDomPosition();
+        this.tankPosition.bottom += this.movementPoints;
       }
     }
     $(this.element).attr('class', 'tank-270');
@@ -401,7 +521,7 @@ $(() => {
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
       if(this.tankPosition.left > battleFieldPos.left){
         this.tankPosition.left -= this.movementPoints;
-        this.updateDomPosition();
+        this.tankPosition.right -= this.movementPoints;
       }
     }
     $(this.element).attr('class', 'tank-360');
@@ -412,10 +532,11 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.left += this.movementPoints;
     newPos.right += this.movementPoints;
+    console.log('moving right. newPos is', newPos);
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
       if(this.tankPosition.right < battleFieldPos.right){
         this.tankPosition.left += this.movementPoints;
-        this.updateDomPosition();
+        this.tankPosition.right += this.movementPoints;
       }
     }
     $(this.element).attr('class', 'tank-180');
@@ -424,12 +545,11 @@ $(() => {
 
   ////////- firing bullets -////////////
   Tank.prototype.addBullet = function (){
-    //this.updatePosition();
     this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
+    bullets.push(this.bullet);
     $(battleField).append(this.bullet.element);
     //const direction = this.direction;
     this.bullet.fireBullet(this.direction);
-    //console.log(direction);
   };
 
   Tank.prototype.updateHealth = function (){
@@ -443,67 +563,103 @@ $(() => {
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
 
-  const playerOne = new Tank(0, 0, 'playerOne', 'blue' );
-  const playerTwo = new Tank(battleFieldObj.dimensions.height - 60, battleFieldObj.dimensions.width - 60, 'playerTwo', 'red');
+  // const playerOne = new Tank(0, 0, 'playerOne', 'blue' );
+  gameItems.push({
+    name: 'Player 1',
+    object: new Tank(0, 0, 'playerOne', 'blue', 'right'),
+    type: 'tank'
+  });
+  gameItems.push({
+    name: 'Player 2',
+    object: new Tank(battleFieldObj.dimensions.height - 60, battleFieldObj.dimensions.width - 60,
+      'playerTwo', 'red', 'left'),
+    type: 'tank'
+  });
 
-  let playerOneHealth = playerOne.health;
-  let playerTwoHealth = playerTwo.health;
+  // let playerOneHealth = playerOne.health;
+  // let playerTwoHealth = playerTwo.health;
 
+
+  // function updateDomElement(element, position) {
+  //   $(element).css('top', position.top);
+  //   $(element).css('left', position.left);
+  // }
+
+  function updateDOM() {
+    for (let i = 0; i < gameItems.length; i++) {
+      gameItems[i].object.drawDomElement();
+    }
+  }
+
+  updateDOM();
+
+  setInterval(() => updateDOM(), 1.0 / 30.0);
 
   //to fire bullets depending on which key stroke was pressed
-  function createBullet(key) {
-    playerOne.updatePosition();
-    playerTwo.updatePosition();
-    if(key === ' '){
-      playerOne.addBullet();
-      playerOne.bullet.detectCollision(playerTwo);
-    }else if (key === 'Shift'){
-      playerTwo.addBullet();
-      playerTwo.bullet.detectCollision(playerOne);
-    }
-  }
-
-  function checkForWin () {
-    if (playerOneHealth === 0){
-      window.alert('Player Two Won');
-    }
-    if (playerTwoHealth === 0){
-      window.alert('Player One Won');
-    }
-  }
-
-  function addPlayerOne() {
-    playerOne.addTank();
-  }
-  function addPlayerTwo() {
-    playerTwo.addTank();
-  }
-
-  addPlayerOne();
-  addPlayerTwo();
+  // function createBullet(key) {
+  //   playerOne.updatePosition();
+  //   playerTwo.updatePosition();
+  //   if(key === ' '){
+  //     playerOne.addBullet();
+  //     playerOne.bullet.detectCollision(playerTwo);
+  //   }else if (key === 'Shift'){
+  //     playerTwo.addBullet();
+  //     playerTwo.bullet.detectCollision(playerOne);
+  //   }
+  // }
+  //
+  // function checkForWin () {
+  //   if (playerOneHealth === 0){
+  //     window.alert('Player Two Won');
+  //   }
+  //   if (playerTwoHealth === 0){
+  //     window.alert('Player One Won');
+  //   }
+  // }
 
   //////- CHECKS FOR COLLISION -////////
+  function objectOverlapsObjects(object, objectArray) {
+    for (let i = 0; i < objectArray.length; i++) {
+      // We don't check ourselves!
+      if(object !== objectArray[i]) {
+        // Do the positions overlap?
+        if (positionsOverlap(object, objectArray[i])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   function positionsOverlap(obj1, obj2) {
     return ((obj1.right > obj2.left) && (obj1.left < obj2.right)) &&
     ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top));
+  }
+
+  function positionIsOnBoard(top, left, width, height){
+    const boardHeight = battleFieldObj.dimensions.height;
+    const boardWidth = battleFieldObj.dimensions.width;
+
+    return (top >= 0) && (left >= 0) &&
+      ((top + height) <= boardHeight) && ((left + width) <= boardWidth);
   }
 
   //
 
 
   //checks water and marsh first then passes to the Tank move methods
-  function checkForObsticals (tankObj, keyPress) {
-    if(positionsOverlap(tankObj.tankPosition, waterPos)){
-      console.log('tank drove into water');
-      window.alert(`Tank ${tankObj.name} drove into the water! GAME OVER!!!`);
-      tankObj.moveTank(keyPress);
-    }else if(positionsOverlap(tankObj.tankPosition, mountainPos)){
-      console.log(`Tank ${tankObj.name} drove into a mountain`);
-      tankObj.moveTank(keyPress);
-    }else{
-      tankObj.moveTank(keyPress);
-    }
-  }
+  // function checkForObsticals (tankObj, keyPress) {
+  //   if(positionsOverlap(tankObj.tankPosition, waterPos)){
+  //     //console.log('tank drove into water');
+  //     window.alert(`Tank ${tankObj.name} drove into the water! GAME OVER!!!`);
+  //     tankObj.moveTank(keyPress);
+  //   }else if(positionsOverlap(tankObj.tankPosition, mountainPos)){
+  //     console.log(`Tank ${tankObj.name} drove into a mountain`);
+  //     tankObj.moveTank(keyPress);
+  //   }else{
+  //     tankObj.moveTank(keyPress);
+  //   }
+  // }
 
 
   // const obsticals = {
@@ -516,21 +672,48 @@ $(() => {
   //////- KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
   function keyIdentifier(e){
-    //console.log(e.originalEvent.key);
-    if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
-      createBullet(e.originalEvent.key);
-    if(e.originalEvent.key === 'ArrowDown' ||
-      e.originalEvent.key === 'ArrowUp' ||
-      e.originalEvent.key === 'ArrowLeft' ||
-      e.originalEvent.key === 'ArrowRight'){
-      checkForObsticals(playerOne, e.originalEvent.key);
+    switch(e.originalEvent.key) {
+      case 'ArrowDown':
+        getPlayer(1).move('down');
+        break;
+      case 'ArrowUp':
+        getPlayer(1).move('up');
+        break;
+      case 'ArrowLeft':
+        getPlayer(1).move('left');
+        break;
+      case 'ArrowRight':
+        getPlayer(1).move('right');
+        break;
+      case 'w':
+        getPlayer(2).move('up');
+        break;
+      case 's':
+        getPlayer(2).move('down');
+        break;
+      case 'd':
+        getPlayer(2).move('right');
+        break;
+      case 'a':
+        getPlayer(2).move('left');
+        break;
     }
-    if(e.originalEvent.key === 'a' ||
-      e.originalEvent.key === 'd' ||
-      e.originalEvent.key === 's' ||
-      e.originalEvent.key === 'w'){
-      checkForObsticals(playerTwo, e.originalEvent.key);
-    }
+
+
+    // if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
+    //   createBullet(e.originalEvent.key);
+    // if(e.originalEvent.key === 'ArrowDown' ||
+    //   e.originalEvent.key === 'ArrowUp' ||
+    //   e.originalEvent.key === 'ArrowLeft' ||
+    //   e.originalEvent.key === 'ArrowRight'){
+    //   checkForObsticals(playerOne, e.originalEvent.key);
+    // }
+    // if(e.originalEvent.key === 'a' ||
+    //   e.originalEvent.key === 'd' ||
+    //   e.originalEvent.key === 's' ||
+    //   e.originalEvent.key === 'w'){
+    //   checkForObsticals(playerTwo, e.originalEvent.key);
+    // }
   }
 
 
