@@ -209,6 +209,7 @@ $(() => {
         $(this.element).offset({top: $(this.element).offset().top + 10});
         break;
     }
+
     this.updatePosition();
     //this.detectCollision(target);
     if(this.bulletPosition.left > battleFieldPos.left &&
@@ -224,6 +225,11 @@ $(() => {
     }
   };
 
+  Bullet.prototype.updateDomPosition  = function() {
+    $(this.element).offset({top: this.tankPosition.top});
+    $(this.element).offset({left: this.tankPosition.left});
+  };
+  ///UPDATING THE BULLETS METHOD FOR UPDATING THE DOM!!!
   Bullet.prototype.removeBullet = function () {
     $(this.element).remove();
   };
@@ -418,7 +424,7 @@ $(() => {
 
   ////////- firing bullets -////////////
   Tank.prototype.addBullet = function (){
-    this.updatePosition();
+    //this.updatePosition();
     this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
     $(battleField).append(this.bullet.element);
     //const direction = this.direction;
