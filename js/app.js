@@ -6,51 +6,76 @@
 
 $(() => {
 
-  const $battleField = $('.battle-field');
+  const $body = $('body');
+  //const $battleField = $('.battle-field');
   const $playerOneHealth = $('#playerOneHealth');
   const $playerTwoHealth = $('#playerTwoHealth');
-  const $water = $('.water');
-  const $marsh = $('.marsh');
-  const $mountain = $('.mountain');
+  // const $water = $('.water');
+  // const $marsh = $('.marsh');
+  // const $mountain = $('.mountain');
 
-  const water = {
-    name: 'Water',
-    position: {
-      left: $water.offset().left,
-      top: $water.offset().top,
-      right: $water.offset().left + $water.width(),
-      bottom: $water.offset().top + $water.height()
-    }
-  };
 
-  const marsh = {
-    name: 'marsh',
-    position: {
-      left: $marsh.offset().left,
-      top: $marsh.offset().top,
-      right: $marsh.offset().left + $marsh.width(),
-      bottom: $marsh.offset().top + $marsh.height()
-    }
-  };
 
-  const mountain = {
-    name: 'mountain',
-    position: {
-      left: $mountain.offset().left,
-      top: $mountain.offset().top,
-      right: $mountain.offset().left + $mountain.width(),
-      bottom: $mountain.offset().top + $mountain.height()
-    }
-  };
+  // const water = {
+  //   name: 'Water',
+  //   position: {
+  //     left: $water.offset().left,
+  //     top: $water.offset().top,
+  //     right: $water.offset().left + $water.width(),
+  //     bottom: $water.offset().top + $water.height()
+  //   }
+  // };
+  //
+  // const marsh = {
+  //   name: 'marsh',
+  //   position: {
+  //     left: $marsh.offset().left,
+  //     top: $marsh.offset().top,
+  //     right: $marsh.offset().left + $marsh.width(),
+  //     bottom: $marsh.offset().top + $marsh.height()
+  //   }
+  // };
+  //
+  // const mountain = {
+  //   name: 'mountain',
+  //   position: {
+  //     left: $mountain.offset().left,
+  //     top: $mountain.offset().top,
+  //     right: $mountain.offset().left + $mountain.width(),
+  //     bottom: $mountain.offset().top + $mountain.height()
+  //   }
+  // };
 
-  const battleField = {
+  const battleFieldObj = {
     name: 'BattleField',
 
-    left: $battleField.offset().left,
-    top: $battleField.offset().top,
-    right: $battleField.offset().left + $battleField.width(),
-    bottom: $battleField.offset().top + $battleField.height()
+    style: `
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      width: 900px;
+      height: 700px;
+      border: 1px solid red;
+      margin: 25px auto 0 auto;
+      background-image: url('styles/images/terrain-stone-desert.png');
+      background-repeat: repeat;
+      background-size: cover;`
+
+    // left: $battleField.offset().left,
+    // top: $battleField.offset().top,
+    // right: $battleField.offset().left + 900,
+    // bottom: $battleField.offset().top + 700
   };
+
+  ///////- Add battlefield -////////////
+
+  const battleField = document.createElement('div');
+  battleField.classList.add('battle-field');
+  battleField.style.cssText = battleFieldObj.style;
+  $body.append(battleField);
+
+  console.log(battleField.offsetLeft);
+
 
   ///////////////- BULLET CONSTRUCTOR -////////////////////////
   /////////////////////////////////////////////////////////////
@@ -74,6 +99,7 @@ $(() => {
       box-sizing: border-box;
       border: 1px solid black;
       position: absolute;
+      background-color: red;
       top: ${this.placementPosition.top}px;
       left: ${this.placementPosition.left}px;
       width: ${this.style.width}px;
@@ -135,6 +161,7 @@ $(() => {
       return;
     }
   };
+
   Bullet.prototype.removeBullet = function () {
     $(this.element).remove();
   };
@@ -158,6 +185,9 @@ $(() => {
       this.removeBullet();
       this.reduceLife(targetObj.name);
       checkForWin();
+    }else if (positionsOverlap(this.bulletPosition, mountain.position)) {
+      console.log('Hit on ' + mountain.name + ' detected: ' + this.collisionDetected);
+      this.removeBullet();
     }else{
       setTimeout(() => {
         this.detectCollision(targetObj);
@@ -217,7 +247,7 @@ $(() => {
   }
 
   Tank.prototype.addTank = function (){
-    $battleField.append(this.element);
+    $(battleField).append(this.element);
   };
 
   Tank.prototype.updatePosition = function (){
@@ -329,8 +359,13 @@ $(() => {
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
-  const playerOne = new Tank(battleField.top, battleField.left, 'playerOne', 'blue' );
-  const playerTwo = new Tank(battleField.bottom - 60, battleField.right - 60, 'playerTwo', 'red');
+
+
+
+
+
+  const playerOne = new Tank(battleField.offsetTop, battleField.offsetLeft, 'playerOne', 'blue' );
+  const playerTwo = new Tank(battleField.offsetTop + 60, battleField.offsetLeft + 60, 'playerTwo', 'red');
 
   let playerOneHealth = playerOne.health;
   let playerTwoHealth = playerTwo.health;
@@ -368,12 +403,17 @@ $(() => {
   addPlayerOne();
   addPlayerTwo();
 
+  console.log(playerOne.tankPosition);
+  //console.log(playerTwo.tankPosition);
+
 
   //////- CHECKS FOR COLLISION -////////
   function positionsOverlap(obj1, obj2) {
     return ((obj1.right > obj2.left) && (obj1.left < obj2.right)) &&
     ((obj1.top < obj2.bottom) && (obj1.bottom > obj2.top));
   }
+
+  //
 
 
   //checks water and marsh first then passes to the Tank move methods
