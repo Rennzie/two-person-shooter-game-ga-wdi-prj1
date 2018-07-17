@@ -1,3 +1,12 @@
+//  - ROBS PSEUDO FOR CRETING THE MOVE METHOD
+// 1. Calculate the new position, depending on the direction[X]
+// 2. Is the new position on the board! (given this.width etc.)
+// 3. Does the position overlap with anything else on the board?
+//    (you can use the global gameItems array and my function called
+//    objectOverlapsObjects)
+// 4. If it DOESN'T, update this.top and this.left.
+
+
 ///////////////////////////////////////
 ///////- COLLISION DETECTION -/////////
 ///////////////////////////////////////
