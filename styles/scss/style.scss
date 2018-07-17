@@ -1,42 +1,10 @@
-// body{
-//   background-image: url('../images/battleground-tank-lineup-night.jpg');
-//   background-position: center;
-//   background-repeat: no-repeat;
-//   background-size: cover;
-// }
-
-// .water{
-//   position: absolute;
-//   top: 100px;
-//   left: 100px;
-//   width: 100px;
-//   height: 100px;
-//   background-image: url('../images/terrain-water-2.png');
-//   background-repeat: repeat;
-//   background-size: cover;
-//   border-radius: 40%;
-// }
-// .marsh{
-//   position: absolute;
-//   top: 250px;
-//   left: 600px;
-//   width: 100px;
-//   height: 100px;
-//   background-image: url('../images/terrain-wetland.jpg');
-//   background-repeat: repeat;
-//   background-size: cover;
-// }
-// .mountain{
-//   position: absolute;
-//   top: 150px;
-//   left: 350px;
-//   width: 100px;
-//   height: 100px;
-//   background-image: url('../images/terrain-pebbles.png');
-//   background-repeat: repeat;
-//   background-size: cover;
-// }
-
+body{
+  position: relative;
+  background-image: url('../images/battleground-tank-lineup-night.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 
 .health{
   display: flex;

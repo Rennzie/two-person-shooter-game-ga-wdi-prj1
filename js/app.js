@@ -36,18 +36,14 @@ $(() => {
   //   }
   // };
   //
-  // const mountain = {
-  //   name: 'mountain',
-  //   position: {
-  //     left: $mountain.offset().left,
-  //     top: $mountain.offset().top,
-  //     right: $mountain.offset().left + $mountain.width(),
-  //     bottom: $mountain.offset().top + $mountain.height()
-  //   }
-  // };
 
   const battleFieldObj = {
     name: 'BattleField',
+
+    dimensions: {
+      width: 900,
+      height: 700
+    },
 
     style: `
       position: relative;
@@ -59,22 +55,88 @@ $(() => {
       margin: 25px auto 0 auto;
       background-image: url('styles/images/terrain-stone-desert.png');
       background-repeat: repeat;
-      background-size: cover;`
+      background-size: cover;`,
 
-    // left: $battleField.offset().left,
-    // top: $battleField.offset().top,
-    // right: $battleField.offset().left + 900,
-    // bottom: $battleField.offset().top + 700
+    obsticals: {
+      mountain: {
+        name: 'Mountain',
+
+        style: `
+          position: absolute;
+          top: 150px;
+          left: 350px;
+          width: 100px;
+          height: 100px;
+          background-image: url('styles/images/terrain-pebbles.png');
+          background-repeat: repeat;
+          background-size: cover;`,
+
+        dimensions: {
+          width: 100,
+          height: 100
+        }
+      },
+
+      water: {
+        name: 'Mountain',
+
+        style: `
+          position: absolute;
+          top: 200px;
+          left: 600px;
+          width: 100px;
+          height: 100px;
+          background-image: url('styles/images/terrain-water-2.png');
+          background-repeat: repeat;
+          background-size: cover;`,
+
+        dimensions: {
+          width: 100,
+          height: 100
+        }
+      }
+    }
   };
 
-  ///////- Add battlefield -////////////
+  ///////- Add battlefield and Obsticals-////////////
 
   const battleField = document.createElement('div');
   battleField.classList.add('battle-field');
   battleField.style.cssText = battleFieldObj.style;
   $body.append(battleField);
 
-  console.log(battleField.offsetLeft);
+  console.log(battleField);
+
+  const battleFieldPos = {
+    left: battleField.offsetLeft,
+    top: battleField.offsetTop,
+    right: battleField.offsetLeft + battleFieldObj.dimensions.width,
+    bottom: battleField.offsetTop + battleFieldObj.dimensions.width
+  };
+
+  const mountain = document.createElement('div');
+  mountain.classList.add('mountain');
+  mountain.style.cssText = battleFieldObj.obsticals.mountain.style;
+  $(battleField).append(mountain);
+
+  const mountainPos = {
+    left: mountain.offsetLeft,
+    top: mountain.offsetTop,
+    right: mountain.offsetLeft + battleFieldObj.obsticals.mountain.dimensions.width,
+    bottom: mountain.offsetTop + battleFieldObj.obsticals.mountain.dimensions.height
+  };
+
+  const water = document.createElement('div');
+  water.classList.add('water');
+  water.style.cssText = battleFieldObj.obsticals.water.style;
+  $(battleField).append(water);
+
+  const waterPos = {
+    left: water.offsetLeft,
+    top: water.offsetTop,
+    right: water.offsetLeft + battleFieldObj.obsticals.water.dimensions.width,
+    bottom: water.offsetTop + battleFieldObj.obsticals.water.dimensions.height
+  };
 
 
   ///////////////- BULLET CONSTRUCTOR -////////////////////////
@@ -149,10 +211,10 @@ $(() => {
     }
     this.updatePosition();
     //this.detectCollision(target);
-    if(this.bulletPosition.left > battleField.left &&
-      this.bulletPosition.right < battleField.right &&
-      this.bulletPosition.top > battleField.top &&
-      this.bulletPosition.bottom < battleField.bottom ){
+    if(this.bulletPosition.left > battleFieldPos.left &&
+      this.bulletPosition.right < battleFieldPos.right &&
+      this.bulletPosition.top > battleFieldPos.top &&
+      this.bulletPosition.bottom < battleFieldPos.bottom ){
       setTimeout( () => {
         this.fireBullet(direction);
       }, this.bulletSpeed);
@@ -257,6 +319,11 @@ $(() => {
     this.tankPosition.bottom = $(this.element).offset().top + this.dimensions.height;
   };
 
+  //update position by adding to x/y then updating the position in the DOM
+  //  --> movement should take the known location and add movement points to it [o]
+  //  --> function should then update the position of the element in the dom[o]
+
+
   Tank.prototype.moveTank = function (direction){
     this.updatePosition();
     //console.log(targets);
@@ -291,8 +358,8 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.top -= this.movementPoints;
     newPos.bottom -= this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position) ) {
-      if(this.tankPosition.top > battleField.top) {
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos) ) {
+      if(this.tankPosition.top > battleFieldPos.top) {
         $(this.element).offset({top: newPos.top});
       }
     }
@@ -304,21 +371,33 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.top += this.movementPoints;
     newPos.bottom += this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position)) {
-      if(this.tankPosition.bottom < battleField.bottom){
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
+      if(this.tankPosition.bottom < battleFieldPos.bottom){
         $(this.element).offset({top: newPos.top});
       }
     }
     $(this.element).attr('class', 'tank-270');
     this.direction = 'down';
   };
+  // Tank.prototype.moveTankDown = function () {
+  //   const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
+  //   newPos.top += this.movementPoints;
+  //   newPos.bottom += this.movementPoints;
+  //   if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
+  //     if(this.tankPosition.bottom < battleFieldPos.bottom){
+  //       $(this.element).offset({top: newPos.top});
+  //     }
+  //   }
+  //   $(this.element).attr('class', 'tank-270');
+  //   this.direction = 'down';
+  // };
 
   Tank.prototype.moveTankLeft = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.left -= this.movementPoints;
     newPos.right -= this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position)) {
-      if(this.tankPosition.left > battleField.left){
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
+      if(this.tankPosition.left > battleFieldPos.left){
         $(this.element).offset({left: newPos.left});
       }
     }
@@ -330,8 +409,8 @@ $(() => {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.left += this.movementPoints;
     newPos.right += this.movementPoints;
-    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountain.position)) {
-      if(this.tankPosition.right < battleField.right){
+    if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
+      if(this.tankPosition.right < battleFieldPos.right){
         $(this.element).offset({left: newPos.left});
       }
     }
@@ -343,7 +422,7 @@ $(() => {
   Tank.prototype.addBullet = function (){
     this.updatePosition();
     this.bullet = new Bullet(this.tankPosition.top, this.tankPosition.left);
-    $battleField.append(this.bullet.element);
+    $(battleField).append(this.bullet.element);
     //const direction = this.direction;
     this.bullet.fireBullet(this.direction);
     //console.log(direction);
@@ -360,12 +439,8 @@ $(() => {
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
 
-
-
-
-
-  const playerOne = new Tank(battleField.offsetTop, battleField.offsetLeft, 'playerOne', 'blue' );
-  const playerTwo = new Tank(battleField.offsetTop + 60, battleField.offsetLeft + 60, 'playerTwo', 'red');
+  const playerOne = new Tank(0, 0, 'playerOne', 'blue' );
+  const playerTwo = new Tank(battleFieldObj.dimensions.height - 60, battleFieldObj.dimensions.width - 60, 'playerTwo', 'red');
 
   let playerOneHealth = playerOne.health;
   let playerTwoHealth = playerTwo.health;
@@ -403,10 +478,6 @@ $(() => {
   addPlayerOne();
   addPlayerTwo();
 
-  console.log(playerOne.tankPosition);
-  //console.log(playerTwo.tankPosition);
-
-
   //////- CHECKS FOR COLLISION -////////
   function positionsOverlap(obj1, obj2) {
     return ((obj1.right > obj2.left) && (obj1.left < obj2.right)) &&
@@ -418,16 +489,11 @@ $(() => {
 
   //checks water and marsh first then passes to the Tank move methods
   function checkForObsticals (tankObj, keyPress) {
-    if(positionsOverlap(tankObj.tankPosition, water.position)){
+    if(positionsOverlap(tankObj.tankPosition, waterPos)){
       console.log('tank drove into water');
       window.alert(`Tank ${tankObj.name} drove into the water! GAME OVER!!!`);
       tankObj.moveTank(keyPress);
-    }else if(positionsOverlap(tankObj.tankPosition, marsh.position)){
-      console.log(`Tank ${tankObj.name} drove into a marshland`);
-      setTimeout(function () {
-        tankObj.moveTank(keyPress);
-      }, 1000);
-    }else if(positionsOverlap(tankObj.tankPosition, mountain.position)){
+    }else if(positionsOverlap(tankObj.tankPosition, mountainPos)){
       console.log(`Tank ${tankObj.name} drove into a mountain`);
       tankObj.moveTank(keyPress);
     }else{
