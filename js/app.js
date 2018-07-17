@@ -111,7 +111,7 @@ $(() => {
     left: battleField.offsetLeft,
     top: battleField.offsetTop,
     right: battleField.offsetLeft + battleFieldObj.dimensions.width,
-    bottom: battleField.offsetTop + battleFieldObj.dimensions.width
+    bottom: battleField.offsetTop + battleFieldObj.dimensions.height
   };
 
   const mountain = document.createElement('div');
@@ -300,8 +300,8 @@ $(() => {
       this.tankPosition = {
         left: startLeft,
         top: startTop,
-        right: startLeft + this.dimensions.width,
-        bottom: startTop + this.dimensions.height
+        right: this.left + this.dimensions.width,
+        bottom: this.top + this.dimensions.height
       };
 
       this.movementPoints = 20;
@@ -354,18 +354,25 @@ $(() => {
     return otherPlayer;
   };
 
+  Tank.prototype.updateDomPosition  = function() {
+    $(this.element).offset({top: this.tankPosition.top});
+    $(this.element).offset({left: this.tankPosition.left});
+  };
+
   Tank.prototype.moveTankUp = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
     newPos.top -= this.movementPoints;
     newPos.bottom -= this.movementPoints;
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos) ) {
       if(this.tankPosition.top > battleFieldPos.top) {
-        $(this.element).offset({top: newPos.top});
+        this.tankPosition.top -= this.movementPoints;
+        this.updateDomPosition();
       }
     }
     $(this.element).attr('class', 'tank-90');
     this.direction = 'up';
   };
+
 
   Tank.prototype.moveTankDown = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
@@ -373,24 +380,13 @@ $(() => {
     newPos.bottom += this.movementPoints;
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
       if(this.tankPosition.bottom < battleFieldPos.bottom){
-        $(this.element).offset({top: newPos.top});
+        this.tankPosition.top += this.movementPoints;
+        this.updateDomPosition();
       }
     }
     $(this.element).attr('class', 'tank-270');
     this.direction = 'down';
   };
-  // Tank.prototype.moveTankDown = function () {
-  //   const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
-  //   newPos.top += this.movementPoints;
-  //   newPos.bottom += this.movementPoints;
-  //   if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
-  //     if(this.tankPosition.bottom < battleFieldPos.bottom){
-  //       $(this.element).offset({top: newPos.top});
-  //     }
-  //   }
-  //   $(this.element).attr('class', 'tank-270');
-  //   this.direction = 'down';
-  // };
 
   Tank.prototype.moveTankLeft = function () {
     const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
@@ -398,7 +394,8 @@ $(() => {
     newPos.right -= this.movementPoints;
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
       if(this.tankPosition.left > battleFieldPos.left){
-        $(this.element).offset({left: newPos.left});
+        this.tankPosition.left -= this.movementPoints;
+        this.updateDomPosition();
       }
     }
     $(this.element).attr('class', 'tank-360');
@@ -411,7 +408,8 @@ $(() => {
     newPos.right += this.movementPoints;
     if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
       if(this.tankPosition.right < battleFieldPos.right){
-        $(this.element).offset({left: newPos.left});
+        this.tankPosition.left += this.movementPoints;
+        this.updateDomPosition();
       }
     }
     $(this.element).attr('class', 'tank-180');
