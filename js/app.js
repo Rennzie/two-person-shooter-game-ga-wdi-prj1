@@ -393,7 +393,7 @@ $(() => {
       }
 
       if(positionIsOnBoard(object.top, object.left, 100, 100)){
-        console.log(object);
+        //console.log(object);
         gameItems.push({
           name: randomObstical,
           object: object,
@@ -481,40 +481,158 @@ $(() => {
 
   //////- KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
-  function keyIdentifier(e){
+
+  //start interval on key down which calls the move FUNCTION
+  //clear that interval on key up
+
+  const keyState = {
+    ArrowDown: false,
+    ArrowUp: false,
+    ArrowLeft: false,
+    ArrowRight: false,
+    s: false,
+    w: false,
+    a: false,
+    d: false
+  };
+
+
+  function keyDownIdentifier(e){
+    const key = e.originalEvent.key;
+    if(!keyState[key]){
+      switch(key) {
+        case 'ArrowDown':
+          keyState[key] = true;
+          moveDownA('down');
+          break;
+        case 'ArrowUp':
+          keyState[key] = true;
+          moveUpA('up');
+          break;
+        case 'ArrowLeft':
+          keyState[key] = true;
+          moveLeftA('left');
+          break;
+        case 'ArrowRight':
+          keyState[key] = true;
+          moveRightA('right');
+          break;
+        case 'w':
+          keyState[key] = true;
+          moveUpK('up');
+          break;
+        case 's':
+          keyState[key] = true;
+          moveDownK('down');
+          break;
+        case 'd':
+          keyState[key] = true;
+          moveRightK('right');
+          break;
+        case 'a':
+          keyState[key] = true;
+          moveLeftK('left');
+          break;
+        case ' ':
+          getPlayer(1).addBullet();
+          break;
+        case 'Shift':
+          getPlayer(2).addBullet();
+          break;
+      }
+    }
+
+  }
+
+  let downIntId = '';
+  let upIntId = '';
+  let leftIntId = '';
+  let rightIntId = '';
+  let sIntId = '';
+  let wIntId = '';
+  let aIntId = '';
+  let dIntId = '';
+
+  function moveDownA (direction){
+    downIntId = setInterval(()=>{
+      getPlayer(1).move(direction);
+    }, 100);
+  }
+  function moveUpA (direction){
+    upIntId = setInterval(()=>{
+      getPlayer(1).move(direction);
+    }, 100);
+  }
+  function moveLeftA (direction){
+    leftIntId = setInterval(()=>{
+      getPlayer(1).move(direction);
+    }, 100);
+  }
+  function moveRightA (direction){
+    rightIntId = setInterval(()=>{
+      getPlayer(1).move(direction);
+    }, 100);
+  }
+  function moveDownK (direction){
+    sIntId = setInterval(()=>{
+      getPlayer(2).move(direction);
+    }, 100);
+  }
+  function moveUpK (direction){
+    wIntId = setInterval(()=>{
+      getPlayer(2).move(direction);
+    }, 100);
+  }
+  function moveLeftK (direction){
+    aIntId = setInterval(()=>{
+      getPlayer(2).move(direction);
+    }, 100);
+  }
+  function moveRightK (direction){
+    dIntId = setInterval(()=>{
+      getPlayer(2).move(direction);
+    }, 100);
+  }
+
+  function keyUpIdentifier(e) {
+    const key = e.originalEvent.key;
     switch(e.originalEvent.key) {
       case 'ArrowDown':
-        getPlayer(1).move('down');
+        clearInterval(downIntId);
+        keyState[key] = false;
         break;
       case 'ArrowUp':
-        getPlayer(1).move('up');
+        clearInterval(upIntId);
+        keyState[key] = false;
         break;
       case 'ArrowLeft':
-        getPlayer(1).move('left');
+        clearInterval(leftIntId);
+        keyState[key] = false;
         break;
       case 'ArrowRight':
-        getPlayer(1).move('right');
-        break;
-      case 'w':
-        getPlayer(2).move('up');
+        clearInterval(rightIntId);
+        keyState[key] = false;
         break;
       case 's':
-        getPlayer(2).move('down');
+        clearInterval(sIntId);
+        keyState[key] = false;
         break;
-      case 'd':
-        getPlayer(2).move('right');
+      case 'w':
+        clearInterval(wIntId);
+        keyState[key] = false;
         break;
       case 'a':
-        getPlayer(2).move('left');
+        clearInterval(aIntId);
+        keyState[key] = false;
         break;
-      case ' ':
-        getPlayer(1).addBullet();
-        break;
-      case 'Shift':
-        getPlayer(2).addBullet();
+      case 'd':
+        clearInterval(dIntId);
+        keyState[key] = false;
         break;
     }
   }
 
-  $(window).keydown(keyIdentifier);
+
+  $(window).keydown(keyDownIdentifier);
+  $(window).keyup(keyUpIdentifier);
 });
