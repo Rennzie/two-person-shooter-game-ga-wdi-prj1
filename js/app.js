@@ -1,4 +1,3 @@
-//console.log('this is linked');
 
 ////////////////////////////////////
 ///////- DOM INTERACTION -//////////
@@ -11,43 +10,15 @@ $(() => {
   //const $playerOneHealth = $('#playerOneHealth');
   // const $playerTwoHealth = $('#playerTwoHealth');
 
-  //let bullets = [];
   let gameItems = [];
 
-  function getGameItems(itemType) {
-    return gameItems.filter(item => item.type === itemType);
-  }
+  // function getGameItems(itemType) {
+  //   return gameItems.filter(item => item.type === itemType);
+  // }
 
   function getPlayer(number) {
     return gameItems.filter(item => item.name === `Player ${number}`)[0].object;
   }
-
-  // const $water = $('.water');
-  // const $marsh = $('.marsh');
-  // const $mountain = $('.mountain');
-
-
-
-  // const water = {
-  //   name: 'Water',
-  //   position: {
-  //     left: $water.offset().left,
-  //     top: $water.offset().top,
-  //     right: $water.offset().left + $water.width(),
-  //     bottom: $water.offset().top + $water.height()
-  //   }
-  // };
-  //
-  // const marsh = {
-  //   name: 'marsh',
-  //   position: {
-  //     left: $marsh.offset().left,
-  //     top: $marsh.offset().top,
-  //     right: $marsh.offset().left + $marsh.width(),
-  //     bottom: $marsh.offset().top + $marsh.height()
-  //   }
-  // };
-  //
 
   const battleFieldObj = {
     name: 'BattleField',
@@ -67,47 +38,7 @@ $(() => {
       margin: 25px auto 0 auto;
       background-image: url('styles/images/terrain-stone-desert.png');
       background-repeat: repeat;
-      background-size: cover;`,
-
-    obsticals: {
-      mountain: {
-        name: 'Mountain',
-
-        style: `
-          position: absolute;
-          top: 150px;
-          left: 350px;
-          width: 100px;
-          height: 100px;
-          background-image: url('styles/images/terrain-pebbles.png');
-          background-repeat: repeat;
-          background-size: cover;`,
-
-        dimensions: {
-          width: 100,
-          height: 100
-        }
-      },
-
-      water: {
-        name: 'Water',
-
-        style: `
-          position: absolute;
-          top: 150px;
-          left: 600px;
-          width: 100px;
-          height: 100px;
-          background-image: url('styles/images/terrain-water-2.png');
-          background-repeat: repeat;
-          background-size: cover;`,
-
-        dimensions: {
-          width: 100,
-          height: 100
-        }
-      }
-    }
+      background-size: cover;`
   };
 
   ///////- Add battlefield and Obsticals-////////////
@@ -117,38 +48,27 @@ $(() => {
   battleField.style.cssText = battleFieldObj.style;
   $body.append(battleField);
 
-  //console.log(battleField);
 
-  // const battleFieldPos = {
-  //   left: 0,
-  //   top: 0,
-  //   right: battleFieldObj.dimensions.width,
-  //   bottom: battleFieldObj.dimensions.height
-  // };
 
-  // const mountain = document.createElement('div');
-  // mountain.classList.add('mountain');
-  // mountain.style.cssText = battleFieldObj.obsticals.mountain.style;
-  // $(battleField).append(mountain);
   //
-  // const mountainPos = {
-  //   left: mountain.offsetLeft,
-  //   top: mountain.offsetTop,
-  //   right: mountain.offsetLeft + battleFieldObj.obsticals.mountain.dimensions.width,
-  //   bottom: mountain.offsetTop + battleFieldObj.obsticals.mountain.dimensions.height
-  // };
+  // class water extends gameItems {
+  //   name: 'Water',
   //
-  // const water = document.createElement('div');
-  // water.classList.add('water');
-  // water.style.cssText = battleFieldObj.obsticals.water.style;
-  // $(battleField).append(water);
+  //   style: `
+  //     position: absolute;
+  //     top: 150px;
+  //     left: 600px;
+  //     width: 100px;
+  //     height: 100px;
+  //     background-image: url('styles/images/terrain-water-2.png');
+  //     background-repeat: repeat;
+  //     background-size: cover;`,
   //
-  // const waterPos = {
-  //   left: water.offsetLeft,
-  //   top: water.offsetTop,
-  //   right: water.offsetLeft + battleFieldObj.obsticals.water.dimensions.width,
-  //   bottom: water.offsetTop + battleFieldObj.obsticals.water.dimensions.height
-  // };
+  //   dimensions: {
+  //     width: 100,
+  //     height: 100
+  //   }
+  // }
 
   class gameItem {
     constructor(name, top, left, width, height, type, domElement, movementSpeed, direction) {
@@ -179,17 +99,6 @@ $(() => {
     remove(){
       $(this.domElement).remove();
     }
-
-    // collidesWith(position){
-    //   const collides = [];
-    //   // 1. Checks everything in the global gameItems array
-    //   // 2. Pushes anything that collides into the collides array
-    //   return collides;
-    // }
-
-    // doesNotCollide(position) {
-    //   return collidesWith(position).length === 0;
-    // }
 
     move(direction) {
       const newPosition = {
@@ -230,7 +139,6 @@ $(() => {
       //console.log('the shooter at move is: ' + shooter);
       //console.log('the overlappingObj at move is: ', overlappingObjects[0].name);
 
-      // BUG: the tank shoot itself (SOLVED)
       // NOTE: this will be where we decide what to do with other obsticals
       if(overlappingObjects){
         return overlappingObjects;
@@ -255,7 +163,7 @@ $(() => {
 
       const width = 5;
       const height = 5;
-      const bulletSpeed = 1;
+      const bulletSpeed = 2;
 
       const element = document.createElement('div');
       element.classList.add('bullet');
@@ -283,7 +191,6 @@ $(() => {
       width: ${width}px;
       height: ${height}px;
       border-radius: 100%;`;
-
 
       this.damage = 5;
     }
@@ -323,35 +230,7 @@ $(() => {
       }
     }, 1.0 / 30.0);
   };
-  ///UPDATING THE BULLETS METHOD FOR UPDATING THE DOM!!!
-  // Bullet.prototype.removeBullet = function () {
-  //   // Remove bullet from DOM
-  //   $(this.element).remove();
-  //   // Remove bullet from the bullets array
-  //   // NOTE: update this so we are looking at the gameItems array
-  // };
 
-
-
-  /////////////- COLLISION DETECTION -/////////
-  // Bullet.prototype.detectCollision = function(targetObj) {
-  //   //console.log('Logged at detectCollision():', targetObj.tankPosition);
-  //   if(positionsOverlap(this.bulletPosition, targetObj.tankPosition) ){
-  //     this.collisionDetected = true;
-  //     //console.log('Hit on ' + targetObj.name + ' detected: ' + this.collisionDetected);
-  //     this.removeBullet();
-  //     this.reduceLife(targetObj.name);
-  //     checkForWin();
-  //   }else if (positionsOverlap(this.bulletPosition, mountainPos)) {
-  //     //console.log('Hit on ' + mountain.name + ' detected: ' + this.collisionDetected);
-  //     this.removeBullet();
-  //   }else{
-  //     setTimeout(() => {
-  //       this.detectCollision(targetObj);
-  //     }, this.bulletSpeed);
-  //
-  //   }
-  // };
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- BULLET CONSTRUCTOR end -////////////////////////
 
@@ -425,7 +304,28 @@ $(() => {
 
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///////////////- TANK CONSTRUCTOR end -////////////////////////
+  class Mountain extends gameItem {
+    constructor (startTop, startLeft) {
+      const name = 'Mountain';
+      const width = 100;
+      const height = 100;
 
+      const element = document.createElement('div');
+      element.classList.add('tank');
+
+      element.style.cssText = `
+      position: absolute;
+      top: ${startTop}px;
+      left: ${startLeft}px;
+      width: ${width}px;
+      height: ${height}px;
+      background-image: url('styles/images/terrain-mountain.jpg');
+      background-repeat: repeat;
+      background-size: cover;`;
+
+      super(name, startTop, startLeft, width, height, 'obstical', element, 0, 0);
+    }
+  }
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
@@ -442,27 +342,41 @@ $(() => {
     type: 'tank'
   });
 
-  // let playerOneHealth = playerOne.health;
-  // let playerTwoHealth = playerTwo.health;
+  gameItems.push({
+    name: 'Mountain',
+    object: new Mountain(100, 400),
+    type: 'obstical'
+  });
+
+  function updateScore(){
+    const $playerOneHealth = $('#playerOneHealth');
+    const $playerTwoHealth = $('#playerTwoHealth');
+
+    $playerOneHealth.attr('value', getPlayer(1).health);
+    $playerTwoHealth.attr('value', getPlayer(2).health);
+  }
 
   function updateDOM() {
     //console.log(gameItems);
     for (let i = 0; i < gameItems.length; i++) {
       gameItems[i].object.drawDomElement();
     }
+    updateScore();
+    checkForWin();
   }
-  //updateDOM();
   setInterval(() => updateDOM(), 1.0 / 30.0);
 
+  // let playerOneHealth = playerOne.health;
+  // let playerTwoHealth = playerTwo.health;
   //
-  // function checkForWin () {
-  //   if (playerOneHealth === 0){
-  //     window.alert('Player Two Won');
-  //   }
-  //   if (playerTwoHealth === 0){
-  //     window.alert('Player One Won');
-  //   }
-  // }
+  function checkForWin () {
+    if (getPlayer(1).health === 0){
+      window.alert('Player Two Won');
+    }
+    if (getPlayer(2).health === 0){
+      window.alert('Player One Won');
+    }
+  }
 
   //////- CHECKS FOR COLLISION -////////
 
@@ -543,343 +457,7 @@ $(() => {
         getPlayer(2).addBullet();
         break;
     }
-
-
   }
-
 
   $(window).keydown(keyIdentifier);
 });
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////////////
-///////- CODE GRAVEYARD -///////////
-////////////////////////////////////
-
-// //interval timer to change x/y of a selected div
-// function startInterval() {
-//   const intervalId = setInterval(changeXy, 1000);
-//   setTimeout(() => {
-//     clearInterval(intervalId);
-//   }, 10000);
-// }
-// //function thats run in above interval
-// function changeXy () {
-//   $bullet.offset({left: $bullet.offset().left + 50 });
-//   printXy();
-// }
-
-// //prints position of boxes saved in object
-// function printXy () {
-//   console.log('tank minX: ' + tankPosition.minX);
-//   console.log('tank minY: ' + tankPosition.minY);
-//   console.log('bullet minX: ' + bullet.minX);
-//   console.log('bullet minY: ' + bullet.minY);
-// }
-
-
-
-
-///- OLD OBJECT FOR HARD CODED TANKS -///////////
-/////////////////////////////////////////////////
-/////////- TANK ONE -//////////////
-// const tankOne = {
-//   health: 100,
-//
-//   currentDirection: {
-//     up: false,
-//     down: false,
-//     left: false,
-//     right: false
-//   },
-//
-//   currentPosition: {
-//     left: $tank.offset().left,
-//     top: $tank.offset().top,
-//     right: $tank.offset().left + $tank.width(),
-//     bottom: $tank.offset().top + $tank.height()
-//   },
-//
-//   movementPoints: 50
-// };
-
-/////////- TANK TWO -//////////////
-// const tankTwo = {
-//   health: 100,
-//
-//   currentDirection: {
-//     up: false,
-//     down: false,
-//     left: false,
-//     right: false
-//   },
-//
-//   currentPosition: {
-//     left: $tank2.offset().left,
-//     top: $tank2.offset().top,
-//     right: $tank2.offset().left + $tank.width(),
-//     bottom: $tank2.offset().top + $tank.height()
-//   },
-//
-//   movementPoints: 50
-// };
-
-
-// ///////- MOVE TANK -//////////
-// function tankMove(direction) {
-//   updatedPosition(tankOne, $tank);
-//   updatedPosition(tankTwo, $tank2);
-//   switch(direction){
-//     case 'ArrowUp':
-//       return moveTankUp();
-//     case 'ArrowDown':
-//       return moveTankDown();
-//     case 'ArrowLeft':
-//       return moveTankLeft();
-//     case 'ArrowRight':
-//       return moveTankRight();
-//     case 'w':
-//       return moveTank2Up();
-//     case 's':
-//       return moveTank2Down();
-//     case 'a':
-//       return moveTank2Left();
-//     case 'd':
-//       return moveTank2Right();
-//   }
-// }
-//
-// function moveTankUp () {
-//   if(tankOne.currentPosition.top - 10 > battleField.top)
-//     $tank.offset({top: $tank.offset().top - tankOne.movementPoints});
-// }
-// function moveTankDown () {
-//   if(tankOne.currentPosition.bottom < battleField.bottom)
-//     $tank.offset({top: $tank.offset().top + tankOne.movementPoints});
-// }
-// function moveTankLeft () {
-//   if(tankOne.currentPosition.left > battleField.left)
-//     $tank.offset({left: $tank.offset().left - tankOne.movementPoints});
-// }
-// function moveTankRight () {
-//   if(tankOne.currentPosition.right < battleField.right)
-//     $tank.offset({left: $tank.offset().left + tankOne.movementPoints});
-// }
-//
-// function moveTank2Up () {
-//   if(tankTwo.currentPosition.top - 10 > battleField.top)
-//     $tank2.offset({top: $tank2.offset().top - tankTwo.movementPoints});
-// }
-// function moveTank2Down () {
-//   if(tankTwo.currentPosition.bottom < battleField.bottom)
-//     $tank2.offset({top: $tank2.offset().top + tankTwo.movementPoints});
-// }
-// function moveTank2Left () {
-//   if(tankTwo.currentPosition.left > battleField.left)
-//     $tank2.offset({left: $tank2.offset().left - tankTwo.movementPoints});
-// }
-// function moveTank2Right () {
-//   if(tankTwo.currentPosition.right < battleField.right)
-//     $tank2.offset({left: $tank2.offset().left + tankTwo.movementPoints});
-// }
-
-
-
-// ///////- OLD ELEMENT POSITION UPDATER BEFORE TANK CONSTRUCTOR -/////////
-// //to dynamically update the position of an animated element
-// //(works when called as step in animateBullet())
-// function updatedPosition(itemObj, itemDom){
-//   itemObj.currentPosition.left = itemDom.offset().left;
-//   itemObj.currentPosition.top = itemDom.offset().top;
-//   itemObj.currentPosition.right = itemDom.offset().left + itemDom.width();
-//   itemObj.currentPosition.bottom = itemDom.offset().top + itemDom.height();
-//   //targetCollision();
-// }
-
-
-
-/////////- FAILED METHOD TO TEST FOR COLLISION -//////////////
-// function checkForObsticals (name, keyPress) {
-//   playerOne.updatePosition();
-//   playerTwo.updatePosition();
-//
-//   if(!positionsOverlap(playerOne.tankPosition, playerTwo.tankPosition)) {
-//     playerOne.moveTank(keyPress);
-//  }
-// if(name === 'playerOne'){
-//   if((playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
-//   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
-//   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
-//   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom) ||
-//
-//   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
-//   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
-//   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
-//   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom) ||
-//
-//   (playerOne.tankPosition.right >= playerTwo.tankPosition.left &&
-//   playerOne.tankPosition.right <= playerTwo.tankPosition.right &&
-//   playerOne.tankPosition.top >= playerTwo.tankPosition.top &&
-//   playerOne.tankPosition.top <= playerTwo.tankPosition.bottom)||
-//
-//   (playerOne.tankPosition.left >= playerTwo.tankPosition.left &&
-//   playerOne.tankPosition.left <= playerTwo.tankPosition.right &&
-//   playerOne.tankPosition.bottom >= playerTwo.tankPosition.top &&
-//   playerOne.tankPosition.bottom <= playerTwo.tankPosition.bottom)){
-//     return;
-//   }
-//   playerOne.moveTank(keyPress);
-//console.log(name);
-// }
-//  }
-/////////////////////////////////////////////////
-///////////- OLD TANK MOVEMENT CODE - ////////////////
-/////////////////////////////////////////////////
-
-
-//
-// Tank.prototype.moveTank = function (direction){
-//   //this.updatePosition();
-//   //console.log(targets);
-//   //console.log(this.tankPosition);
-//   switch(direction){
-//     case 'ArrowUp':
-//       return this.moveTankUp();
-//     case 'w':
-//       return this.moveTankUp();
-//     case 'ArrowDown':
-//       return this.moveTankDown();
-//     case 's':
-//       return this.moveTankDown();
-//     case 'ArrowLeft':
-//       return this.moveTankLeft();
-//     case 'a':
-//       return this.moveTankLeft();
-//     case 'ArrowRight':
-//       return this.moveTankRight();
-//     case 'd':
-//       return this.moveTankRight();
-//   }
-//   this.updateDomPosition();
-// };
-
-//
-// Tank.prototype.updateDomPosition  = function() {
-//   updateDOM(this.element, this.tankPosition);
-// };
-//
-// Tank.prototype.moveTankUp = function () {
-//   const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
-//   newPos.top -= this.movementPoints;
-//   newPos.bottom -= this.movementPoints;
-//   if (!objectOverlapsObjects(newPos, this.obstacles())) {
-//     // NOTE: now we're sure the newPos doesn't overlap anything!
-//     // we can perform the move.
-//   }
-//   if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos) ) {
-//     if(this.tankPosition.top > battleFieldPos.top) {
-//       this.tankPosition.top -= this.movementPoints;
-//       this.tankPosition.bottom -= this.movementPoints;
-//       // this.updateDomPosition();
-//     }
-//   }
-//   $(this.element).attr('class', 'tank-90');
-//   this.direction = 'up';
-// };
-//
-// Tank.prototype.moveTankDown = function () {
-//   const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
-//   newPos.top += this.movementPoints;
-//   newPos.bottom += this.movementPoints;
-//   if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
-//     if(this.tankPosition.bottom < battleFieldPos.bottom){
-//       this.tankPosition.top += this.movementPoints;
-//       this.tankPosition.bottom += this.movementPoints;
-//     }
-//   }
-//   $(this.element).attr('class', 'tank-270');
-//   this.direction = 'down';
-// };
-//
-// Tank.prototype.moveTankLeft = function () {
-//   const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
-//   newPos.left -= this.movementPoints;
-//   newPos.right -= this.movementPoints;
-//   if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
-//     if(this.tankPosition.left > battleFieldPos.left){
-//       this.tankPosition.left -= this.movementPoints;
-//       this.tankPosition.right -= this.movementPoints;
-//     }
-//   }
-//   $(this.element).attr('class', 'tank-360');
-//   this.direction = 'left';
-// };
-//
-// Tank.prototype.moveTankRight = function () {
-//   const newPos = Object.assign({}, this.tankPosition); // Make a deep copy of the object
-//   newPos.left += this.movementPoints;
-//   newPos.right += this.movementPoints;
-//   console.log('moving right. newPos is', newPos);
-//   if (!positionsOverlap(newPos, this.otherPlayer().tankPosition) && !positionsOverlap(newPos, mountainPos)) {
-//     if(this.tankPosition.right < battleFieldPos.right){
-//       this.tankPosition.left += this.movementPoints;
-//       this.tankPosition.right += this.movementPoints;
-//     }
-//   }
-//   $(this.element).attr('class', 'tank-180');
-//   this.direction = 'right';
-// };
-
-// Tank.prototype.addTank = function (){
-//   $(battleField).append(this.element);
-// };
-
-//update position by adding to x/y then updating the position in the DOM
-//  --> movement should take the known location and add movement points to it [o]
-//  --> function should then update the position of the element in the dom[o]
-
-
-
-// Tank.prototype.otherPlayer = function() {
-//   let otherPlayer = playerTwo;
-//   if(this === playerTwo)  otherPlayer = playerOne;
-//   return otherPlayer;
-// };
-
-//////- OLD REDUCE LIFE FUNCTION --//////
-// Bullet.prototype.reduceLife = function (target) {
-//   if(target === 'playerOne'){
-//     playerOneHealth -= this.damage;
-//     $playerOneHealth.attr('value', playerOneHealth);
-//   }else if (target === 'playerTwo'){
-//     playerTwoHealth -= this.damage;
-//     $playerTwoHealth.attr('value', playerTwoHealth);
-//   }
-// };
-
-
-//////////- OLD KEY IDENTIFIER FUNCTION -///////////////////
-
-// if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
-//   createBullet(e.originalEvent.key);
-// if(e.originalEvent.key === 'ArrowDown' ||
-//   e.originalEvent.key === 'ArrowUp' ||
-//   e.originalEvent.key === 'ArrowLeft' ||
-//   e.originalEvent.key === 'ArrowRight'){
-//   checkForObsticals(playerOne, e.originalEvent.key);
-// }
-// if(e.originalEvent.key === 'a' ||
-//   e.originalEvent.key === 'd' ||
-//   e.originalEvent.key === 's' ||
-//   e.originalEvent.key === 'w'){
-//   checkForObsticals(playerTwo, e.originalEvent.key);
-// }
