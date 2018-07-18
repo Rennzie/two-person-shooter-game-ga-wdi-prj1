@@ -5,36 +5,35 @@
 $(() => {
   ////////////////////////////////////
   ///////- START SCREEN -//////////
-  ////////////////////////////////////
   const header = document.querySelector('header');
   // NOTE: nothing too special, the screen is hidden when the enter key is pressed
 
   ////////////////////////////////////
   ///////- INSTRUCTION SCREEN -//////////
-  ////////////////////////////////////
   const instrucScreen = document.querySelector('.game-start');
   const startBtn = document.querySelector('#begin-game');
-  const obsticalCount = document.querySelector('#set-obsticals');
-  let setObsticalNumber;
+  const selectObsticals = document.querySelector('#set-obsticals');
+  const setObsticalNumber = parseInt(selectObsticals.options[selectObsticals.selectedIndex].value);
+  // NOTE: need an onchange to grab this updated number when starting game
 
-  obsticalCount.addEventListener('change', () => {
-    setObsticalNumber = event.target.value;
-    console.log(setObsticalNumber);
-  });
+  // obsticalCount.addEventListener('change', () => {
+  //   setObsticalNumber = event.target.value;
+  //   console.log(setObsticalNumber);
+  // });
 
 
 
   startBtn.addEventListener('click', startGame);
+
   ////////////////////////////////////
   ///////- BATTLEFIELD SCREEN -//////////
-  ////////////////////////////////////
 
   function startGame(){
     instrucScreen.style.display = 'none';
     $main.show();
-    setTimeout(function () {
-      addRandomObstical();
-    }, 2000);
+    addRandomObstical();
+    // setTimeout(function () {
+    // }, 2000);
   }
 
   const $main = $('.battle-screen');
@@ -56,12 +55,12 @@ $(() => {
       align-items: center;
       width: 900px;
       height: 700px;
-      border: 1px solid red;
-      margin: 25px auto 0 auto;
-      background-image: url('styles/images/terrain-stone-desert.png');
+      border-radius: 30px;
+      background-image: url('styles/images/terrain-barren-crackedmud.png');
       background-repeat: repeat;
       background-size: cover;`
   };
+  // margin: 25px auto 0 auto;
 
 
   class gameItem {
@@ -271,7 +270,7 @@ $(() => {
 
       element.innerHTML = `<img ${imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
 
-      const movementPoints = 10;
+      const movementPoints = 50;
 
       super(name, startTop, startLeft, width, height, 'tank', element, movementPoints, direction);
 
@@ -311,6 +310,7 @@ $(() => {
       const height = 100;
 
       const element = document.createElement('div');
+      element.classList.add('.fade-in');
 
       element.style.cssText = `
       position: absolute;
@@ -320,7 +320,8 @@ $(() => {
       height: ${height}px;
       background-image: url('styles/images/terrain-mountain.jpg');
       background-repeat: repeat;
-      background-size: cover;`;
+      background-size: cover;
+      border-radius: 100%;`;
 
       super(name, startTop, startLeft, width, height, 'obstical', element, 0, 0);
     }
@@ -331,8 +332,10 @@ $(() => {
       const name = 'Water';
       const width = 100;
       const height = 100;
+      const waterRadius = Math.random() * 100;
 
       const element = document.createElement('div');
+      element.classList.add('.fade-in');
 
       element.style.cssText = `
       position: absolute;
@@ -340,7 +343,8 @@ $(() => {
       left: ${startLeft}px;
       width: ${width}px;
       height: ${height}px;
-      background-image: url('styles/images/terrain-water.png');
+      border-radius: ${waterRadius}%;
+      background-image: url('styles/images/terrain-water-3.jpg');
       background-repeat: repeat;
       background-size: cover;`;
 
@@ -356,6 +360,7 @@ $(() => {
       const stickFactor = 4;
 
       const element = document.createElement('div');
+      element.classList.add('.fade-in');
 
       element.style.cssText = `
       position: absolute;
@@ -399,27 +404,19 @@ $(() => {
 
   function addRandomObstical() {
     const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
+    console.log('Value selected on instruc page: ' + setObsticalNumber);
 
     for( let i = 0; i < setObsticalNumber; i++ ){
       const randomObsticalIndex = Math.floor(Math.random() * obsticalTypes.length);
       const randomObstical = obsticalTypes[randomObsticalIndex];
       let randomTop = Math.floor(Math.random() * battleFieldObj.height);
-      console.log('this random tops are: ' + randomTop);
       let randomLeft = Math.floor(Math.random() * battleFieldObj.width);
-      console.log('this random lefts are: ' + randomLeft);
+
       //top and bottom must be > 0 and less than width/height -100
-      if(randomTop < 0 ){
-        randomTop += 101;
-      }
-      if(randomLeft < 0 ){
-        randomLeft += 101;
-      }
-      if(randomTop > (battleFieldObj.height - 100)){
-        randomTop -= 101;
-      }
-      if(randomLeft > (battleFieldObj.width - 100)){
-        randomLeft -= 101;
-      }
+      if(randomTop < 0 ) randomTop += 101;
+      if(randomLeft < 0 ) randomLeft += 101;
+      if(randomTop > (battleFieldObj.height - 100)) randomTop -= 101;
+      if(randomLeft > (battleFieldObj.width - 100)) randomLeft -= 101;
 
       let object = null;
 
@@ -440,22 +437,16 @@ $(() => {
         object: object,
         type: 'obstical'
       });
-      // if(positionIsOnBoard(object.top, object.left, 100, 100)){
-      //   //console.log(object);
-      // }
     }
     console.log(gameItems);
   }
-
-
-
 
   function updateScore(){
     const $playerOneHealth = $('#playerOneHealth');
     const $playerTwoHealth = $('#playerTwoHealth');
 
-    $playerOneHealth.attr('value', getPlayer(1).health);
-    $playerTwoHealth.attr('value', getPlayer(2).health);
+    $playerOneHealth.css('width', `${getPlayer(1).health}%`);
+    $playerTwoHealth.css('width', `${getPlayer(2).health}%`);
   }
 
   function checkForWin () {
@@ -520,12 +511,14 @@ $(() => {
       ((top + height) <= boardHeight) && ((left + width) <= boardWidth);
   }
 
-  //////- KEY DOWN IDENTIFIER -///////
-  //use this to determine what key has been pressed and assign correct function
+  //////////////////- KEY PRESS CONTROLL -//////////////////////
+  //////////////////////////////////////////////////////////////
+  //to determine what key has been pressed and assign correct function
 
   //start interval on key down which calls the move FUNCTION
-  //clear that interval on key up
 
+  // NOTE: appears to be a bug with the player 2 movement
+  //which causes the players tank to glitch and move on its own
   const keyState = {
     ArrowDown: false,
     ArrowUp: false,
@@ -639,6 +632,7 @@ $(() => {
     }, 100);
   }
 
+  //clear the key down interval on key up
   function keyUpIdentifier(e) {
     const key = e.originalEvent.key;
     switch(e.originalEvent.key) {
