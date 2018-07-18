@@ -41,34 +41,12 @@ $(() => {
       background-size: cover;`
   };
 
-  ///////- Add battlefield and Obsticals-////////////
+  ///////- Add battlefield-////////////
 
   const battleField = document.createElement('div');
   battleField.classList.add('battle-field');
   battleField.style.cssText = battleFieldObj.style;
   $body.append(battleField);
-
-
-
-  //
-  // class water extends gameItems {
-  //   name: 'Water',
-  //
-  //   style: `
-  //     position: absolute;
-  //     top: 150px;
-  //     left: 600px;
-  //     width: 100px;
-  //     height: 100px;
-  //     background-image: url('styles/images/terrain-water-2.png');
-  //     background-repeat: repeat;
-  //     background-size: cover;`,
-  //
-  //   dimensions: {
-  //     width: 100,
-  //     height: 100
-  //   }
-  // }
 
   class gameItem {
     constructor(name, top, left, width, height, type, domElement, movementSpeed, direction) {
@@ -136,15 +114,51 @@ $(() => {
       }
 
       const overlappingObjects = objectOverlapsObjects(this, newPosition, gameItems);
-      //console.log('the shooter at move is: ' + shooter);
-      //console.log('the overlappingObj at move is: ', overlappingObjects[0].name);
-
       // NOTE: this will be where we decide what to do with other obsticals
+      //  1)compare who is overlapping
+      //  2) if tank overlaps water, game over for tank.
+      //  3) if tank hits mountain then stop collision (this is already happening)
+      //  4) if tank hits marsh then slow the tank DOWN
+      //  5) if bullet hits water then do nothing
+      //  6) if bullet hits marsh then do nothing
+
+
       if(overlappingObjects){
-        return overlappingObjects;
-        // if(overlappingObjects[0].name !== 'Player 2'){
-        //   //console.log('new position overlaps another object', this);
-        // }
+        const collidedWith = overlappingObjects[0].object.name;
+        const collidingItemType = this.type;
+
+        console.log('the colliding object is: ' + collidingItemType);
+        console.log('the overlappingObj at move is: ', collidedWith);
+
+        if(collidedWith === 'Water' && collidingItemType === 'tank'){
+          window.alert(`Game over! ${this.name} went into the water`);
+
+        }else if((collidedWith === 'Water' || collidedWith === 'Marsh') && collidingItemType === 'bullet'){
+          const nothing = 'do nothing';
+        }else if(collidedWith === 'Marsh' && collidingItemType === 'tank'){
+          const stickFactor = overlappingObjects[0].object.movementSpeed;
+
+          switch(direction){
+            case 'left':
+              newPosition.left += speed - stickFactor;
+              this.direction = 'left';
+              break;
+            case 'right':
+              newPosition.left -= speed - stickFactor;
+              this.direction = 'right';
+              break;
+            case 'up':
+              newPosition.top += speed - stickFactor;
+              this.direction = 'up';
+              break;
+            case 'down':
+              newPosition.top -= speed - stickFactor;
+              this.direction = 'down';
+              break;
+          }
+        }else{
+          return overlappingObjects;
+        }
       }
 
       //console.log('Moving to', newPosition);
@@ -163,7 +177,7 @@ $(() => {
 
       const width = 5;
       const height = 5;
-      const bulletSpeed = 2;
+      const bulletSpeed = 1;
 
       const element = document.createElement('div');
       element.classList.add('bullet');
@@ -212,17 +226,17 @@ $(() => {
 
         if(moveResult[0].object.name === 'Player 1'){
           getPlayer(1).health -= this.damage;
-          console.log('Player 1s health is: '+ getPlayer(1).health);
+          //console.log('Player 1s health is: '+ getPlayer(1).health);
         }else if(moveResult[0].object.name === 'Player 2'){
           getPlayer(2).health -= this.damage;
-          console.log('Player 2s health is: '+ getPlayer(2).health);
+          //console.log('Player 2s health is: '+ getPlayer(2).health);
         }
 
         this.remove();
         gameItems = gameItems.filter(gameItem => gameItem.object !== this);
-        console.log(this);
-        console.log('the game items are: ',gameItems);
-        console.log('bullet collided with another object: ', moveResult[0].object.name);
+        // console.log(this);
+        // console.log('the game items are: ',gameItems);
+        // console.log('bullet collided with another object: ', moveResult[0].object.name);
         //console.log('bullet was removed');
         // COLLISION!! returns an array of what bullet collided with.
       }else{
@@ -258,13 +272,14 @@ $(() => {
       top: ${startTop}px;
       left: ${startLeft}px;
       width: ${width}px;
-      height: ${height}px;`;
+      height: ${height}px;
+      z-index: 1;`;
 
       const imageStyle = 'style="position: relative; width: 101px; height: 25px; z-index: 1; padding-right: 20px;"';
 
       element.innerHTML = `<img ${imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
 
-      const movementPoints = 20;
+      const movementPoints = 10;
 
       super(name, startTop, startLeft, width, height, 'tank', element, movementPoints, direction);
 
@@ -280,13 +295,9 @@ $(() => {
     const left = this.bulletStart(this.top, this.left, this.direction)[1];
 
     const bullet = new Bullet(top, left, this.direction);
-    console.log('bullet given direction is: ' + this.direction);
+    //console.log('bullet given direction is: ' + this.direction);
     gameItems.push({name: 'bullet', object: bullet, type: 'bullet'});
     bullet.fly(this.name);
-  };
-
-  Tank.prototype.updateHealth = function (){
-    this.health -= this.bullet.damage;
   };
 
   Tank.prototype.bulletStart = function(top, left, direction){
@@ -352,9 +363,10 @@ $(() => {
 
   class Marsh extends gameItem {
     constructor (startTop, startLeft) {
-      const name = 'Water';
+      const name = 'Marsh';
       const width = 100;
       const height = 100;
+      const stickFactor = 4;
 
       const element = document.createElement('div');
       element.classList.add('tank');
@@ -369,7 +381,7 @@ $(() => {
       background-repeat: repeat;
       background-size: cover;`;
 
-      super(name, startTop, startLeft, width, height, 'obstical', element, 0, 0);
+      super(name, startTop, startLeft, width, height, 'obstical', element, stickFactor, 0);
     }
   }
   ////////////////////////////////////////
@@ -395,13 +407,13 @@ $(() => {
   });
 
   gameItems.push({
-    name: 'Mountain',
+    name: 'Water',
     object: new Water(300, 0),
     type: 'obstical'
   });
 
   gameItems.push({
-    name: 'Mountain',
+    name: 'Marsh',
     object: new Marsh(30, 600),
     type: 'obstical'
   });
