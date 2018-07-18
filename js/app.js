@@ -12,7 +12,7 @@ $(() => {
   // const $playerTwoHealth = $('#playerTwoHealth');
 
   //let bullets = [];
-  const gameItems = [];
+  let gameItems = [];
 
   function getGameItems(itemType) {
     return gameItems.filter(item => item.type === itemType);
@@ -289,7 +289,7 @@ $(() => {
 
   //repeatedly moves a bullet accross the screen
   Bullet.prototype.fly = function(shooter) {
-    console.log('the shooter at fly is: ', shooter);
+    //console.log('the shooter at fly is: ', shooter);
     this.move(this.direction);
 
     setTimeout(() => {
@@ -302,7 +302,19 @@ $(() => {
         //console.log('shooter collides with bullet: '+ (shooter === moveResult[0].object.name));
         // if(shooter === moveResult[0].object.name){
         // }
+
+        if(moveResult[0].object.name === 'Player 1'){
+          getPlayer(1).health -= this.damage;
+          console.log('Player 1s health is: '+ getPlayer(1).health);
+        }else if(moveResult[0].object.name === 'Player 2'){
+          getPlayer(2).health -= this.damage;
+          console.log('Player 2s health is: '+ getPlayer(2).health);
+        }
+
         this.remove();
+        gameItems = gameItems.filter(bullet => bullet !== this);
+        console.log(this);
+        console.log(gameItems);
         console.log('bullet collided with another object: ', moveResult[0].object.name);
         //console.log('bullet was removed');
         // COLLISION!! returns an array of what bullet collided with.
@@ -318,18 +330,9 @@ $(() => {
     $(this.element).remove();
     // Remove bullet from the bullets array
     // NOTE: update this so we are looking at the gameItems array
-  //  bullets = bullets.filter(bullet => bullet !== this);
   };
 
-  // Bullet.prototype.reduceLife = function (target) {
-  //   if(target === 'playerOne'){
-  //     playerOneHealth -= this.damage;
-  //     $playerOneHealth.attr('value', playerOneHealth);
-  //   }else if (target === 'playerTwo'){
-  //     playerTwoHealth -= this.damage;
-  //     $playerTwoHealth.attr('value', playerTwoHealth);
-  //   }
-  // };
+
 
   /////- COLLISION DETECTION -/////////
   // Bullet.prototype.detectCollision = function(targetObj) {
@@ -396,7 +399,7 @@ $(() => {
     //console.log('this at fired bullet is: ', this);
     const bullet = new Bullet(this.top + 65, this.left + 65, this.direction);
     //console.log('bullet given direction is: ' + this.direction);
-    gameItems.push({object: bullet, type: 'bullet'});
+    gameItems.push({name: 'bullet', object: bullet, type: 'bullet'});
     bullet.fly(this.name);
   };
 
@@ -541,20 +544,6 @@ $(() => {
     }
 
 
-    // if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
-    //   createBullet(e.originalEvent.key);
-    // if(e.originalEvent.key === 'ArrowDown' ||
-    //   e.originalEvent.key === 'ArrowUp' ||
-    //   e.originalEvent.key === 'ArrowLeft' ||
-    //   e.originalEvent.key === 'ArrowRight'){
-    //   checkForObsticals(playerOne, e.originalEvent.key);
-    // }
-    // if(e.originalEvent.key === 'a' ||
-    //   e.originalEvent.key === 'd' ||
-    //   e.originalEvent.key === 's' ||
-    //   e.originalEvent.key === 'w'){
-    //   checkForObsticals(playerTwo, e.originalEvent.key);
-    // }
   }
 
 
@@ -864,3 +853,32 @@ $(() => {
 //   if(this === playerTwo)  otherPlayer = playerOne;
 //   return otherPlayer;
 // };
+
+//////- OLD REDUCE LIFE FUNCTION --//////
+// Bullet.prototype.reduceLife = function (target) {
+//   if(target === 'playerOne'){
+//     playerOneHealth -= this.damage;
+//     $playerOneHealth.attr('value', playerOneHealth);
+//   }else if (target === 'playerTwo'){
+//     playerTwoHealth -= this.damage;
+//     $playerTwoHealth.attr('value', playerTwoHealth);
+//   }
+// };
+
+
+//////////- OLD KEY IDENTIFIER FUNCTION -///////////////////
+
+// if(e.originalEvent.key === ' ' || e.originalEvent.key === 'Shift' )
+//   createBullet(e.originalEvent.key);
+// if(e.originalEvent.key === 'ArrowDown' ||
+//   e.originalEvent.key === 'ArrowUp' ||
+//   e.originalEvent.key === 'ArrowLeft' ||
+//   e.originalEvent.key === 'ArrowRight'){
+//   checkForObsticals(playerOne, e.originalEvent.key);
+// }
+// if(e.originalEvent.key === 'a' ||
+//   e.originalEvent.key === 'd' ||
+//   e.originalEvent.key === 's' ||
+//   e.originalEvent.key === 'w'){
+//   checkForObsticals(playerTwo, e.originalEvent.key);
+// }
