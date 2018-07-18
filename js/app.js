@@ -326,6 +326,52 @@ $(() => {
       super(name, startTop, startLeft, width, height, 'obstical', element, 0, 0);
     }
   }
+
+  class Water extends gameItem {
+    constructor (startTop, startLeft) {
+      const name = 'Water';
+      const width = 100;
+      const height = 100;
+
+      const element = document.createElement('div');
+      element.classList.add('tank');
+
+      element.style.cssText = `
+      position: absolute;
+      top: ${startTop}px;
+      left: ${startLeft}px;
+      width: ${width}px;
+      height: ${height}px;
+      background-image: url('styles/images/terrain-water.png');
+      background-repeat: repeat;
+      background-size: cover;`;
+
+      super(name, startTop, startLeft, width, height, 'obstical', element, 0, 0);
+    }
+  }
+
+  class Marsh extends gameItem {
+    constructor (startTop, startLeft) {
+      const name = 'Water';
+      const width = 100;
+      const height = 100;
+
+      const element = document.createElement('div');
+      element.classList.add('tank');
+
+      element.style.cssText = `
+      position: absolute;
+      top: ${startTop}px;
+      left: ${startLeft}px;
+      width: ${width}px;
+      height: ${height}px;
+      background-image: url('styles/images/terrain-wetland.jpg');
+      background-repeat: repeat;
+      background-size: cover;`;
+
+      super(name, startTop, startLeft, width, height, 'obstical', element, 0, 0);
+    }
+  }
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
@@ -345,6 +391,18 @@ $(() => {
   gameItems.push({
     name: 'Mountain',
     object: new Mountain(100, 400),
+    type: 'obstical'
+  });
+
+  gameItems.push({
+    name: 'Mountain',
+    object: new Water(300, 0),
+    type: 'obstical'
+  });
+
+  gameItems.push({
+    name: 'Mountain',
+    object: new Marsh(30, 600),
     type: 'obstical'
   });
 
