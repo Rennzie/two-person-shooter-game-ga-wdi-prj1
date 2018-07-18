@@ -1,4 +1,3 @@
-
 ////////////////////////////////////
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
@@ -6,9 +5,6 @@
 $(() => {
 
   const $body = $('body');
-  //const $battleField = $('.battle-field');
-  //const $playerOneHealth = $('#playerOneHealth');
-  // const $playerTwoHealth = $('#playerTwoHealth');
 
   let gameItems = [];
 
@@ -23,10 +19,8 @@ $(() => {
   const battleFieldObj = {
     name: 'BattleField',
 
-    dimensions: {
-      width: 900,
-      height: 700
-    },
+    width: 900,
+    height: 700,
 
     style: `
       position: relative;
@@ -114,14 +108,6 @@ $(() => {
       }
 
       const overlappingObjects = objectOverlapsObjects(this, newPosition, gameItems);
-      // NOTE: this will be where we decide what to do with other obsticals
-      //  1)compare who is overlapping
-      //  2) if tank overlaps water, game over for tank.
-      //  3) if tank hits mountain then stop collision (this is already happening)
-      //  4) if tank hits marsh then slow the tank DOWN
-      //  5) if bullet hits water then do nothing
-      //  6) if bullet hits marsh then do nothing
-
 
       if(overlappingObjects){
         const collidedWith = overlappingObjects[0].object.name;
@@ -388,6 +374,8 @@ $(() => {
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
 
+
+  // add board items
   gameItems.push({
     name: 'Player 1',
     object: new Tank(0, 0, 'Player 1', 'blue', 'right'),
@@ -395,28 +383,65 @@ $(() => {
   });
   gameItems.push({
     name: 'Player 2',
-    object: new Tank(battleFieldObj.dimensions.height - 60, battleFieldObj.dimensions.width - 60,
+    object: new Tank(battleFieldObj.height - 60, battleFieldObj.width - 60,
       'Player 2', 'red', 'left'),
     type: 'tank'
   });
 
-  gameItems.push({
-    name: 'Mountain',
-    object: new Mountain(100, 400),
-    type: 'obstical'
-  });
+  //randomly adds in any number of obstacles
+  //  --> 1) randomly choose, Mountain, Water or Marsh
+  //  --> 2) randomly generate the start top and startleft coordinates
 
-  gameItems.push({
-    name: 'Water',
-    object: new Water(300, 0),
-    type: 'obstical'
-  });
+  const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
 
-  gameItems.push({
-    name: 'Marsh',
-    object: new Marsh(30, 600),
-    type: 'obstical'
-  });
+  for( let i = 0; i <= 3; i++ ){
+    const randomObsticalIndex = Math.floor(Math.random() * obsticalTypes.length);
+    const randomObstical = obsticalTypes[randomObsticalIndex]
+    const randomTop = Math.floor(Math.random() * battleFieldObj.width  ) - 100;
+    const randomLeft = Math.floor(Math.random() * battleFieldObj.height )  - 100;
+    let object = null;
+
+    console.log('Random leftstart is: ' + randomLeft);
+    console.log('Random topstart is: ' + randomTop);
+
+    switch(randomObstical){
+      case 'Mountain':
+        object = new Mountain(randomTop, randomLeft);
+        break;
+      case 'Water':
+        object = new Water(randomTop, randomLeft);
+        break;
+      case 'Marsh':
+        object = new Marsh(randomTop, randomLeft);
+        break;
+    }
+    gameItems.push({
+      name: randomObstical,
+      object: object,
+      type: 'obstical'
+    });
+
+  }
+
+  console.log(gameItems);
+
+  // gameItems.push({
+  //   name: 'Mountain',
+  //   object: new Mountain(100, 400),
+  //   type: 'obstical'
+  // });
+  //
+  // gameItems.push({
+  //   name: 'Water',
+  //   object: new Water(300, 0),
+  //   type: 'obstical'
+  // });
+  //
+  // gameItems.push({
+  //   name: 'Marsh',
+  //   object: new Marsh(30, 600),
+  //   type: 'obstical'
+  // });
 
   function updateScore(){
     const $playerOneHealth = $('#playerOneHealth');
@@ -424,6 +449,15 @@ $(() => {
 
     $playerOneHealth.attr('value', getPlayer(1).health);
     $playerTwoHealth.attr('value', getPlayer(2).health);
+  }
+
+  function checkForWin () {
+    if (getPlayer(1).health === 0){
+      window.alert('Player Two Won');
+    }
+    if (getPlayer(2).health === 0){
+      window.alert('Player One Won');
+    }
   }
 
   function updateDOM() {
@@ -436,20 +470,8 @@ $(() => {
   }
   setInterval(() => updateDOM(), 1.0 / 30.0);
 
-  // let playerOneHealth = playerOne.health;
-  // let playerTwoHealth = playerTwo.health;
-  //
-  function checkForWin () {
-    if (getPlayer(1).health === 0){
-      window.alert('Player Two Won');
-    }
-    if (getPlayer(2).health === 0){
-      window.alert('Player One Won');
-    }
-  }
 
   //////- CHECKS FOR COLLISION -////////
-
   // Gives either an array of overlapping objects
   // or false if there are none.
   function objectOverlapsObjects(object, objNewPos, objectArray) {
@@ -485,8 +507,8 @@ $(() => {
   }
 
   function positionIsOnBoard(top, left, width, height){
-    const boardHeight = battleFieldObj.dimensions.height;
-    const boardWidth = battleFieldObj.dimensions.width;
+    const boardHeight = battleFieldObj.height;
+    const boardWidth = battleFieldObj.width;
 
     return (top >= 0) && (left >= 0) &&
       ((top + height) <= boardHeight) && ((left + width) <= boardWidth);
