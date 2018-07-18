@@ -230,11 +230,13 @@ $(() => {
       //console.log('the shooter at move is: ' + shooter);
       //console.log('the overlappingObj at move is: ', overlappingObjects[0].name);
 
+      // BUG: the tank shoot itself (SOLVED)
+      // NOTE: this will be where we decide what to do with other obsticals
       if(overlappingObjects){
-        if(overlappingObjects[0].name !== 'Player 1'){
-          console.log('new position overlaps another object', this);
-          return overlappingObjects;
-        }
+        return overlappingObjects;
+        // if(overlappingObjects[0].name !== 'Player 2'){
+        //   //console.log('new position overlaps another object', this);
+        // }
       }
 
       //console.log('Moving to', newPosition);
@@ -253,7 +255,7 @@ $(() => {
 
       const width = 5;
       const height = 5;
-      const bulletSpeed = 1.5;
+      const bulletSpeed = 1;
 
       const element = document.createElement('div');
       element.classList.add('bullet');
@@ -288,7 +290,7 @@ $(() => {
   }
 
   //repeatedly moves a bullet accross the screen
-  Bullet.prototype.fly = function(shooter) {
+  Bullet.prototype.fly = function() {
     //console.log('the shooter at fly is: ', shooter);
     this.move(this.direction);
 
@@ -297,11 +299,9 @@ $(() => {
       if(!moveResult) {
         //console.log('bullet is within the board: ' + moveResult);
         this.remove();
+        gameItems = gameItems.filter(gameItem => gameItem.object !== this);
         // Remove bullet! Is true when bullets hits the edge of the screen
       } else if (Array.isArray(moveResult)) {
-        //console.log('shooter collides with bullet: '+ (shooter === moveResult[0].object.name));
-        // if(shooter === moveResult[0].object.name){
-        // }
 
         if(moveResult[0].object.name === 'Player 1'){
           getPlayer(1).health -= this.damage;
@@ -312,29 +312,28 @@ $(() => {
         }
 
         this.remove();
-        gameItems = gameItems.filter(bullet => bullet !== this);
+        gameItems = gameItems.filter(gameItem => gameItem.object !== this);
         console.log(this);
-        console.log(gameItems);
+        console.log('the game items are: ',gameItems);
         console.log('bullet collided with another object: ', moveResult[0].object.name);
         //console.log('bullet was removed');
         // COLLISION!! returns an array of what bullet collided with.
       }else{
-        this.fly(shooter);
+        this.fly();
       }
     }, 1.0 / 30.0);
   };
-  // NOTE: NEED TO REMOVE THE BULLET FROM GAME ITEMS ON COLLISION
   ///UPDATING THE BULLETS METHOD FOR UPDATING THE DOM!!!
-  Bullet.prototype.removeBullet = function () {
-    // Remove bullet from DOM
-    $(this.element).remove();
-    // Remove bullet from the bullets array
-    // NOTE: update this so we are looking at the gameItems array
-  };
+  // Bullet.prototype.removeBullet = function () {
+  //   // Remove bullet from DOM
+  //   $(this.element).remove();
+  //   // Remove bullet from the bullets array
+  //   // NOTE: update this so we are looking at the gameItems array
+  // };
 
 
 
-  /////- COLLISION DETECTION -/////////
+  /////////////- COLLISION DETECTION -/////////
   // Bullet.prototype.detectCollision = function(targetObj) {
   //   //console.log('Logged at detectCollision():', targetObj.tankPosition);
   //   if(positionsOverlap(this.bulletPosition, targetObj.tankPosition) ){
@@ -397,14 +396,31 @@ $(() => {
   ////////- firing bullets -////////////
   Tank.prototype.addBullet = function (){
     //console.log('this at fired bullet is: ', this);
-    const bullet = new Bullet(this.top + 65, this.left + 65, this.direction);
-    //console.log('bullet given direction is: ' + this.direction);
+    // const bullet = new Bullet(this.top + 30, this.left + 61, this.direction);
+    const top = this.bulletStart(this.top, this.left, this.direction)[0];
+    const left = this.bulletStart(this.top, this.left, this.direction)[1];
+
+    const bullet = new Bullet(top, left, this.direction);
+    console.log('bullet given direction is: ' + this.direction);
     gameItems.push({name: 'bullet', object: bullet, type: 'bullet'});
     bullet.fly(this.name);
   };
 
   Tank.prototype.updateHealth = function (){
     this.health -= this.bullet.damage;
+  };
+
+  Tank.prototype.bulletStart = function(top, left, direction){
+    switch(direction){
+      case 'right':
+        return [top + 33, left + 61];
+      case 'left':
+        return [top + 33, left - 10];
+      case 'up':
+        return [top - 10, left + 33];
+      case 'down':
+        return [top + 61, left + 33];
+    }
   };
 
   //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -491,21 +507,6 @@ $(() => {
     return (top >= 0) && (left >= 0) &&
       ((top + height) <= boardHeight) && ((left + width) <= boardWidth);
   }
-
-  //checks water and marsh first then passes to the Tank move methods
-  // function checkForObsticals (tankObj, keyPress) {
-  //   if(positionsOverlap(tankObj.tankPosition, waterPos)){
-  //     //console.log('tank drove into water');
-  //     window.alert(`Tank ${tankObj.name} drove into the water! GAME OVER!!!`);
-  //     tankObj.moveTank(keyPress);
-  //   }else if(positionsOverlap(tankObj.tankPosition, mountainPos)){
-  //     console.log(`Tank ${tankObj.name} drove into a mountain`);
-  //     tankObj.moveTank(keyPress);
-  //   }else{
-  //     tankObj.moveTank(keyPress);
-  //   }
-  // }
-
 
   //////- KEY DOWN IDENTIFIER -///////
   //use this to determine what key has been pressed and assign correct function
