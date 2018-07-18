@@ -8,11 +8,11 @@ $(() => {
 
   const $body = $('body');
   //const $battleField = $('.battle-field');
-  const $playerOneHealth = $('#playerOneHealth');
-  const $playerTwoHealth = $('#playerTwoHealth');
+  //const $playerOneHealth = $('#playerOneHealth');
+  // const $playerTwoHealth = $('#playerTwoHealth');
 
-  let bullets = [];
-  let gameItems = [];
+  //let bullets = [];
+  const gameItems = [];
 
   function getGameItems(itemType) {
     return gameItems.filter(item => item.type === itemType);
@@ -201,6 +201,7 @@ $(() => {
 
       const speed = this.movementSpeed;
 
+      // console.log('the moving type is: ', this.type);
       switch(direction){
         case 'left':
           newPosition.left -= speed;
@@ -226,12 +227,13 @@ $(() => {
       }
 
       const overlappingObjects = objectOverlapsObjects(this, newPosition, gameItems);
+      //console.log('the shooter at move is: ' + shooter);
+      //console.log('the overlappingObj at move is: ', overlappingObjects[0].name);
 
       if(overlappingObjects){
-        if(this.type !== 'bullet'){
+        if(overlappingObjects[0].name !== 'Player 1'){
           console.log('new position overlaps another object', this);
           return overlappingObjects;
-
         }
       }
 
@@ -287,7 +289,7 @@ $(() => {
 
   //repeatedly moves a bullet accross the screen
   Bullet.prototype.fly = function(shooter) {
-    //console.log('the shooter is: ', shooter);
+    console.log('the shooter at fly is: ', shooter);
     this.move(this.direction);
 
     setTimeout(() => {
@@ -298,25 +300,25 @@ $(() => {
         // Remove bullet! Is true when bullets hits the edge of the screen
       } else if (Array.isArray(moveResult)) {
         //console.log('shooter collides with bullet: '+ (shooter === moveResult[0].object.name));
-        if(shooter === moveResult[0].object.name){
-          //this.fly(shooter);
-          //console.log('bullet collided with another object: ', moveResult[0].object.name);
-          //this.fly(shooter);
-        }
+        // if(shooter === moveResult[0].object.name){
+        // }
+        this.remove();
+        console.log('bullet collided with another object: ', moveResult[0].object.name);
+        //console.log('bullet was removed');
         // COLLISION!! returns an array of what bullet collided with.
       }else{
         this.fly(shooter);
       }
     }, 1.0 / 30.0);
   };
-
+  // NOTE: NEED TO REMOVE THE BULLET FROM GAME ITEMS ON COLLISION
   ///UPDATING THE BULLETS METHOD FOR UPDATING THE DOM!!!
   Bullet.prototype.removeBullet = function () {
     // Remove bullet from DOM
     $(this.element).remove();
     // Remove bullet from the bullets array
     // NOTE: update this so we are looking at the gameItems array
-    bullets = bullets.filter(bullet => bullet !== this);
+  //  bullets = bullets.filter(bullet => bullet !== this);
   };
 
   // Bullet.prototype.reduceLife = function (target) {
@@ -392,7 +394,7 @@ $(() => {
   ////////- firing bullets -////////////
   Tank.prototype.addBullet = function (){
     //console.log('this at fired bullet is: ', this);
-    const bullet = new Bullet(this.top + 30, this.left + 30, this.direction);
+    const bullet = new Bullet(this.top + 65, this.left + 65, this.direction);
     //console.log('bullet given direction is: ' + this.direction);
     gameItems.push({object: bullet, type: 'bullet'});
     bullet.fly(this.name);
