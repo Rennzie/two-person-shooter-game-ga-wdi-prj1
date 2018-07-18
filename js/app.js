@@ -17,8 +17,6 @@ $(() => {
   }
 
   const battleFieldObj = {
-    name: 'BattleField',
-
     width: 900,
     height: 700,
 
@@ -35,12 +33,6 @@ $(() => {
       background-size: cover;`
   };
 
-  ///////- Add battlefield-////////////
-
-  const battleField = document.createElement('div');
-  battleField.classList.add('battle-field');
-  battleField.style.cssText = battleFieldObj.style;
-  $body.append(battleField);
 
   class gameItem {
     constructor(name, top, left, width, height, type, domElement, movementSpeed, direction) {
@@ -82,7 +74,6 @@ $(() => {
 
       const speed = this.movementSpeed;
 
-      // console.log('the moving type is: ', this.type);
       switch(direction){
         case 'left':
           newPosition.left -= speed;
@@ -103,7 +94,6 @@ $(() => {
       }
 
       if(!positionIsOnBoard(newPosition.top, newPosition.left, this.width, this.height)){
-        //console.log('new position not on board', newPosition);
         return false;
       }
 
@@ -120,7 +110,7 @@ $(() => {
           window.alert(`Game over! ${this.name} went into the water`);
 
         }else if((collidedWith === 'Water' || collidedWith === 'Marsh') && collidingItemType === 'bullet'){
-          const nothing = 'do nothing';
+          //const nothing = 'do nothing';
         }else if(collidedWith === 'Marsh' && collidingItemType === 'tank'){
           const stickFactor = overlappingObjects[0].object.movementSpeed;
 
@@ -146,8 +136,6 @@ $(() => {
           return overlappingObjects;
         }
       }
-
-      //console.log('Moving to', newPosition);
 
       this.left = newPosition.left;
       this.top = newPosition.top;
@@ -193,46 +181,34 @@ $(() => {
       border-radius: 100%;`;
 
       this.damage = 5;
+
+      //repeatedly moves a bullet accross the screen
+      this.fly = function() {
+        //console.log('the shooter at fly is: ', shooter);
+        this.move(this.direction);
+
+        setTimeout(() => {
+          const moveResult = this.move(this.direction);
+          if(!moveResult) {
+            this.remove();
+            gameItems = gameItems.filter(gameItem => gameItem.object !== this);
+          } else if (Array.isArray(moveResult)) {
+
+            if(moveResult[0].object.name === 'Player 1'){
+              getPlayer(1).health -= this.damage;
+            }else if(moveResult[0].object.name === 'Player 2'){
+              getPlayer(2).health -= this.damage;
+            }
+
+            this.remove();
+            gameItems = gameItems.filter(gameItem => gameItem.object !== this);
+          }else{
+            this.fly();
+          }
+        }, 1.0 / 30.0);
+      };
     }
   }
-
-  //repeatedly moves a bullet accross the screen
-  Bullet.prototype.fly = function() {
-    //console.log('the shooter at fly is: ', shooter);
-    this.move(this.direction);
-
-    setTimeout(() => {
-      const moveResult = this.move(this.direction);
-      if(!moveResult) {
-        //console.log('bullet is within the board: ' + moveResult);
-        this.remove();
-        gameItems = gameItems.filter(gameItem => gameItem.object !== this);
-        // Remove bullet! Is true when bullets hits the edge of the screen
-      } else if (Array.isArray(moveResult)) {
-
-        if(moveResult[0].object.name === 'Player 1'){
-          getPlayer(1).health -= this.damage;
-          //console.log('Player 1s health is: '+ getPlayer(1).health);
-        }else if(moveResult[0].object.name === 'Player 2'){
-          getPlayer(2).health -= this.damage;
-          //console.log('Player 2s health is: '+ getPlayer(2).health);
-        }
-
-        this.remove();
-        gameItems = gameItems.filter(gameItem => gameItem.object !== this);
-        // console.log(this);
-        // console.log('the game items are: ',gameItems);
-        // console.log('bullet collided with another object: ', moveResult[0].object.name);
-        //console.log('bullet was removed');
-        // COLLISION!! returns an array of what bullet collided with.
-      }else{
-        this.fly();
-      }
-    }, 1.0 / 30.0);
-  };
-
-  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  ///////////////- BULLET CONSTRUCTOR end -////////////////////////
 
   /////////////////- TANK CONSTRUCTOR -//////////////////////
   ///////////////////////////////////////////////////////////
@@ -270,37 +246,34 @@ $(() => {
       super(name, startTop, startLeft, width, height, 'tank', element, movementPoints, direction);
 
       this.health = 100;
+
+      ////////- firing bullets -////////////
+      this.addBullet = function (){
+        const top = this.bulletStart(this.top, this.left, this.direction)[0];
+        const left = this.bulletStart(this.top, this.left, this.direction)[1];
+
+        const bullet = new Bullet(top, left, this.direction);
+        gameItems.push({name: 'bullet', object: bullet, type: 'bullet'});
+        bullet.fly(this.name);
+      };
+
+      this.bulletStart = function(top, left, direction){
+        switch(direction){
+          case 'right':
+            return [top + 33, left + 61];
+          case 'left':
+            return [top + 33, left - 10];
+          case 'up':
+            return [top - 10, left + 33];
+          case 'down':
+            return [top + 61, left + 33];
+        }
+      };
     }
   }
 
-  ////////- firing bullets -////////////
-  Tank.prototype.addBullet = function (){
-    //console.log('this at fired bullet is: ', this);
-    // const bullet = new Bullet(this.top + 30, this.left + 61, this.direction);
-    const top = this.bulletStart(this.top, this.left, this.direction)[0];
-    const left = this.bulletStart(this.top, this.left, this.direction)[1];
-
-    const bullet = new Bullet(top, left, this.direction);
-    //console.log('bullet given direction is: ' + this.direction);
-    gameItems.push({name: 'bullet', object: bullet, type: 'bullet'});
-    bullet.fly(this.name);
-  };
-
-  Tank.prototype.bulletStart = function(top, left, direction){
-    switch(direction){
-      case 'right':
-        return [top + 33, left + 61];
-      case 'left':
-        return [top + 33, left - 10];
-      case 'up':
-        return [top - 10, left + 33];
-      case 'down':
-        return [top + 61, left + 33];
-    }
-  };
-
-  //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  ///////////////- TANK CONSTRUCTOR end -////////////////////////
+  ///////////////- OBSTICAL CONSTRUCTORS -////////////////////////
+  ////////////////////////////////////////////////////////////////
   class Mountain extends gameItem {
     constructor (startTop, startLeft) {
       const name = 'Mountain';
@@ -370,10 +343,17 @@ $(() => {
       super(name, startTop, startLeft, width, height, 'obstical', element, stickFactor, 0);
     }
   }
+
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
 
+  ///////- Add battlefield-////////////
+
+  const battleField = document.createElement('div');
+  battleField.classList.add('battle-field');
+  battleField.style.cssText = battleFieldObj.style;
+  $body.append(battleField);
 
   // add board items
   gameItems.push({
@@ -388,60 +368,45 @@ $(() => {
     type: 'tank'
   });
 
-  //randomly adds in any number of obstacles
-  //  --> 1) randomly choose, Mountain, Water or Marsh
-  //  --> 2) randomly generate the start top and startleft coordinates
 
-  const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
 
-  for( let i = 0; i <= 3; i++ ){
-    const randomObsticalIndex = Math.floor(Math.random() * obsticalTypes.length);
-    const randomObstical = obsticalTypes[randomObsticalIndex]
-    const randomTop = Math.floor(Math.random() * battleFieldObj.width  ) - 100;
-    const randomLeft = Math.floor(Math.random() * battleFieldObj.height )  - 100;
-    let object = null;
+  function addRandomObstical() {
+    const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
 
-    console.log('Random leftstart is: ' + randomLeft);
-    console.log('Random topstart is: ' + randomTop);
+    for( let i = 0; i < 10; i++ ){
+      const randomObsticalIndex = Math.floor(Math.random() * obsticalTypes.length);
+      const randomObstical = obsticalTypes[randomObsticalIndex];
+      const randomTop = Math.floor(Math.random() * battleFieldObj.width  ) - 100;
+      const randomLeft = Math.floor(Math.random() * battleFieldObj.height )  - 100;
+      let object = null;
 
-    switch(randomObstical){
-      case 'Mountain':
-        object = new Mountain(randomTop, randomLeft);
-        break;
-      case 'Water':
-        object = new Water(randomTop, randomLeft);
-        break;
-      case 'Marsh':
-        object = new Marsh(randomTop, randomLeft);
-        break;
+      switch(randomObstical){
+        case 'Mountain':
+          object = new Mountain(randomTop, randomLeft);
+          break;
+        case 'Water':
+          object = new Water(randomTop, randomLeft);
+          break;
+        case 'Marsh':
+          object = new Marsh(randomTop, randomLeft);
+          break;
+      }
+
+      if(positionIsOnBoard(object.top, object.left, 100, 100)){
+        console.log(object);
+        gameItems.push({
+          name: randomObstical,
+          object: object,
+          type: 'obstical'
+        });
+      }
     }
-    gameItems.push({
-      name: randomObstical,
-      object: object,
-      type: 'obstical'
-    });
-
   }
 
-  console.log(gameItems);
+  addRandomObstical();
 
-  // gameItems.push({
-  //   name: 'Mountain',
-  //   object: new Mountain(100, 400),
-  //   type: 'obstical'
-  // });
-  //
-  // gameItems.push({
-  //   name: 'Water',
-  //   object: new Water(300, 0),
-  //   type: 'obstical'
-  // });
-  //
-  // gameItems.push({
-  //   name: 'Marsh',
-  //   object: new Marsh(30, 600),
-  //   type: 'obstical'
-  // });
+
+
 
   function updateScore(){
     const $playerOneHealth = $('#playerOneHealth');
