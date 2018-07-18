@@ -9,13 +9,38 @@
     <title>Tank Wars</title>
   </head>
   <body>
-    <div  class="health">
-      <label for="playerOneHealth">Player One</label>
-      <progress id="playerOneHealth" value="100" max="100">0%</progress>
 
-      <label for="playerTwoHealth">Player Two</label>
-      <progress id="playerTwoHealth"value="100" max="100">0%</progress>
-    </div>
+    <header>
+      <h1>Battle Command</h1>
+
+      <p>press <span>ENTER</span> to begin</p>
+    </header>
+
+    <section class="game-start">
+      <div class="story-instructions">
+        <img src="./styles/images/commander-binoculars.jpg" alt="">
+        <div class="instructions">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+        </div>
+
+        <div class="actions">
+          <input id="set-obsticals" type="number" name="" value="">
+          <button id="begin-game" type="button" name="button">Click to Start</button>
+        </div>
+      </div>
+    </section>
+
+    <main class="battle-screen displayNone">
+
+      <div  class="health">
+        <label for="playerOneHealth">Player One</label>
+        <progress id="playerOneHealth" value="100" max="100">0%</progress>
+
+        <label for="playerTwoHealth">Player Two</label>
+        <progress id="playerTwoHealth"value="100" max="100">0%</progress>
+      </div>
+    </main>
 
   </body>
 </html>

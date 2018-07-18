@@ -3,14 +3,44 @@
 ////////////////////////////////////
 
 $(() => {
+  ////////////////////////////////////
+  ///////- START SCREEN -//////////
+  ////////////////////////////////////
+  const header = document.querySelector('header');
+  // NOTE: nothing too special, the screen is hidden when the enter key is pressed
 
-  const $body = $('body');
+  ////////////////////////////////////
+  ///////- INSTRUCTION SCREEN -//////////
+  ////////////////////////////////////
+  const instrucScreen = document.querySelector('.game-start');
+  const startBtn = document.querySelector('#begin-game');
+  const obsticalCount = document.querySelector('#set-obsticals');
+  let setObsticalNumber;
+
+  obsticalCount.addEventListener('change', () => {
+    setObsticalNumber = event.target.value;
+    console.log(setObsticalNumber);
+  });
+
+
+
+  startBtn.addEventListener('click', startGame);
+  ////////////////////////////////////
+  ///////- BATTLEFIELD SCREEN -//////////
+  ////////////////////////////////////
+
+  function startGame(){
+    instrucScreen.style.display = 'none';
+    $main.show();
+    setTimeout(function () {
+      addRandomObstical();
+    }, 2000);
+  }
+
+  const $main = $('.battle-screen');
+  $main.cssText = 'display: none';
 
   let gameItems = [];
-
-  // function getGameItems(itemType) {
-  //   return gameItems.filter(item => item.type === itemType);
-  // }
 
   function getPlayer(number) {
     return gameItems.filter(item => item.name === `Player ${number}`)[0].object;
@@ -281,7 +311,6 @@ $(() => {
       const height = 100;
 
       const element = document.createElement('div');
-      element.classList.add('tank');
 
       element.style.cssText = `
       position: absolute;
@@ -304,7 +333,6 @@ $(() => {
       const height = 100;
 
       const element = document.createElement('div');
-      element.classList.add('tank');
 
       element.style.cssText = `
       position: absolute;
@@ -328,7 +356,6 @@ $(() => {
       const stickFactor = 4;
 
       const element = document.createElement('div');
-      element.classList.add('tank');
 
       element.style.cssText = `
       position: absolute;
@@ -348,12 +375,12 @@ $(() => {
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
 
-  ///////- Add battlefield-////////////
+  ///////- Add battlefield and obsticals-////////////
 
   const battleField = document.createElement('div');
   battleField.classList.add('battle-field');
   battleField.style.cssText = battleFieldObj.style;
-  $body.append(battleField);
+  $main.append(battleField);
 
   // add board items
   gameItems.push({
@@ -373,11 +400,27 @@ $(() => {
   function addRandomObstical() {
     const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
 
-    for( let i = 0; i < 10; i++ ){
+    for( let i = 0; i < setObsticalNumber; i++ ){
       const randomObsticalIndex = Math.floor(Math.random() * obsticalTypes.length);
       const randomObstical = obsticalTypes[randomObsticalIndex];
-      const randomTop = Math.floor(Math.random() * battleFieldObj.width  ) - 100;
-      const randomLeft = Math.floor(Math.random() * battleFieldObj.height )  - 100;
+      let randomTop = Math.floor(Math.random() * battleFieldObj.height);
+      console.log('this random tops are: ' + randomTop);
+      let randomLeft = Math.floor(Math.random() * battleFieldObj.width);
+      console.log('this random lefts are: ' + randomLeft);
+      //top and bottom must be > 0 and less than width/height -100
+      if(randomTop < 0 ){
+        randomTop += 101;
+      }
+      if(randomLeft < 0 ){
+        randomLeft += 101;
+      }
+      if(randomTop > (battleFieldObj.height - 100)){
+        randomTop -= 101;
+      }
+      if(randomLeft > (battleFieldObj.width - 100)){
+        randomLeft -= 101;
+      }
+
       let object = null;
 
       switch(randomObstical){
@@ -392,18 +435,17 @@ $(() => {
           break;
       }
 
-      if(positionIsOnBoard(object.top, object.left, 100, 100)){
-        //console.log(object);
-        gameItems.push({
-          name: randomObstical,
-          object: object,
-          type: 'obstical'
-        });
-      }
+      gameItems.push({
+        name: randomObstical,
+        object: object,
+        type: 'obstical'
+      });
+      // if(positionIsOnBoard(object.top, object.left, 100, 100)){
+      //   //console.log(object);
+      // }
     }
+    console.log(gameItems);
   }
-
-  addRandomObstical();
 
 
 
@@ -434,7 +476,6 @@ $(() => {
     checkForWin();
   }
   setInterval(() => updateDOM(), 1.0 / 30.0);
-
 
   //////- CHECKS FOR COLLISION -////////
   // Gives either an array of overlapping objects
@@ -496,9 +537,9 @@ $(() => {
     d: false
   };
 
-
   function keyDownIdentifier(e){
     const key = e.originalEvent.key;
+    console.log(key);
     if(!keyState[key]){
       switch(key) {
         case 'ArrowDown':
@@ -538,6 +579,10 @@ $(() => {
           break;
         case 'Shift':
           getPlayer(2).addBullet();
+          break;
+        case 'Enter':
+          header.style.display = 'none';
+          instrucScreen.style.display = 'flex';
           break;
       }
     }
