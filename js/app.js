@@ -9,15 +9,14 @@ $(() => {
   // NOTE: nothing too special, the screen is hidden when the enter key is pressed
 
 
-  ////////////////////////////////////
+  ///////////////////////////////////////
   ///////- INSTRUCTION SCREEN -//////////
   const instrucScreen = document.querySelector('.game-start');
   const startBtn = document.querySelector('#begin-game');
   const selectObsticals = document.querySelector('#set-obsticals');
   const audio = document.createElement('audio');
   instrucScreen.appendChild(audio);
-
-
+  startBtn.addEventListener('click', startGame);
 
   let setObsticalNumber = 0;
 
@@ -42,7 +41,27 @@ $(() => {
     }, 17140);
   }
 
-  startBtn.addEventListener('click', startGame);
+  ///////////////////////////////////////
+  ///////- GAME END SCREEN -////////////
+  const endScreen = document.querySelector('.winner');
+  const announceEnd = document.querySelector('.winner h2');
+  const describeEnd = document.querySelector('.winner h3');
+  const resetBtn = document.querySelector('.re-play');
+
+  resetBtn.addEventListener('click', restart);
+
+  function restart() {
+    endScreen.style.display = 'none';
+    goToInstruct();
+  }
+
+  function gameEndPure(winner, loser){
+    endScreen.style.display = 'flex';
+    $main.hide();
+    announceEnd.innerText = `Victory to ${winner}!!`;
+    describeEnd.innerText = `${loser} could not stay composed during the heat of battle!`;
+  }
+
   ///////////////////////////////////////
   ///////- BATTLEFIELD SCREEN -//////////
 
@@ -55,7 +74,7 @@ $(() => {
 
   function startGame(){
     instrucScreen.style.display = 'none';
-    $main.show();
+    $main.css('display', 'flex');
     clearInterval(instructAudioIntID);
     audio.setAttribute('src', 'styles/audio/battle-track-sekater-game-play.mp3');
     audio.play();
@@ -562,10 +581,10 @@ $(() => {
 
   function checkForWin () {
     if (getPlayer(1).health === 0){
-      window.alert('Player Two Won');
+      gameEndPure(getPlayer(2).name, getPlayer(1).name);
     }
     if (getPlayer(2).health === 0){
-      window.alert('Player One Won');
+      gameEndPure(getPlayer(1).name, getPlayer(2).name);
     }
   }
 

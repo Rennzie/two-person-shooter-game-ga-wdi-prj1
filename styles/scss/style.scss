@@ -1,14 +1,14 @@
-// $gameGrey:
+ $gameGrey: rgb(105,105,105);
 
 @font-face {
-    font-family: 'Armalite';
-    font-size: normal;
-    src: url("../fonts/armalite.ttf") format("truetype");
+  font-family: 'Armalite';
+  font-size: normal;
+  src: url("../fonts/armalite.ttf") format("truetype");
 }
 @font-face {
-    font-family: 'Blackops';
-    font-size: normal;
-    src: url("../fonts/BlackOpsOne-Regular.ttf") format("truetype");
+  font-family: 'Blackops';
+  font-size: normal;
+  src: url("../fonts/BlackOpsOne-Regular.ttf") format("truetype");
 }
 
 body{
@@ -21,154 +21,184 @@ body{
   height: 100vh;
 
 
-
-header{
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  color: white;
-  height: 100vh;
-  width: 100vw;
-  background-color: black;
-  h1{
-    margin-top: 400px;
-    font-size: 70px;
-    font-family: 'Armalite', monospace;
-    text-shadow: 40px;
-    padding: 20px
-  }
-
-  P{
+  // NOTE: this is display none while working on the game over screen
+  header{
     display: flex;
     align-items: center;
-    span{
-      padding: 10px;
-      //font-size: 20px;
-      animation: pulseText 1s linear infinite;
-    }
-  }
-}
-
-@keyframes pulseText {
-  0% { font-size: 20px; }
-  25% { font-size: 22px; }
-  50% { font-size: 20px; }
-  75% { font-size: 18px; }
-  100% { font-size: 20px; }
-}
-
-section{
-  display: none;
-  background-image: url('../images/start-screen-abrams.jpg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  width: 100vw;
-
-  .story-instructions{
-    background-color: rgba(169,169,169, 0.8);
-    width: 800px;
-    height: 700px;
-    border-radius: 15px;
+    flex-direction: column;
     color: white;
-
-    .instructions{
-      padding: 20px;
-      p:first-child{
-        padding-bottom: 20px;
-      }
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    h1{
+      margin-top: 400px;
+      font-size: 70px;
+      font-family: 'Armalite', monospace;
+      text-shadow: 40px;
+      padding: 20px
     }
 
-    img{
-      position: relative;
-      top: -20px;
-      left: -20px;
-      border: 1px solid white;
-      width: 100px;
-      height: auto;
-    }
-    .actions{
+    P{
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
-      justify-content: space-around;
-      width: 400px;
-      margin: 0 auto;
-      input{
-        width: 50px;
-        height: 50px;
-      }
-
-      button{
-        width: 50px;
-        height: 50px;
+      span{
+        padding: 10px;
+        //font-size: 20px;
+        animation: pulseText 1s linear infinite;
       }
     }
   }
 
-}
+  @keyframes pulseText {
+    0% { font-size: 20px; }
+    25% { font-size: 22px; }
+    50% { font-size: 20px; }
+    75% { font-size: 18px; }
+    100% { font-size: 20px; }
+  }
 
-main{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  min-width: 100vw;
-  min-height: 100vh;
-}
-
-#tank {
-  transition: all 200ms;
-}
-
-footer{
-  display: none;
-
-  width: 900px;
-  height: 500px;
-
-
-}
-
-// .displayNone{
-//   display: none;
-// }
-
-  .health{
-    display: flex;
-    justify-content: space-around;
+  section{
+    display: none;
+    background-image: url('../images/start-screen-abrams.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
 
-    //margin: auto;
-    color: white;
+    .story-instructions{
+      background-color: rgba(169,169,169, 0.8);
+      width: 800px;
+      height: 700px;
+      border-radius: 15px;
+      color: white;
 
-    width: 900px;
+      .instructions{
+        padding: 20px;
+        p:first-child{
+          padding-bottom: 20px;
+        }
+      }
 
-    .player{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      img{
+        position: relative;
+        top: -20px;
+        left: -20px;
+        border: 1px solid white;
+        width: 100px;
+        height: auto;
+      }
+      .actions{
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+        width: 400px;
+        margin: 0 auto;
+        input{
+          width: 50px;
+          height: 50px;
+        }
 
-      .progress-wrapper{
-        border: 2px solid rgb(105,105,105);
-        width: 250px;
-        height: 20px;
-        border-radius: 15px;
-        margin: 20px;
-
-        .progressBar{
-          width: 100%;
-          height: 100%;
-          border-radius: 15px;
-          background-color: rgb(60, 0, 0)
+        button{
+          width: 50px;
+          height: 50px;
         }
       }
     }
+
+  }
+
+  main{
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    min-width: 100vw;
+    min-height: 100vh;
+
+    .health{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+      //margin: auto;
+      color: white;
+
+      width: 900px;
+
+      .player{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .progress-wrapper{
+          border: 2px solid $gameGrey;
+          width: 250px;
+          height: 20px;
+          border-radius: 15px;
+          margin: 20px;
+
+          .progressBar{
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            background-color: rgb(60, 0, 0)
+          }
+        }
+      }
+    }
+    #tank {
+      transition: all 200ms;
+    }
   }
 }
+footer{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+
+  width: 100vw;
+  height: 100vh;
+
+  h2{
+    font-family: 'Armalite', monospace;
+    font-size: 80px;
+  }
+
+  h3{
+    font-family: 'Blackops';
+    font-size: 40px;
+    padding: 40px;
+  }
+
+  .re-play{
+    font-size: 20px;
+    border: 2px solid white;
+    padding: 30px;
+    border-radius: 15px;
+    animation: pulse-button 1000ms linear infinite;
+  }
+  .re-play:hover{
+    cursor: pointer;
+    box-shadow: 5px 5px 1px 1px $gameGrey;
+    animation: 0;
+  }
+}
+
+@keyframes pulse-button {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.05); }
+  50% { transform: scale(1);}
+  75% { transform: scale(0.95); }
+  100% { transform: scale(1);}
+}
+
 
 .rotate {
   transition: transform 200ms;
@@ -190,13 +220,13 @@ footer{
   transform: rotate(0deg);
 }
 
-  .fade-in{
-    animation: fadeIn 4s infinite;
-  }
+.fade-in{
+  animation: fadeIn 4s infinite;
+}
 
-  // animations
-  @keyframes fadeIn {
-    0%    { opacity: 0; }
-    25%   { opacity: 1; }
-    100%   { opacity: 0; }
-  }
+// animations
+@keyframes fadeIn {
+  0%    { opacity: 0; }
+  25%   { opacity: 1; }
+  100%   { opacity: 0; }
+}

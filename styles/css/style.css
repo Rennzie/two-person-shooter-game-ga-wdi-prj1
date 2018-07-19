@@ -86,40 +86,74 @@ body {
           width: 50px;
           height: 50px; }
   body main {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
     min-width: 100vw;
     min-height: 100vh; }
-  body #tank {
-    transition: all 200ms; }
-  body footer {
-    display: none;
-    width: 900px;
-    height: 500px; }
-  body .health {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    color: white;
-    width: 900px; }
-    body .health .player {
+    body main .health {
       display: flex;
-      flex-direction: column;
-      align-items: center; }
-      body .health .player .progress-wrapper {
-        border: 2px solid dimgray;
-        width: 250px;
-        height: 20px;
-        border-radius: 15px;
-        margin: 20px; }
-        body .health .player .progress-wrapper .progressBar {
-          width: 100%;
-          height: 100%;
+      justify-content: space-around;
+      align-items: center;
+      color: white;
+      width: 900px; }
+      body main .health .player {
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
+        body main .health .player .progress-wrapper {
+          border: 2px solid dimgray;
+          width: 250px;
+          height: 20px;
           border-radius: 15px;
-          background-color: #3c0000; }
+          margin: 20px; }
+          body main .health .player .progress-wrapper .progressBar {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            background-color: #3c0000; }
+    body main #tank {
+      transition: all 200ms; }
 
+footer {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  width: 100vw;
+  height: 100vh; }
+  footer h2 {
+    font-family: 'Armalite', monospace;
+    font-size: 80px; }
+  footer h3 {
+    font-family: 'Blackops';
+    font-size: 40px;
+    padding: 40px; }
+  footer .re-play {
+    font-size: 20px;
+    border: 2px solid white;
+    padding: 30px;
+    border-radius: 15px;
+    animation: pulse-button 1000ms linear infinite; }
+  footer .re-play:hover {
+    cursor: pointer;
+    box-shadow: 5px 5px 1px 1px dimgray;
+    animation: 0; }
+
+@keyframes pulse-button {
+  0% {
+    transform: scale(1); }
+  25% {
+    transform: scale(1.05); }
+  50% {
+    transform: scale(1); }
+  75% {
+    transform: scale(0.95); }
+  100% {
+    transform: scale(1); } }
 .rotate, .up, .right, .down, .left {
   transition: transform 200ms; }
 
