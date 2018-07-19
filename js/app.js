@@ -13,13 +13,14 @@ $(() => {
   const instrucScreen = document.querySelector('.game-start');
   const startBtn = document.querySelector('#begin-game');
   const selectObsticals = document.querySelector('#set-obsticals');
-  const setObsticalNumber = parseInt(selectObsticals.options[selectObsticals.selectedIndex].value);
+
+  let setObsticalNumber = 0;
   // NOTE: need an onchange to grab this updated number when starting game
 
-  // obsticalCount.addEventListener('change', () => {
-  //   setObsticalNumber = event.target.value;
-  //   console.log(setObsticalNumber);
-  // });
+  selectObsticals.addEventListener('change', () => {
+    setObsticalNumber = parseInt(selectObsticals.options[selectObsticals.selectedIndex].value);
+    console.log(setObsticalNumber);
+  });
 
 
 
@@ -28,12 +29,18 @@ $(() => {
   ////////////////////////////////////
   ///////- BATTLEFIELD SCREEN -//////////
 
+  const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
+  const powerUpTypes = ['SpeedUp'];
+
   function startGame(){
     instrucScreen.style.display = 'none';
     $main.show();
-    addRandomObstical();
-    // setTimeout(function () {
-    // }, 2000);
+    addRandomObstical(obsticalTypes, setObsticalNumber);
+    setTimeout(function () {
+      addRandomObstical(powerUpTypes, 1);
+      getType('powerup').removeMe();
+      console.log(getType('powerup'));
+    }, 4000);
   }
 
   const $main = $('.battle-screen');
@@ -44,6 +51,11 @@ $(() => {
   function getPlayer(number) {
     return gameItems.filter(item => item.name === `Player ${number}`)[0].object;
   }
+
+  function getType(type) {
+    return gameItems.filter(item => item.type === type)[0].object;
+  }
+
 
   const battleFieldObj = {
     width: 900,
@@ -132,14 +144,23 @@ $(() => {
         const collidedWith = overlappingObjects[0].object.name;
         const collidingItemType = this.type;
 
-        console.log('the colliding object is: ' + collidingItemType);
-        console.log('the overlappingObj at move is: ', collidedWith);
+        //console.log('the colliding object is: ' + collidingItemType);
+        //console.log('the overlappingObj at move is: ', collidedWith);
 
         if(collidedWith === 'Water' && collidingItemType === 'tank'){
           window.alert(`Game over! ${this.name} went into the water`);
 
         }else if((collidedWith === 'Water' || collidedWith === 'Marsh') && collidingItemType === 'bullet'){
           //const nothing = 'do nothing';
+        }else if(collidedWith === 'SpeedUp'){
+
+          console.log('the movement speed was changed to 10 ', this.movementSpeed);
+          // NOTE: this need to actually change the tanks movement speed
+          this.movementSpeed = 50;
+
+          setTimeout(()=>{
+            this.movementSpeed = 10;
+          }, 5000);
         }else if(collidedWith === 'Marsh' && collidingItemType === 'tank'){
           const stickFactor = overlappingObjects[0].object.movementSpeed;
 
@@ -270,11 +291,13 @@ $(() => {
 
       element.innerHTML = `<img ${imageStyle} src="styles/images/TopDown_soldier_tank_turrent.png">`;
 
-      const movementPoints = 50;
+      const movementPoints = 10;
 
       super(name, startTop, startLeft, width, height, 'tank', element, movementPoints, direction);
 
       this.health = 100;
+
+      this.movingSpeed = 70;
 
       ////////- firing bullets -////////////
       this.addBullet = function (){
@@ -376,6 +399,39 @@ $(() => {
     }
   }
 
+  ///////////////- POWER-UP CONSTRUCTORS -////////////////////////
+  ////////////////////////////////////////////////////////////////
+  class SpeedUp extends gameItem {
+    constructor (startTop, startLeft) {
+      const name = 'SpeedUp';
+      const width = 50;
+      const height = 50;
+      const speedUp = 4;
+
+      const element = document.createElement('div');
+      element.classList.add('.fade-in');
+
+      element.style.cssText = `
+      position: absolute;
+      top: ${startTop}px;
+      left: ${startLeft}px;
+      width: ${width}px;
+      height: ${height}px;
+      background-image: url('styles/images/powerup-speed-burning-tyre.jpg');
+      background-repeat: repeat;
+      background-size: cover;`;
+
+      super(name, startTop, startLeft, width, height, 'powerup', element, speedUp, 0);
+
+      this.removeMe = function() {
+        setTimeout(() => {
+          this.remove();
+          gameItems = gameItems.filter(gameItem => gameItem.object !== this);
+        }, 5000);
+      };
+    }
+  }
+
   ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
   ////////////////////////////////////////
@@ -402,13 +458,14 @@ $(() => {
 
 
 
-  function addRandomObstical() {
-    const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
-    console.log('Value selected on instruc page: ' + setObsticalNumber);
 
-    for( let i = 0; i < setObsticalNumber; i++ ){
-      const randomObsticalIndex = Math.floor(Math.random() * obsticalTypes.length);
-      const randomObstical = obsticalTypes[randomObsticalIndex];
+  function addRandomObstical(addInArray, number) {
+    //const obsticalTypes = ['SpeedUp'];
+    console.log('Value selected on instruc page: ' + number);
+    // NOTE: set the setObsticalNumber to 5 for testing
+    for( let i = 0; i < number; i++ ){
+      const randomObsticalIndex = Math.floor(Math.random() * addInArray.length);
+      const randomObstical = addInArray[randomObsticalIndex];
       let randomTop = Math.floor(Math.random() * battleFieldObj.height);
       let randomLeft = Math.floor(Math.random() * battleFieldObj.width);
 
@@ -430,15 +487,18 @@ $(() => {
         case 'Marsh':
           object = new Marsh(randomTop, randomLeft);
           break;
+        case 'SpeedUp':
+          object = new SpeedUp(randomTop, randomLeft);
+          break;
       }
 
       gameItems.push({
         name: randomObstical,
         object: object,
-        type: 'obstical'
+        type: randomObstical === 'SpeedUp' ? 'powerup' : 'obstical'
       });
     }
-    console.log(gameItems);
+    //console.log(gameItems);
   }
 
   function updateScore(){
@@ -568,10 +628,10 @@ $(() => {
           moveLeftK('left');
           break;
         case ' ':
-          getPlayer(1).addBullet();
+          getPlayer(2).addBullet();
           break;
         case 'Shift':
-          getPlayer(2).addBullet();
+          getPlayer(1).addBullet();
           break;
         case 'Enter':
           header.style.display = 'none';
@@ -591,45 +651,48 @@ $(() => {
   let aIntId = '';
   let dIntId = '';
 
+  const playerOneSpeed = getPlayer(1).movingSpeed;
+  const playerTwoSpeed = getPlayer(2).movingSpeed;
+
   function moveDownA (direction){
     downIntId = setInterval(()=>{
-      getPlayer(1).move(direction);
-    }, 100);
+      getPlayer(2).move(direction);
+    }, playerTwoSpeed);
   }
   function moveUpA (direction){
     upIntId = setInterval(()=>{
-      getPlayer(1).move(direction);
-    }, 100);
+      getPlayer(2).move(direction);
+    }, playerTwoSpeed);
   }
   function moveLeftA (direction){
     leftIntId = setInterval(()=>{
-      getPlayer(1).move(direction);
-    }, 100);
+      getPlayer(2).move(direction);
+    }, playerTwoSpeed);
   }
   function moveRightA (direction){
     rightIntId = setInterval(()=>{
-      getPlayer(1).move(direction);
-    }, 100);
+      getPlayer(2).move(direction);
+    }, playerTwoSpeed);
   }
   function moveDownK (direction){
     sIntId = setInterval(()=>{
-      getPlayer(2).move(direction);
-    }, 100);
+      getPlayer(1).move(direction);
+    }, playerOneSpeed);
   }
   function moveUpK (direction){
     wIntId = setInterval(()=>{
-      getPlayer(2).move(direction);
-    }, 100);
+      getPlayer(1).move(direction);
+    }, playerOneSpeed);
   }
   function moveLeftK (direction){
     aIntId = setInterval(()=>{
-      getPlayer(2).move(direction);
-    }, 100);
+      getPlayer(1).move(direction);
+    }, playerOneSpeed);
   }
   function moveRightK (direction){
     dIntId = setInterval(()=>{
-      getPlayer(2).move(direction);
-    }, 100);
+      getPlayer(1).move(direction);
+    }, playerOneSpeed);
   }
 
   //clear the key down interval on key up
