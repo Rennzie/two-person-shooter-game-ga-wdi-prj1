@@ -43,14 +43,7 @@ $(() => {
     }, randomDelay);
   }
 
-  // should continuously add the powerup in a different location on the board
-  function powerUps(){
-    addRandomObstical(powerUpTypes, 1);
-    getType('powerup').removeMe();
-    setTimeout(()=>{
-      powerUps();
-    }, 5000);
-  }
+
 
   const $main = $('.battle-screen');
   $main.cssText = 'display: none';
@@ -83,7 +76,8 @@ $(() => {
   };
   // margin: 25px auto 0 auto;
 
-
+  ///////////////- GAME CONSTRUCTOR -////////////////////////
+  /////////////////////////////////////////////////////////////
   class gameItem {
     constructor(name, top, left, width, height, type, domElement, movementSpeed, direction) {
       this.name = name;
@@ -164,12 +158,12 @@ $(() => {
         }else if(collidedWith === 'SpeedUp'){
 
           console.log('the movement speed was changed to 10 ', this.movementSpeed);
-          // NOTE: this need to actually change the tanks movement speed
-          this.movementSpeed = 50;
+          this.movementSpeed = 30;
 
+          // NOTE: could add in a timer here to show how long the powerup goes for!
           setTimeout(()=>{
             this.movementSpeed = 10;
-          }, 5000);
+          }, 7000);
         }else if(collidedWith === 'Marsh' && collidingItemType === 'tank'){
           const stickFactor = overlappingObjects[0].object.movementSpeed;
 
@@ -471,7 +465,6 @@ $(() => {
   function addRandomObstical(addInArray, number) {
     //const obsticalTypes = ['SpeedUp'];
     console.log('Value selected on instruc page: ' + number);
-    // NOTE: set the setObsticalNumber to 5 for testing
     for( let i = 0; i < number; i++ ){
       const randomObsticalIndex = Math.floor(Math.random() * addInArray.length);
       const randomObstical = addInArray[randomObsticalIndex];
@@ -508,6 +501,15 @@ $(() => {
       });
     }
     //console.log(gameItems);
+  }
+
+  // to move the powerup around the page
+  function powerUps(){
+    addRandomObstical(powerUpTypes, 1);
+    getType('powerup').removeMe();
+    setTimeout(()=>{
+      powerUps();
+    }, 5000);
   }
 
   function updateScore(){
