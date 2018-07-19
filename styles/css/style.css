@@ -13,27 +13,30 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100vh; }
-  body header {
+  height: 100vh;
+  color: white; }
+
+.splash-screen {
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  height: 100vh;
+  width: 100vw;
+  background-color: black; }
+  .splash-screen h1 {
+    margin-top: 400px;
+    font-size: 80px;
+    font-family: 'Armalite', monospace;
+    text-shadow: 40px;
+    padding: 20px; }
+  .splash-screen P {
     display: flex;
-    align-items: center;
-    flex-direction: column;
-    color: white;
-    height: 100vh;
-    width: 100vw;
-    background-color: black; }
-    body header h1 {
-      margin-top: 400px;
-      font-size: 70px;
-      font-family: 'Armalite', monospace;
-      text-shadow: 40px;
-      padding: 20px; }
-    body header P {
-      display: flex;
-      align-items: center; }
-      body header P span {
-        padding: 10px;
-        animation: pulseText 1s linear infinite; }
+    align-items: center; }
+    .splash-screen P span {
+      padding: 10px;
+      animation: pulseText 1s linear infinite; }
+
 @keyframes pulseText {
   0% {
     font-size: 20px; }
@@ -45,76 +48,138 @@ body {
     font-size: 18px; }
   100% {
     font-size: 20px; } }
-  body section {
-    display: none;
-    background-image: url("../images/start-screen-abrams.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw; }
-    body section .story-instructions {
-      background-color: rgba(169, 169, 169, 0.8);
-      width: 800px;
-      height: 700px;
-      border-radius: 15px;
-      color: white; }
-      body section .story-instructions .instructions {
-        padding: 20px; }
-        body section .story-instructions .instructions p:first-child {
-          padding-bottom: 20px; }
-      body section .story-instructions img {
-        position: relative;
-        top: -20px;
-        left: -20px;
-        border: 1px solid white;
-        width: 100px;
-        height: auto; }
-      body section .story-instructions .actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-around;
-        width: 400px;
-        margin: 0 auto; }
-        body section .story-instructions .actions input {
-          width: 50px;
-          height: 50px; }
-        body section .story-instructions .actions button {
-          width: 50px;
-          height: 50px; }
-  body main {
-    display: none;
+.game-start {
+  display: flex;
+  background-image: url("../images/start-screen-abrams.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw; }
+  .game-start .commander {
+    position: absolute;
+    top: -75px;
+    left: -75px;
+    border: 3px solid black;
+    width: 200px;
+    height: auto;
+    border-radius: 100%;
+    box-shadow: 2px 2px 1px 1px rgba(105, 105, 105, 0.8); }
+  .game-start .story-instructions {
+    position: relative;
+    display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: space-around;
-    min-width: 100vw;
-    min-height: 100vh; }
-    body main .health {
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 1000px;
+    height: 700px;
+    border-radius: 15px;
+    color: white; }
+    .game-start .story-instructions h2 {
+      align-self: center;
+      font-family: 'Armalite';
+      font-size: 80px; }
+    .game-start .story-instructions p {
+      font-family: Helvetica;
+      font-size: 20px; }
+    .game-start .story-instructions .instructions {
       display: flex;
-      justify-content: space-around;
-      align-items: center;
-      color: white;
-      width: 900px; }
-      body main .health .player {
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center; }
+      .game-start .story-instructions .instructions .intro {
+        font-size: 20px;
+        padding: 20px;
+        width: 900px;
+        line-height: 1.4;
+        letter-spacing: 1.5px; }
+      .game-start .story-instructions .instructions .terrain-wrapper {
         display: flex;
-        flex-direction: column;
-        align-items: center; }
-        body main .health .player .progress-wrapper {
-          border: 2px solid dimgray;
-          width: 250px;
-          height: 20px;
+        justify-content: flex-start;
+        align-items: center;
+        width: 900px; }
+        .game-start .story-instructions .instructions .terrain-wrapper img {
+          border: 1px solid dimgray;
+          width: 80px;
+          height: 80px;
+          border-radius: 100%;
+          margin: 5px; }
+        .game-start .story-instructions .instructions .terrain-wrapper .terrains {
+          display: flex;
+          flex-direction: column; }
+        .game-start .story-instructions .instructions .terrain-wrapper .terrain-tips {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around; }
+          .game-start .story-instructions .instructions .terrain-wrapper .terrain-tips p {
+            letter-spacing: 1.5px;
+            margin: 15px 20px; }
+        .game-start .story-instructions .instructions .terrain-wrapper .powerups {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+          height: 100%; }
+          .game-start .story-instructions .instructions .terrain-wrapper .powerups p {
+            padding: 20px; }
+    .game-start .story-instructions .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 900px; }
+      .game-start .story-instructions .actions select {
+        width: 300px;
+        height: 50px;
+        color: white;
+        font-size: 20px;
+        background-color: black;
+        border: 2px solid white;
+        padding: 0 5px; }
+      .game-start .story-instructions .actions #begin-game {
+        font-size: 20px;
+        border: 2px solid white;
+        padding: 20px;
+        border-radius: 15px;
+        animation: pulse-button 2000ms linear infinite;
+        letter-spacing: 1.2px; }
+      .game-start .story-instructions .actions #begin-game:hover {
+        cursor: pointer;
+        box-shadow: 5px 5px 1px 1px dimgray;
+        animation: 0;
+        color: dimgray; }
+
+main {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  min-width: 100vw;
+  min-height: 100vh; }
+  main .health {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 900px;
+    font-size: 30px; }
+    main .health .player {
+      display: flex;
+      flex-direction: column;
+      align-items: center; }
+      main .health .player .progress-wrapper {
+        border: 2px solid dimgray;
+        width: 250px;
+        height: 20px;
+        border-radius: 15px;
+        margin: 20px; }
+        main .health .player .progress-wrapper .progressBar {
+          width: 100%;
+          height: 100%;
           border-radius: 15px;
-          margin: 20px; }
-          body main .health .player .progress-wrapper .progressBar {
-            width: 100%;
-            height: 100%;
-            border-radius: 15px;
-            background-color: #3c0000; }
-    body main #tank {
-      transition: all 200ms; }
+          background-color: #57d900; }
+  main #tank {
+    transition: all 200ms; }
 
 footer {
   display: none;
@@ -154,6 +219,9 @@ footer {
     transform: scale(0.95); }
   100% {
     transform: scale(1); } }
+.bold {
+  font-weight: bold; }
+
 .rotate, .up, .right, .down, .left {
   transition: transform 200ms; }
 

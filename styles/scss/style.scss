@@ -1,4 +1,5 @@
- $gameGrey: rgb(105,105,105);
+$gameGrey: rgb(105,105,105);
+$bigHeaderSize: 80px;
 
 @font-face {
   font-family: 'Armalite';
@@ -19,142 +20,223 @@ body{
   background-repeat: no-repeat;
   background-size: cover;
   height: 100vh;
+  color: white;
+}
 
+// NOTE: this is display none while working on the game over screen
+.splash-screen{
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  h1{
+    margin-top: 400px;
+    font-size: $bigHeaderSize;
+    font-family: 'Armalite', monospace;
+    text-shadow: 40px;
+    padding: 20px
+  }
 
-  // NOTE: this is display none while working on the game over screen
-  header{
+  P{
     display: flex;
     align-items: center;
-    flex-direction: column;
-    color: white;
-    height: 100vh;
-    width: 100vw;
-    background-color: black;
-    h1{
-      margin-top: 400px;
-      font-size: 70px;
-      font-family: 'Armalite', monospace;
-      text-shadow: 40px;
-      padding: 20px
-    }
-
-    P{
-      display: flex;
-      align-items: center;
-      span{
-        padding: 10px;
-        //font-size: 20px;
-        animation: pulseText 1s linear infinite;
-      }
-    }
-  }
-
-  @keyframes pulseText {
-    0% { font-size: 20px; }
-    25% { font-size: 22px; }
-    50% { font-size: 20px; }
-    75% { font-size: 18px; }
-    100% { font-size: 20px; }
-  }
-
-  section{
-    display: none;
-    background-image: url('../images/start-screen-abrams.jpg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-
-    .story-instructions{
-      background-color: rgba(169,169,169, 0.8);
-      width: 800px;
-      height: 700px;
-      border-radius: 15px;
-      color: white;
-
-      .instructions{
-        padding: 20px;
-        p:first-child{
-          padding-bottom: 20px;
-        }
-      }
-
-      img{
-        position: relative;
-        top: -20px;
-        left: -20px;
-        border: 1px solid white;
-        width: 100px;
-        height: auto;
-      }
-      .actions{
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-around;
-        width: 400px;
-        margin: 0 auto;
-        input{
-          width: 50px;
-          height: 50px;
-        }
-
-        button{
-          width: 50px;
-          height: 50px;
-        }
-      }
-    }
-
-  }
-
-  main{
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    min-width: 100vw;
-    min-height: 100vh;
-
-    .health{
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-
-      //margin: auto;
-      color: white;
-
-      width: 900px;
-
-      .player{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .progress-wrapper{
-          border: 2px solid $gameGrey;
-          width: 250px;
-          height: 20px;
-          border-radius: 15px;
-          margin: 20px;
-
-          .progressBar{
-            width: 100%;
-            height: 100%;
-            border-radius: 15px;
-            background-color: rgb(60, 0, 0)
-          }
-        }
-      }
-    }
-    #tank {
-      transition: all 200ms;
+    span{
+      padding: 10px;
+      //font-size: 20px;
+      animation: pulseText 1s linear infinite;
     }
   }
 }
+
+@keyframes pulseText {
+  0% { font-size: 20px; }
+  25% { font-size: 22px; }
+  50% { font-size: 20px; }
+  75% { font-size: 18px; }
+  100% { font-size: 20px; }
+}
+
+.game-start{
+  display: flex;
+  background-image: url('../images/start-screen-abrams.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+
+  .commander {
+    position: absolute;
+    top: -75px;
+    left: -75px;
+    border: 3px solid black;
+    width: 200px;
+    height: auto;
+    border-radius: 100%;
+    box-shadow: 2px 2px 1px 1px rgba(105,105,105, 0.8);
+  }
+
+  .story-instructions{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 1000px;
+    height: 700px;
+    border-radius: 15px;
+    color: white;
+
+    h2{
+      align-self: center;
+      font-family: 'Armalite';
+      font-size: $bigHeaderSize;
+    }
+
+
+    p{
+      font-family: Helvetica;
+      font-size: 20px;
+    }
+
+    .instructions{
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+
+      .intro{
+        font-size: 20px;
+        padding: 20px;
+        width: 900px;
+        line-height: 1.4;
+        letter-spacing: 1.5px;
+      }
+
+      .terrain-wrapper{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 900px;
+
+        img{
+          border: 1px solid $gameGrey;
+          width: 80px;
+          height: 80px;
+          border-radius: 100%;
+          margin: 5px;
+        }
+
+        .terrains{
+          display: flex;
+          flex-direction: column;
+
+        }
+        .terrain-tips{
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+
+          p{
+            letter-spacing: 1.5px;
+            margin: 15px 20px;
+          }
+        }
+        .powerups{
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: center;
+          height: 100%;
+          p{
+            padding: 20px;
+          }
+        }
+      }
+
+    }
+
+    .actions{
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 900px;
+
+      select{
+        width: 300px;
+        height: 50px;
+        color: white;
+        font-size: 20px;
+        background-color: black;
+        border: 2px solid white;
+        padding: 0 5px;
+      }
+
+      #begin-game{
+        font-size: 20px;
+        border: 2px solid white;
+        padding: 20px;
+        border-radius: 15px;
+        animation: pulse-button 2000ms linear infinite;
+        letter-spacing: 1.2px;
+      }
+      #begin-game:hover{
+        cursor: pointer;
+        box-shadow: 5px 5px 1px 1px $gameGrey;
+        animation: 0;
+        color: $gameGrey;
+      }
+    }
+  }
+
+}
+
+main{
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  min-width: 100vw;
+  min-height: 100vh;
+
+  .health{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 900px;
+    font-size: 30px;
+
+    .player{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .progress-wrapper{
+        border: 2px solid $gameGrey;
+        width: 250px;
+        height: 20px;
+        border-radius: 15px;
+        margin: 20px;
+
+        .progressBar{
+          width: 100%;
+          height: 100%;
+          border-radius: 15px;
+          background-color: rgb(87, 217, 0);
+        }
+      }
+    }
+  }
+  #tank {
+    transition: all 200ms;
+  }
+}
+
 footer{
   display: none;
   flex-direction: column;
@@ -168,7 +250,7 @@ footer{
 
   h2{
     font-family: 'Armalite', monospace;
-    font-size: 80px;
+    font-size: $bigHeaderSize;
   }
 
   h3{
@@ -199,6 +281,9 @@ footer{
   100% { transform: scale(1);}
 }
 
+.bold {
+  font-weight: bold;
+}
 
 .rotate {
   transition: transform 200ms;

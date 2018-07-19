@@ -1,71 +1,103 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="./styles/css/reset.css">
-    <link rel="stylesheet" href="./styles/css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
-    <script src="./js/app.js" charset="utf-8"></script>
-    <title>Tank Wars</title>
-  </head>
-  <body>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./styles/css/reset.css">
+  <link rel="stylesheet" href="./styles/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" charset="utf-8"></script>
+  <script src="./js/app.js" charset="utf-8"></script>
+  <title>Tank Wars</title>
+</head>
+<body>
 
-    <header class="splash-screen">
-      <h1>Battle Command</h1>
+  <header class="splash-screen">
+    <h1>Battle Command</h1>
 
-      <p>press <span>ENTER</span> to begin</p>
-    </header>
+    <p>press <span>ENTER</span> to begin</p>
+  </header>
 
-    <section class="game-start">
-      <div class="story-instructions">
-        <img src="./styles/images/commander-binoculars.jpg" alt="">
-        <div class="instructions">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+  <section class="game-start">
+    <div class="story-instructions">
+      <img class="commander" src="./styles/images/commander-women-tank.jpg" alt="">
+
+      <h2>BOOT CAMP</h2>
+
+      <div class="instructions">
+
+        <p class="intro"><span class="bold">"Welcome Soldiers!</span> This is the beginning of your journey as commanders of the most powerful infantry support machines ever built! Command your battle tanks and destroy one another! Beware of the treacherous terrain out there and be on the look-out for power ups for your machine." </p>
+
+        <div class="terrain-wrapper">
+
+          <div class="terrains">
+            <img src="styles/images/terrain-water-3.jpg">
+            <img src="styles/images/terrain-mountain.jpg">
+            <img src="styles/images/terrain-wetland.jpg">
+          </div>
+
+          <div class="terrain-tips">
+
+            <p>"Tanks don't <span class="bold">swim</span>! Driving into water will end your career as a Tank Commander!</p>
+
+            <p> "<span class="bold">Mountains</span> will protect you from incoming fire. But will block your path!"</p>
+
+            <p> "<span class="bold">Marshland</span> will slow you down and make you a prime target for your enemy."</p>
+          </div>
+
+          <div class="powerups">
+            <img src="styles/images/powerup-speed-burning-tyre.jpg">
+            <p>Collect <span class="bold">Power Ups</span> to add special powers to your tank. This one gives you a touch of speed for a short time.</p>
+
+          </div>
+
+
         </div>
+      </div>
 
-        <div class="actions">
+      <div class="actions">
           <select id="set-obsticals">
-              <option value="5">--Please choose an option--</option>
-              <option value="5">5 - Obsticals</option>
-              <option value="10">10 - Obsticals</option>
-              <option value="15">15 - Obsticals</option>
-              <option value="20">20 - Obsticals</option>
-              <option value="25">25 - Obsticals</option>
-              <option value="30">30 - Obsticals</option>
+            <option value="0">--Please choose an option--</option>
+            <option value="5">5 - Obsticals</option>
+            <option value="10">10 - Obsticals</option>
+            <option value="15">15 - Obsticals</option>
+            <option value="20">20 - Obsticals</option>
+            <option value="25">25 - Obsticals</option>
+            <option value="30">30 - Obsticals</option>
           </select>
-          <button id="begin-game" type="button" name="button">Click to Start</button>
+
+        <div id="begin-game" >
+          Click to BATTLE!!
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
 
-    <main class="battle-screen">
+  <main class="battle-screen">
 
-      <div  class="health">
-        <div class="player">
-          <h2>Player One Health</h2>
-          <div class="progress-wrapper">
-            <div id="playerOneHealth"  class="progressBar" > </div>
-          </div>
-        </div>
-
-        <div class="player">
-          <h2>Player Two Health</h2>
-          <div class="progress-wrapper">
-            <div id="playerTwoHealth"  class="progressBar" > </div>
-          </div>
+    <div  class="health">
+      <div class="player">
+        <h2>Player One Health</h2>
+        <div class="progress-wrapper">
+          <div id="playerOneHealth"  class="progressBar" > </div>
         </div>
       </div>
-    </main>
 
-    <footer class="winner">
-      <h2>GAME OVER!!!</h2>
-      <h3>The winner will be set from the js</h3>
-      <div class="re-play">
-        Play Again?
+      <div class="player">
+        <h2>Player Two Health</h2>
+        <div class="progress-wrapper">
+          <div id="playerTwoHealth"  class="progressBar" > </div>
+        </div>
       </div>
-    </footer>
+    </div>
+  </main>
 
-  </body>
+  <footer class="winner">
+    <h2>GAME OVER!!!</h2>
+    <h3>The winner will be set from the js</h3>
+    <div class="re-play">
+      Play Again?
+    </div>
+  </footer>
+
+</body>
 </html>

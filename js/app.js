@@ -1,16 +1,15 @@
-////////////////////////////////////
 ///////- DOM INTERACTION -//////////
 ////////////////////////////////////
 
 $(() => {
-  ////////////////////////////////////
   ///////- START SCREEN -//////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   const header = document.querySelector('header');
   // NOTE: nothing too special, the screen is hidden when the enter key is pressed
 
 
-  ///////////////////////////////////////
   ///////- INSTRUCTION SCREEN -//////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   const instrucScreen = document.querySelector('.game-start');
   const startBtn = document.querySelector('#begin-game');
   const selectObsticals = document.querySelector('#set-obsticals');
@@ -25,13 +24,14 @@ $(() => {
     console.log(setObsticalNumber);
   });
 
-
+  // to transition from the start screen to the instruction page
   function goToInstruct() {
     header.style.display = 'none';
     instrucScreen.style.display = 'flex';
     playInstructAudio();
   }
 
+  //begin playing game audio clip on repeat
   let instructAudioIntID = null;
   function playInstructAudio(){
     audio.setAttribute('src', 'styles/audio/battle-track-sekater-instruct-repeatplay.mp3');
@@ -41,8 +41,8 @@ $(() => {
     }, 17140);
   }
 
-  ///////////////////////////////////////
   ///////- GAME END SCREEN -////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   const endScreen = document.querySelector('.winner');
   const announceEnd = document.querySelector('.winner h2');
   const describeEnd = document.querySelector('.winner h3');
@@ -51,10 +51,10 @@ $(() => {
   resetBtn.addEventListener('click', restart);
 
   function restart() {
-    endScreen.style.display = 'none';
-    goToInstruct();
+    location.reload();
   }
 
+  //when a players health reaches zero
   function gameEndPure(winner, loser){
     endScreen.style.display = 'flex';
     $main.hide();
@@ -62,8 +62,17 @@ $(() => {
     describeEnd.innerText = `${loser} could not stay composed during the heat of battle!`;
   }
 
-  ///////////////////////////////////////
+  //when player drives into the water!
+  function gameEndWater(loser){
+    const winner = loser === 'Player 1' ? 'Player 2' : 'Player 1';
+    endScreen.style.display = 'flex';
+    $main.hide();
+    announceEnd.innerText = `GAME OVER FOR ${loser}!!`;
+    describeEnd.innerText = `${winner} wins by default! \n  ${loser} drove into WATER! Tanks cant swim soldier!`;
+  }
+
   ///////- BATTLEFIELD SCREEN -//////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 
   const randomDelay = Math.random()* 10000;
 
@@ -109,7 +118,7 @@ $(() => {
   // margin: 25px auto 0 auto;
 
   ///////////////- GAME CONSTRUCTOR -////////////////////////
-  /////////////////////////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   class gameItem {
     constructor(name, top, left, width, height, type, domElement, movementSpeed, direction) {
       this.name = name;
@@ -183,7 +192,7 @@ $(() => {
         //console.log('the overlappingObj at move is: ', collidedWith);
 
         if(collidedWith === 'Water' && collidingItemType === 'tank'){
-          window.alert(`Game over! ${this.name} went into the water`);
+          gameEndWater(this.name);
 
         }else if((collidedWith === 'Water' || collidedWith === 'Marsh' || collidedWith === 'SpeedUp') && collidingItemType === 'bullet'){
           //const nothing = 'do nothing';
@@ -230,7 +239,7 @@ $(() => {
   }
 
   ///////////////- BULLET CONSTRUCTOR -////////////////////////
-  /////////////////////////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   class Bullet extends gameItem {
     constructor (tankPositionTop, tankPositionLeft, direction) {
 
@@ -309,7 +318,7 @@ $(() => {
   }
 
   /////////////////- TANK CONSTRUCTOR -//////////////////////
-  ///////////////////////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   class Tank extends gameItem{
     constructor (startTop, startLeft, identity, colour, direction) {
       const width = 60;
@@ -381,7 +390,7 @@ $(() => {
   }
 
   ///////////////- OBSTICAL CONSTRUCTORS -////////////////////////
-  ////////////////////////////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   class Mountain extends gameItem {
     constructor (startTop, startLeft) {
       const name = 'Mountain';
@@ -456,7 +465,7 @@ $(() => {
   }
 
   ///////////////- POWER-UP CONSTRUCTORS -////////////////////////
-  ////////////////////////////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   class SpeedUp extends gameItem {
     constructor (startTop, startLeft) {
       const name = 'SpeedUp';
@@ -488,9 +497,8 @@ $(() => {
     }
   }
 
-  ////////////////////////////////////////
   ///////- GLOBAL GAME CONTROL -//////////
-  ////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 
   ///////- Add battlefield and obsticals-////////////
 
@@ -642,12 +650,10 @@ $(() => {
   }
 
   //////////////////- KEY PRESS CONTROLL -//////////////////////
-  //////////////////////////////////////////////////////////////
+  // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   //to determine what key has been pressed and assign correct function
 
-  //start interval on key down which calls the move FUNCTION
-
-  // NOTE: appears to be a bug with the player 2 movement
+  // NOTE: appears to be a bug with the player 2 movement [SOLVED]
   //which causes the players tank to glitch and move on its own
   const keyState = {
     arrowdown: false,
@@ -660,6 +666,7 @@ $(() => {
     d: false
   };
 
+  //start the element moving on key down
   function keyDownIdentifier(e){
     const key = e.originalEvent.key.toLowerCase();
     console.log('key down is: ' + key);
@@ -723,8 +730,6 @@ $(() => {
   const playerOneSpeed = getPlayer(1).movingSpeed;
   const playerTwoSpeed = getPlayer(2).movingSpeed;
 
-
-
   function moveDownA (direction){
     downIntId = setInterval(()=>{
       getPlayer(2).move(direction);
@@ -769,9 +774,7 @@ $(() => {
   //clear the key down interval on key up
   function keyUpIdentifier(e) {
     const key = e.originalEvent.key.toLowerCase();
-    console.log('key up is: ' + key);
-
-    //if(key)
+    //console.log('key up is: ' + key);
     switch(key) {
       case 'arrowdown':
         clearInterval(downIntId);
