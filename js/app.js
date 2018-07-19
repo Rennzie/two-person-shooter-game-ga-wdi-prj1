@@ -30,8 +30,16 @@ $(() => {
   function goToInstruct() {
     header.style.display = 'none';
     instrucScreen.style.display = 'flex';
-    // audio.setAttribute('src', 'styles/audio/battle-track-sekater.mp3');
-    // audio.play();
+    playInstructAudio();
+  }
+
+  let instructAudioIntID = null;
+  function playInstructAudio(){
+    audio.setAttribute('src', 'styles/audio/battle-track-sekater-instruct-repeatplay.mp3');
+    audio.play();
+    instructAudioIntID = setInterval(() =>{
+      audio.play();
+    }, 17140);
   }
 
   startBtn.addEventListener('click', startGame);
@@ -48,6 +56,9 @@ $(() => {
   function startGame(){
     instrucScreen.style.display = 'none';
     $main.show();
+    clearInterval(instructAudioIntID);
+    audio.setAttribute('src', 'styles/audio/battle-track-sekater-game-play.mp3');
+    audio.play();
     addRandomObstical(obsticalTypes, setObsticalNumber);
     setTimeout(function () {
       powerUps();
@@ -155,9 +166,9 @@ $(() => {
         if(collidedWith === 'Water' && collidingItemType === 'tank'){
           window.alert(`Game over! ${this.name} went into the water`);
 
-        }else if((collidedWith === 'Water' || collidedWith === 'Marsh') && collidingItemType === 'bullet'){
+        }else if((collidedWith === 'Water' || collidedWith === 'Marsh' || collidedWith === 'SpeedUp') && collidingItemType === 'bullet'){
           //const nothing = 'do nothing';
-        }else if(collidedWith === 'SpeedUp'){
+        }else if(collidedWith === 'SpeedUp' && collidingItemType === 'tank'){
 
           console.log('the movement speed was changed to 10 ', this.movementSpeed);
           this.movementSpeed = 30;
@@ -235,10 +246,11 @@ $(() => {
       height: ${height}px;
       border-radius: 100%;`;
 
+      // to make an explosion nois when bullet hits home
       this.playExplode = function () {
         const explodeAudio = document.createElement('audio');
         instrucScreen.appendChild(explodeAudio);
-        explodeAudio.setAttribute('src', 'styles/audio/grenade-explode-clip.mp3');
+        explodeAudio.setAttribute('src', 'styles/audio/grenade-explode.mp3');
         explodeAudio.play();
       };
 
@@ -257,6 +269,7 @@ $(() => {
             //this.element.style.display = 'none';
           } else if (Array.isArray(moveResult)) {
             this.playExplode();
+
             if(moveResult[0].object.name === 'Player 1'){
               getPlayer(1).health -= this.damage;
             }else if(moveResult[0].object.name === 'Player 2'){
@@ -285,7 +298,7 @@ $(() => {
       const name = identity;
 
       const element = document.createElement('div');
-      element.classList.add('tank');
+      element.id = 'tank';
 
       element.style.cssText = `
       display: flex;
@@ -336,13 +349,13 @@ $(() => {
       this.bulletStart = function(top, left, direction){
         switch(direction){
           case 'right':
-            return [top + 33, left + 61];
+            return [top + 27, left + 82];
           case 'left':
-            return [top + 33, left - 10];
+            return [top + 28, left - 30];
           case 'up':
-            return [top - 10, left + 33];
+            return [top - 28, left + 27];
           case 'down':
-            return [top + 61, left + 33];
+            return [top + 83, left + 27];
         }
       };
     }

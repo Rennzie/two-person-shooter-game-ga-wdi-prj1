@@ -92,6 +92,8 @@ body {
     justify-content: space-around;
     min-width: 100vw;
     min-height: 100vh; }
+  body #tank {
+    transition: all 200ms; }
   body footer {
     display: none;
     width: 900px;
@@ -118,6 +120,9 @@ body {
           border-radius: 15px;
           background-color: #3c0000; }
 
+.rotate, .up, .right, .down, .left {
+  transition: transform 200ms; }
+
 .up {
   transform: rotate(90deg); }
 
@@ -125,10 +130,10 @@ body {
   transform: rotate(180deg); }
 
 .down {
-  transform: rotate(270deg); }
+  transform: rotate(-90deg); }
 
 .left {
-  transform: rotate(360deg); }
+  transform: rotate(0deg); }
 
 .fade-in {
   animation: fadeIn 4s infinite; }
