@@ -95,15 +95,14 @@ body {
         padding: 20px;
         width: 900px;
         line-height: 1.4;
-        letter-spacing: 1.5px;
-        text-align: center; }
+        letter-spacing: 1.5px; }
       .game-start .story-instructions .instructions .terrain-wrapper {
         display: flex;
         justify-content: flex-start;
         align-items: center;
         width: 900px; }
         .game-start .story-instructions .instructions .terrain-wrapper img {
-          border: 1px solid dimgray;
+          border: 2px solid dimgray;
           width: 80px;
           height: 80px;
           border-radius: 100%;
@@ -136,7 +135,7 @@ body {
         height: 50px;
         color: white;
         font-size: 20px;
-        background-color: black;
+        background-color: rgba(0, 0, 0, 0.8);
         border: 2px solid white;
         padding: 0 5px; }
       .game-start .story-instructions .actions #begin-game {
@@ -198,7 +197,9 @@ footer {
   footer h3 {
     font-family: 'Blackops';
     font-size: 40px;
-    padding: 40px; }
+    padding: 40px;
+    width: 1050px;
+    line-height: 1.2; }
   footer .re-play {
     font-size: 20px;
     border: 2px solid white;

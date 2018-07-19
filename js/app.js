@@ -70,7 +70,7 @@ $(() => {
     endScreen.style.display = 'flex';
     $main.hide();
     announceEnd.innerText = `GAME OVER FOR ${loser}!!`;
-    describeEnd.innerText = `${winner} wins by default! \n  ${loser} drove into WATER! Tanks cant swim soldier!`;
+    describeEnd.innerText = `${winner} wins by default! \n  ${loser} drove into WATER! Tanks can't swim, soldier!`;
     audio.setAttribute('src', 'styles/audio/splash.mp3');
     //audio.play();
   }
@@ -203,7 +203,7 @@ $(() => {
           console.log('the movement speed was changed to 10 ', this.movementSpeed);
           this.movementSpeed = 30;
 
-          // NOTE: could add in a timer here to show how long the powerup goes for!
+          // IDEA: : could add in a timer here to show how long the powerup goes for!
           setTimeout(()=>{
             this.movementSpeed = 10;
           }, 7000);
@@ -484,8 +484,10 @@ $(() => {
       left: ${startLeft}px;
       width: ${width}px;
       height: ${height}px;
+      border-radius: 100%;
       background-image: url('styles/images/powerup-speed-burning-tyre.jpg');
       background-repeat: repeat;
+      background-position: center;
       background-size: cover;`;
 
       super(name, startTop, startLeft, width, height, 'powerup', element, speedUp, 0);
@@ -655,7 +657,7 @@ $(() => {
   // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   //to determine what key has been pressed and assign correct function
 
-  // NOTE: appears to be a bug with the player 2 movement [SOLVED]
+  // BUG: appears to be a bug with the player 2 movement [SOLVED]
   //which causes the players tank to glitch and move on its own
   const keyState = {
     arrowdown: false,
