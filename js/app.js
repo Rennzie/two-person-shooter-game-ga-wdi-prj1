@@ -8,14 +8,18 @@ $(() => {
   const header = document.querySelector('header');
   // NOTE: nothing too special, the screen is hidden when the enter key is pressed
 
+
   ////////////////////////////////////
   ///////- INSTRUCTION SCREEN -//////////
   const instrucScreen = document.querySelector('.game-start');
   const startBtn = document.querySelector('#begin-game');
   const selectObsticals = document.querySelector('#set-obsticals');
+  const audio = document.createElement('audio');
+  instrucScreen.appendChild(audio);
+
+
 
   let setObsticalNumber = 0;
-  // NOTE: need an onchange to grab this updated number when starting game
 
   selectObsticals.addEventListener('change', () => {
     setObsticalNumber = parseInt(selectObsticals.options[selectObsticals.selectedIndex].value);
@@ -23,16 +27,27 @@ $(() => {
   });
 
 
+  function goToInstruct() {
+    header.style.display = 'none';
+    instrucScreen.style.display = 'flex';
+    // audio.setAttribute('src', 'styles/audio/battle-track-sekater.mp3');
+    // audio.play();
+  }
+
+
+
+
 
   startBtn.addEventListener('click', startGame);
-
-  ////////////////////////////////////
+  ///////////////////////////////////////
   ///////- BATTLEFIELD SCREEN -//////////
 
   const randomDelay = Math.random()* 10000;
 
   const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
   const powerUpTypes = ['SpeedUp'];
+
+  ///-- START GAME -- ///
 
   function startGame(){
     instrucScreen.style.display = 'none';
@@ -298,6 +313,13 @@ $(() => {
 
       super(name, startTop, startLeft, width, height, 'tank', element, movementPoints, direction);
 
+      this.playFire = function () {
+        const fireAudio = document.createElement('audio');
+        element.appendChild(fireAudio);
+        fireAudio.setAttribute('src', 'styles/audio/tank-firing.mp3');
+        fireAudio.play();
+      };
+
       this.health = 100;
 
       this.movingSpeed = 70;
@@ -309,6 +331,7 @@ $(() => {
 
         const bullet = new Bullet(top, left, this.direction);
         gameItems.push({name: 'bullet', object: bullet, type: 'bullet'});
+        this.playFire();
         bullet.fly(this.name);
       };
 
@@ -645,8 +668,7 @@ $(() => {
           getPlayer(1).addBullet();
           break;
         case 'enter':
-          header.style.display = 'none';
-          instrucScreen.style.display = 'flex';
+          goToInstruct();
           break;
       }
     }
