@@ -34,10 +34,6 @@ $(() => {
     // audio.play();
   }
 
-
-
-
-
   startBtn.addEventListener('click', startGame);
   ///////////////////////////////////////
   ///////- BATTLEFIELD SCREEN -//////////
@@ -58,20 +54,11 @@ $(() => {
     }, randomDelay);
   }
 
-
-
   const $main = $('.battle-screen');
   $main.cssText = 'display: none';
 
   let gameItems = [];
 
-  function getPlayer(number) {
-    return gameItems.filter(item => item.name === `Player ${number}`)[0].object;
-  }
-
-  function getType(type) {
-    return gameItems.filter(item => item.type === type)[0].object;
-  }
 
 
   const battleFieldObj = {
@@ -248,6 +235,13 @@ $(() => {
       height: ${height}px;
       border-radius: 100%;`;
 
+      this.playExplode = function () {
+        const explodeAudio = document.createElement('audio');
+        instrucScreen.appendChild(explodeAudio);
+        explodeAudio.setAttribute('src', 'styles/audio/grenade-explode-clip.mp3');
+        explodeAudio.play();
+      };
+
       this.damage = 5;
 
       //repeatedly moves a bullet accross the screen
@@ -260,16 +254,20 @@ $(() => {
           if(!moveResult) {
             this.remove();
             gameItems = gameItems.filter(gameItem => gameItem.object !== this);
+            //this.element.style.display = 'none';
           } else if (Array.isArray(moveResult)) {
-
+            this.playExplode();
             if(moveResult[0].object.name === 'Player 1'){
               getPlayer(1).health -= this.damage;
             }else if(moveResult[0].object.name === 'Player 2'){
               getPlayer(2).health -= this.damage;
             }
-
             this.remove();
             gameItems = gameItems.filter(gameItem => gameItem.object !== this);
+
+            // this.playExplode();
+            // setTimeout(()=>{
+            // }, 1400);
           }else{
             this.fly();
           }
@@ -482,7 +480,13 @@ $(() => {
     type: 'tank'
   });
 
+  function getPlayer(number) {
+    return gameItems.filter(item => item.name === `Player ${number}`)[0].object;
+  }
 
+  function getType(type) {
+    return gameItems.filter(item => item.type === type)[0].object;
+  }
 
 
   function addRandomObstical(addInArray, number) {
