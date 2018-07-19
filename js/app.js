@@ -591,10 +591,10 @@ $(() => {
   // NOTE: appears to be a bug with the player 2 movement
   //which causes the players tank to glitch and move on its own
   const keyState = {
-    ArrowDown: false,
-    ArrowUp: false,
-    ArrowLeft: false,
-    ArrowRight: false,
+    arrowdown: false,
+    arrowup: false,
+    arrowleft: false,
+    arrowright: false,
     s: false,
     w: false,
     a: false,
@@ -602,23 +602,23 @@ $(() => {
   };
 
   function keyDownIdentifier(e){
-    const key = e.originalEvent.key;
-    console.log(key);
+    const key = e.originalEvent.key.toLowerCase();
+    console.log('key down is: ' + key);
     if(!keyState[key]){
       switch(key) {
-        case 'ArrowDown':
+        case 'arrowdown':
           keyState[key] = true;
           moveDownA('down');
           break;
-        case 'ArrowUp':
+        case 'arrowup':
           keyState[key] = true;
           moveUpA('up');
           break;
-        case 'ArrowLeft':
+        case 'arrowleft':
           keyState[key] = true;
           moveLeftA('left');
           break;
-        case 'ArrowRight':
+        case 'arrowright':
           keyState[key] = true;
           moveRightA('right');
           break;
@@ -641,10 +641,10 @@ $(() => {
         case ' ':
           getPlayer(2).addBullet();
           break;
-        case 'Shift':
+        case 'shift':
           getPlayer(1).addBullet();
           break;
-        case 'Enter':
+        case 'enter':
           header.style.display = 'none';
           instrucScreen.style.display = 'flex';
           break;
@@ -664,6 +664,8 @@ $(() => {
 
   const playerOneSpeed = getPlayer(1).movingSpeed;
   const playerTwoSpeed = getPlayer(2).movingSpeed;
+
+
 
   function moveDownA (direction){
     downIntId = setInterval(()=>{
@@ -708,21 +710,24 @@ $(() => {
 
   //clear the key down interval on key up
   function keyUpIdentifier(e) {
-    const key = e.originalEvent.key;
-    switch(e.originalEvent.key) {
-      case 'ArrowDown':
+    const key = e.originalEvent.key.toLowerCase();
+    console.log('key up is: ' + key);
+
+    //if(key)
+    switch(key) {
+      case 'arrowdown':
         clearInterval(downIntId);
         keyState[key] = false;
         break;
-      case 'ArrowUp':
+      case 'arrowup':
         clearInterval(upIntId);
         keyState[key] = false;
         break;
-      case 'ArrowLeft':
+      case 'arrowleft':
         clearInterval(leftIntId);
         keyState[key] = false;
         break;
-      case 'ArrowRight':
+      case 'arrowright':
         clearInterval(rightIntId);
         keyState[key] = false;
         break;
