@@ -29,6 +29,8 @@ $(() => {
   ////////////////////////////////////
   ///////- BATTLEFIELD SCREEN -//////////
 
+  const randomDelay = Math.random()* 10000;
+
   const obsticalTypes = ['Mountain', 'Water', 'Marsh'];
   const powerUpTypes = ['SpeedUp'];
 
@@ -37,10 +39,17 @@ $(() => {
     $main.show();
     addRandomObstical(obsticalTypes, setObsticalNumber);
     setTimeout(function () {
-      addRandomObstical(powerUpTypes, 1);
-      getType('powerup').removeMe();
-      console.log(getType('powerup'));
-    }, 4000);
+      powerUps();
+    }, randomDelay);
+  }
+
+  // should continuously add the powerup in a different location on the board
+  function powerUps(){
+    addRandomObstical(powerUpTypes, 1);
+    getType('powerup').removeMe();
+    setTimeout(()=>{
+      powerUps();
+    }, 5000);
   }
 
   const $main = $('.battle-screen');
