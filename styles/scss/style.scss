@@ -25,7 +25,7 @@ body{
 
 // NOTE: this is display none while working on the game over screen
 .splash-screen{
-  display: none;
+  display: flex;
   align-items: center;
   flex-direction: column;
   color: white;
@@ -37,7 +37,8 @@ body{
     font-size: $bigHeaderSize;
     font-family: 'Armalite', monospace;
     text-shadow: 40px;
-    padding: 20px
+    padding: 20px;
+    text-shadow: 5px 5px $gameGrey;
   }
 
   P{
@@ -46,7 +47,7 @@ body{
     span{
       padding: 10px;
       //font-size: 20px;
-      animation: pulseText 1s linear infinite;
+      animation: pulseText 2000ms linear infinite;
     }
   }
 }
@@ -60,7 +61,7 @@ body{
 }
 
 .game-start{
-  display: flex;
+  display: none;
   background-image: url('../images/start-screen-abrams.jpg');
   background-position: center;
   background-repeat: no-repeat;
@@ -116,6 +117,7 @@ body{
         width: 900px;
         line-height: 1.4;
         letter-spacing: 1.5px;
+        text-align: center;
       }
 
       .terrain-wrapper{

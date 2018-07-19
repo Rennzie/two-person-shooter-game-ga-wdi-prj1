@@ -17,7 +17,7 @@ body {
   color: white; }
 
 .splash-screen {
-  display: none;
+  display: flex;
   align-items: center;
   flex-direction: column;
   color: white;
@@ -29,13 +29,14 @@ body {
     font-size: 80px;
     font-family: 'Armalite', monospace;
     text-shadow: 40px;
-    padding: 20px; }
+    padding: 20px;
+    text-shadow: 5px 5px dimgray; }
   .splash-screen P {
     display: flex;
     align-items: center; }
     .splash-screen P span {
       padding: 10px;
-      animation: pulseText 1s linear infinite; }
+      animation: pulseText 2000ms linear infinite; }
 
 @keyframes pulseText {
   0% {
@@ -49,7 +50,7 @@ body {
   100% {
     font-size: 20px; } }
 .game-start {
-  display: flex;
+  display: none;
   background-image: url("../images/start-screen-abrams.jpg");
   background-position: center;
   background-repeat: no-repeat;
@@ -94,7 +95,8 @@ body {
         padding: 20px;
         width: 900px;
         line-height: 1.4;
-        letter-spacing: 1.5px; }
+        letter-spacing: 1.5px;
+        text-align: center; }
       .game-start .story-instructions .instructions .terrain-wrapper {
         display: flex;
         justify-content: flex-start;

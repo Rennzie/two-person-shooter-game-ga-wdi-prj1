@@ -38,7 +38,7 @@ $(() => {
     audio.play();
     instructAudioIntID = setInterval(() =>{
       audio.play();
-    }, 17140);
+    }, 17000);
   }
 
   ///////- GAME END SCREEN -////////////
@@ -60,6 +60,8 @@ $(() => {
     $main.hide();
     announceEnd.innerText = `Victory to ${winner}!!`;
     describeEnd.innerText = `${loser} could not stay composed during the heat of battle!`;
+    audio.setAttribute('src', 'styles/audio/celebration-crowd.mp3');
+    //audio.play();
   }
 
   //when player drives into the water!
@@ -69,6 +71,8 @@ $(() => {
     $main.hide();
     announceEnd.innerText = `GAME OVER FOR ${loser}!!`;
     describeEnd.innerText = `${winner} wins by default! \n  ${loser} drove into WATER! Tanks cant swim soldier!`;
+    audio.setAttribute('src', 'styles/audio/splash.mp3');
+    //audio.play();
   }
 
   ///////- BATTLEFIELD SCREEN -//////////
@@ -97,8 +101,6 @@ $(() => {
   $main.cssText = 'display: none';
 
   let gameItems = [];
-
-
 
   const battleFieldObj = {
     width: 900,
