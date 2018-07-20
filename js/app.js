@@ -778,7 +778,7 @@ $(() => {
   //clear the key down interval on key up
   function keyUpIdentifier(e) {
     const key = e.originalEvent.key.toLowerCase();
-    //console.log('key up is: ' + key);
+    console.log('key up is: ' + key);
     switch(key) {
       case 'arrowdown':
         clearInterval(downIntId);
