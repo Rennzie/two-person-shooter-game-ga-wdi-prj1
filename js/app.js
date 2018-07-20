@@ -2,6 +2,7 @@
 ////////////////////////////////////
 
 $(() => {
+  console.log('version 0.1');
   ///////- START SCREEN -//////////
   // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   const header = document.querySelector('header');
