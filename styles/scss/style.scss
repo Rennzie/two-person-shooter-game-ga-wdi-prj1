@@ -104,6 +104,7 @@ body{
       font-size: 20px;
     }
 
+//========================================
     .instructions{
       display: flex;
       flex-direction: column;
@@ -161,13 +162,81 @@ body{
 
     }
 
-    .actions{
+    .next-instruct{
       display: flex;
+      font-size: 20px;
+      align-self: center;
+      animation: pulse-button 2000ms linear infinite;
+    }
+
+    .next-instruct:hover{
+      cursor: pointer;
+    }
+
+    .play-instructions{
+      display: none;
+      justify-content: center;
       align-items: center;
-      justify-content: space-around;
+      #player1{
+        border: 1px solid blue;
+      }
+      #player2{
+        border: 1px solid red;
+      }
+      .player{
+        display: flex;
+        margin: 30px;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border-radius: 15px;
+        width: 300px;
+        .player-name{
+          font-size: 30px;
+          margin: 10px;
+        }
+        .keys{
+          width: 150px;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          .key{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            text-align: center;
+            margin: 10px;
+          }
+          .fire{
+            width: 60px;
+          }
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .key-description{
+            width: 60px;
+            color: white;
+            font-size: 20px;
+
+          }
+        }
+      }
+    }
+
+    .actions{
+      display: none;
+      align-items: center;
+      justify-content: center;
       width: 900px;
 
       select{
+        margin: 30px;
         width: 300px;
         height: 50px;
         color: white;
@@ -178,6 +247,7 @@ body{
       }
 
       #begin-game{
+        margin: 30px;
         font-size: 20px;
         border: 2px solid white;
         padding: 20px;

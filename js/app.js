@@ -15,8 +15,13 @@ $(() => {
   const startBtn = document.querySelector('#begin-game');
   const selectObsticals = document.querySelector('#set-obsticals');
   const audio = document.createElement('audio');
+  const nextBtn = document.querySelector('.next-instruct');
+  const actions = document.querySelector('.actions');
+  const instructions = document.querySelector('.instructions');
+  const playInstructions = document.querySelector('.play-instructions');
   instrucScreen.appendChild(audio);
   startBtn.addEventListener('click', startGame);
+  nextBtn.addEventListener('click', nextInstruction);
 
   let setObsticalNumber = 0;
 
@@ -30,6 +35,14 @@ $(() => {
     header.style.display = 'none';
     instrucScreen.style.display = 'flex';
     playInstructAudio();
+  }
+
+  function nextInstruction () {
+    nextBtn.style.display = 'none';
+    instructions.style.display = 'none';
+
+    playInstructions.style.display = 'flex';
+    actions.style.display = 'flex';
   }
 
   //begin playing game audio clip on repeat
