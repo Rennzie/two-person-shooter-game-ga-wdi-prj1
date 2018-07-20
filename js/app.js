@@ -2,7 +2,7 @@
 ////////////////////////////////////
 
 $(() => {
-  console.log('version 0.1');
+  console.log('version 0.2');
   ///////- START SCREEN -//////////
   // \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
   const header = document.querySelector('header');
@@ -817,6 +817,6 @@ $(() => {
   }
 
 
-  $(window).keydown(keyDownIdentifier);
-  $(window).keyup(keyUpIdentifier);
+  $('body').on('keydown', keyDownIdentifier);
+  $('body').on('keyup', keyUpIdentifier);
 });
