@@ -1,12 +1,61 @@
 # wdi-project-one
 
 # **BATTLE COMMAND**
+## Vanilla JavaScript game built for the browser
 
-## Goal:
+## Table of Contents
+* [Brief](#Brief)
+* [Tech Used](#Tech Used)
+* [Process](#Process)
+* [Challenges](#Challenges)
+* [Wins](#Wins)
+* [Next Up](#Next Up)
+* [Game Instructions](#Game Instructions)
+
+## <a></a>Brief
 
 Using all the tools and technologies learnt in the first three weeks at General Assembly, build a single page browser hosted game. The scope of the game was only limited to using technologies we have already learnt.
 
-**********************************************
+<hr>
+
+## Technologies Used:
+
+`Vanilla Javascript`
+`SASS (SCSS)`
+`CSS 3`
+`HTML 5`
+`Git`
+`jQuery`
+`Atom`
+`GitHub`
+> - Font from [1001Fonts](https://www.1001fonts.com/)
+> - Sounds from [Sounds Bible](http://soundbible.com/)
+
+<hr>
+
+## The Process
+### Planning
+Early planning involved determining what MVP would be what all the big challenges were. What it was that I didn't know how to build or implement with JS (There was a lot early on). How to structure the layout of the project and
+
+My primary project management tool was  [Trello](https://trello.com/b/cXEbOHhc) which I used to plan out and keep track of every thing that needed doing each day of the project. Tracked bug that I found for later fixing here as well.
+
+### The Build
+
+<hr>
+
+## Challenges
+
+<hr>
+
+## Wins
+
+<hr>
+
+## Next up
+
+<hr>
+
+
 
 ## Game Instructions:
 
@@ -38,31 +87,3 @@ Using all the tools and technologies learnt in the first three weeks at General 
 > - `A`       left
 > - `D`       right
 > - `Shift`   fire cannon
-
-**********************************************
-
-## Technologies Used:
-
-> - Vanilla Javascript
-> - SASS
-> - CSS 3
-> - HTML 5
-> - Git
-> - jQuery
-> - Atom
-> - GitHub
-> - Font from [1001Fonts](https://www.1001fonts.com/)
-> - Sounds from [Sounds Bible](http://soundbible.com/)
-
-***
-
-## Approach:
-### Planning
-
-Early planning involved determining what MVP would be what all the big challenges were. What it was that I didn't know how to build or implement with JS (There was a lot early on). How to structure the layout of the project and
-
-My primary project management tool was  [Trello](https://trello.com/b/cXEbOHhc) which I used to plan out and keep track of every thing that needed doing each day of the project. Tracked bug that I found for later fixing here as well.
-
-### Build
-
-### Styling
