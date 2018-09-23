@@ -60,9 +60,9 @@ After fleshing out MVP I used [Trello](https://trello.com/b/cXEbOHhc)  to list o
 ### The Build
 My plan was to start with the smallest possible piece and work upwards towards a fully functioning game. For Battle Command this was being able to move an element around the game board using the arrow keys.
 
-Understanding how to do this then allowed me to take on the challenge of collision detection, bullet propulsion, bullet collision management and ultimately obstical management.
+Understanding how to do this then allowed me to take on the challenge of collision detection, bullet propulsion, bullet collision management and ultimately obstacle management.
 
-I primarily made use of ES6 `class` syntax, to create the game board elements. This proved to be particularly useful for managing the many bullets on the board and later on the variable number of obsticals.
+I primarily made use of ES6 `class` syntax, to create the game board elements. This proved to be particularly useful for managing the many bullets on the board and later on the variable number of obstacles.
 
 After reaching MVP the focus shifted to making the game fun to play by jazzing up the styling and adding some graphics and sound effects to the game elements. Finally I added some additional features to the games like randomly placed obstacle with differing effects on the game and even a speed power up.
 
@@ -70,23 +70,19 @@ After reaching MVP the focus shifted to making the game fun to play by jazzing u
 
 ## <a name="challenges"></a>Challenges
 
-- collision detection
-- bullet and game piece management and control
-- random obstical placement
-- obstical effects on tanks and bullets
-  - marsh slowing pieces tanks down
-- power-ups moving around the board at random intervals
+The initial challenge that I needed to solve was how to detect collisions between elements on the board and to be able to move an element on the board using the arrow keys. Stack overflow provided some workable solutions to do the collision detection which I moulded into the various collision use cases needed for the game.
 
+Managing all the active bullets was another challenge which was accomplished by having `gameItems[]` array which held any active instances of bullets, tanks, objects and or power-ups. This array was used to check all possible collisions and bullets would be removed from the array once they left the perimeter of the board or collided with tanks or obstacles.
 
-The initial challenge that I needed to solve was how to detect collisions between elements on the board and to be able to move an element on the board using the arrow keys. Once this was solve
+See the *wins* below fo more on the challenge of managing the different types of collisions on the board and their various outcomes.
 
 
 <hr>
 
 ## <a name="wins"></a>Wins
-While collision detection and management of multiple bullets and bullet collisions was certainly a big challenge, as I did not know how to do this initially, resulting in major wins, my favourite bits of code and the pieces I am most proud of are the interaction between the game elements and obsticals.
+While collision detection and management of multiple bullets and bullet collisions was certainly a big challenge, as I did not know how to do this initially, resulting in major wins, my favourite bits of code and the pieces I am most proud of are the interaction between the game elements and obstacles.
 
-The `move()` method below is the heart of the game and my favourite piece of code. The method is responsible for taking in a direction of a tank or a bullet and moving it across the game board at the elements specific speed. It checks for collisions every time it updates the elements position and will determine a different results depending on what has collided with what. Adimitedly the method is rather verbose and could be re-factored considerably. See whats next to understand more on this.
+The `move()` method below is the heart of the game and my favourite piece of code. The method is responsible for taking in a direction of a tank or a bullet and moving it across the game board at the elements specific speed. It checks for collisions every time it updates the elements position and will determine a different results depending on what has collided with what. Admittedly the method is rather verbose and could be re-factored considerably. See whats next to understand more on this.
 
 ``` JavaScript
   move(direction) {
@@ -152,25 +148,25 @@ The `move()` method below is the heart of the game and my favourite piece of cod
 
 <hr>
 
-## Next up
+## <a name="next"></a>Next up
+  As this project was the first project completed during the course, I would begin by refactoring the JavaScript significantly and breaking all the different aspects into various modules. Watch this space for a forked version of the game.
+
+  Future features would include:
+
+  - Ensure obstacles are not placed in the direct path of the tanks when game is initialised.
+  - Additional power ups such as which are stored and used at the players discretion
+  - Gun turret direction is independent from the direction of the tank
+  - Limit the number of rounds. Addition rounds collected as power ups
+  - Limit the range of tanks (fuel)
 
 <hr>
 
-## Game Instructions:
+## <a name="instructions"></a>Game Instructions:
 
 **Aim:** Two players go head to head, controlling battle tanks in an attempt to destroy each other.
 
-> Avoid the various terrain or use them to your advantage
-> - <img src="styles/images/terrain-water-3.jpg" width="50" height="50" style = "border-radius: 100%;">  **Water:** End your career as a tank commander. *GAME OVER*
 
-> - <img src="styles/images/terrain-mountain.jpg" width="50" height="50" style = "border-radius: 100%;"> **Mountains:** Will block your path but can also provide cover from incoming enemy fire.
-
-> - <img src="styles/images/terrain-wetland.jpg" width="50" height="50" style = "border-radius: 100%;"> **Wetland:** Will slow you down and make you a sitting duck for your enemy.
-
-
-
-> Keep your eyes out for the transient speed ***power up***.
-> - <img src="styles/images/powerup-speed-burning-tyre.jpg" width="50" height="50" style = "border-radius: 100%;"> This bad boy will increase your speed for 5seconds giving you and unfair advantage over your enemy. Beware of the terrain obstacles while you whizz around.
+<img src="styles/images/game-instructions.png" width="auto" height="450">
 
 > ### Player one controls
 > - `^`       up
