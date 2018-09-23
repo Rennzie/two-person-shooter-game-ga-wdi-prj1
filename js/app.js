@@ -204,9 +204,6 @@ $(() => {
         const collidedWith = overlappingObjects[0].object.name;
         const collidingItemType = this.type;
 
-        //console.log('the colliding object is: ' + collidingItemType);
-        //console.log('the overlappingObj at move is: ', collidedWith);
-
         if(collidedWith === 'Water' && collidingItemType === 'tank'){
           gameEndWater(this.name);
 
