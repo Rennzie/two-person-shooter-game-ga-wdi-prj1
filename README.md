@@ -13,6 +13,8 @@
 * [Next Up](#next)
 * [Game Instructions](#instructions)
 
+* [Click]( http://seanrennie.com/two-person-shooter-game-ga-wdi-prj1/) to play game
+
 ## <a name="brief"></a>Brief
 
 Technical Requirements:
